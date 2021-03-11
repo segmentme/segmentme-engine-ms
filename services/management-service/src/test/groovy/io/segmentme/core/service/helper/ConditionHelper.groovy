@@ -1,0 +1,24 @@
+package io.segmentme.core.service.helper
+
+
+import io.segmentme.models.shared.analysis.ConditionType
+
+class ConditionHelper {
+
+    static def fillCondition(Object condition, Object values, ConditionType type) {
+
+        condition.value = values
+        condition.criteria = "root.field.exist"
+
+        condition.type = type
+        condition.matchResult = true
+        return condition
+    }
+
+    static def fillCondition(Object condition, Map args = [:]) {
+        condition.type = args["type"]
+        condition.criteria = args["criteria"]
+        condition.matchResult = args["matchResult"] ?: true
+        return condition
+    }
+}

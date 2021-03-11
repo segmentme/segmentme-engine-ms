@@ -1,0 +1,18 @@
+package  io.segmentme.core.domain.condition;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public abstract class SimpleCondition<T> extends AbstractCondition {
+
+    private T value;
+
+    private boolean isNullValid;
+
+    @Override
+    public void recalculateHash() {
+        super.setHash(String.valueOf(this.hashCode()));
+    }
+}

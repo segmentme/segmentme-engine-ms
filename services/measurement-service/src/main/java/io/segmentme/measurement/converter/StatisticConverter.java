@@ -1,0 +1,32 @@
+package io.segmentme.measurement.converter;
+
+import io.segmentme.analysis.domain.statistic.StatisticLog;
+import io.segmentme.statistics.dto.StatisticShortInfo;
+import lombok.experimental.UtilityClass;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@UtilityClass
+public class StatisticConverter {
+
+    public StatisticShortInfo of(StatisticLog statisticLog) {
+        return new StatisticShortInfo()
+            .setId(statisticLog.getId())
+            .setWorkspaceId(statisticLog.getWorkspaceId())
+            .setAnalysisTime(statisticLog.getAnalysisTime())
+            .setDateTime(statisticLog.getLastModifiedDate())
+            .setIntegrationPointKey(statisticLog.getIntegrationPointKey())
+            .setSegmentCount(statisticLog.getSegmentStatistics().size());
+    }
+
+    public List<StatisticShortInfo> of(List<StatisticLog> statisticLog) {
+        if (statisticLog == null) {
+            return new ArrayList<>();
+        }
+
+        return statisticLog.stream().map(StatisticConverter::of).collect(Collectors.toList());
+    }
+}
+

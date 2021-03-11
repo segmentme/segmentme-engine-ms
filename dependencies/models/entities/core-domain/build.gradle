@@ -1,0 +1,27 @@
+dependencies {
+    compile project(':dependencies:mongo-auto-configuration')
+    compile project(':dependencies:models:shared')
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+	compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	compile 'org.apache.commons:commons-lang3'
+	compile 'org.springframework.boot:spring-boot-starter-validation'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+
+    testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+	testCompile 'org.springframework.boot:spring-boot-starter-web'
+}
+
+task jarTests(type: Jar, dependsOn: testClasses) {
+	archiveClassifier = 'tests'
+	from sourceSets.test.output
+}
+configurations {
+	tests {
+		extendsFrom testRuntime
+	}
+}
+
+artifacts {
+	tests jarTests
+}

@@ -1,0 +1,23 @@
+package io.segmentme.core.db.helper;
+
+import io.segmentme.core.domain.user.User;
+import io.segmentme.core.service.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+class UserHelper {
+
+    private final UserRepository userRepository;
+
+    public static User createUser() {
+        return new User().setEmail(UUID.randomUUID().toString() + "@aa.com").setName("name");
+    }
+
+    public User createAndSaveUser() {
+        return userRepository.save(createUser());
+    }
+}

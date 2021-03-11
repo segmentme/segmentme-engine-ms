@@ -1,0 +1,4 @@
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+    compile 'org.apache.commons:commons-lang3'
+}

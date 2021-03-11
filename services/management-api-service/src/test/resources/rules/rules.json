@@ -1,0 +1,251 @@
+[
+  {
+    "aggregation": "AND",
+    "name": "USER EMAIL IN SEGMENT",
+    "conditions": [
+      {
+        "type": "IN",
+        "criteria": "user.email",
+        "value": [
+          "test@email.com"
+        ],
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "41254sasda"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "EMAIL_NOT_IN",
+    "conditions": [
+      {
+        "type": "IN",
+        "criteria": "user.email",
+        "value": [
+          "test@email.com"
+        ],
+        "nullValid": false,
+        "matchResult": false,
+        "hash": "12321321421"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "AGE_GT",
+    "conditions": [
+      {
+        "type": "GT",
+        "criteria": "user.age",
+        "value": 38,
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "124125124"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "AGE_GTE",
+    "conditions": [
+      {
+        "type": "GTE",
+        "criteria": "user.age",
+        "value": 40,
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "sdase32sadd12"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "BIRTH_DATE_LT",
+    "conditions": [
+      {
+        "type": "LT",
+        "criteria": "user.birthDate",
+        "value": "1961-06-06T00:00:00Z",
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "1212asdxac23"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "BIRTH_DATE_LTE",
+    "conditions": [
+      {
+        "type": "LTE",
+        "criteria": "user.birthDate",
+        "value": "1961-06-06T00:00:00Z",
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "askdoask23"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "REGISTERED_DATE_IN_RANGE",
+    "conditions": [
+      {
+        "type": "RANGE",
+        "criteria": "user.details.registeredDate",
+        "value": {
+          "min": "2000-06-03T00:00:00Z",
+          "max": "2000-06-07T00:00:00Z"
+        },
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "aspdlplk23o1213"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "REGISTERED_DATE_NOT_IN_RANGE",
+    "conditions": [
+      {
+        "type": "RANGE",
+        "criteria": "user.details.registeredDate",
+        "value": {
+          "min": "2000-06-03T00:00:00Z",
+          "max": "2000-06-07T00:00:00Z"
+        },
+        "nullValid": false,
+        "matchResult": false,
+        "hash": "1243123acabsa"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "POSTAL_CODE_CONTAINS_ANY",
+    "conditions": [
+      {
+        "type": "CONTAINS_ANY",
+        "criteria": "user.details.address.postalCode",
+        "value": [
+          999999,
+          888888,
+          220015
+        ],
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "65hgtw324326a"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "FIRST_POSTAL_CODE_CONTAINS_ONLY",
+    "conditions": [
+      {
+        "type": "CONTAINS_ANY",
+        "criteria": "user.details.address[0].postalCode",
+        "value": [
+          220015
+        ],
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "jjgfd5642w2"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "NOT_FIRST_POSTAL_CODE_CONTAINS_ANY",
+    "conditions": [
+      {
+        "type": "CONTAINS_ANY",
+        "criteria": "user.details.address[0].postalCode",
+        "value": [
+          44423
+        ],
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "123214123vdfassafd"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "aggregation": "AND",
+    "name": "SECOND_PHONE_CONTAINS_ONLY",
+    "conditions": [
+      {
+        "type": "CONTAINS_ONLY",
+        "criteria": "user.details.phones[1]",
+        "value": [
+          "(29)9999999"
+        ],
+        "nullValid": false,
+        "matchResult": true,
+        "hash": "235bhdxfj534578"
+      }
+    ],
+    "matchResult": true
+  },
+  {
+    "id": "1",
+    "aggregation": "AND",
+    "name": "SECOND_PHONE_CONTAINS_ONLY_SEGMENT",
+    "conditions": [
+      {
+        "type": "SEGMENT",
+        "hash": "rtfgvbsdfbn56me67",
+        "value": {
+          "aggregation": "AND",
+          "name": "USER EMAIL IN SEGMENT",
+          "conditions": [
+            {
+              "type": "IN",
+              "criteria": "user.email",
+              "value": [
+                "test@email.com"
+              ],
+              "nullValid": false,
+              "matchResult": true,
+              "hash": "dsaf423qv4324"
+            },
+            {
+              "type": "IN",
+              "criteria": "user.email",
+              "value": [
+                "test@email.com"
+              ],
+              "nullValid": false,
+              "matchResult": true,
+              "hash": "dsaf423qv4324"
+            },
+            {
+              "type": "IN",
+              "criteria": "user.date",
+              "value": [
+                "123123dsadasd34q2213123213"
+              ],
+              "nullValid": false,
+              "matchResult": true,
+              "hash": "sdafsadd43wb32423"
+            }
+          ],
+          "matchResult": true
+        }
+      }
+    ],
+    "matchResult": true
+  }
+]

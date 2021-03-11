@@ -1,0 +1,78 @@
+package io.segmentme.management.service.user;
+
+import io.segmentme.management.domain.user.User;
+import io.segmentme.management.service.converter.UserHolderConverter;
+import io.segmentme.management.service.dto.WorkspaceHolder;
+import io.segmentme.management.service.dto.user.UserHolder;
+import io.segmentme.management.service.exception.UserManagerException;
+import io.segmentme.management.service.exception.error.UserManagerErrors;
+import io.segmentme.management.service.service.user.UserService;
+import io.segmentme.management.service.workspace.UserProfileManager;
+import io.segmentme.management.service.workspace.WorkspaceManager;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class UserManager {
+    private final UserService userService;
+
+    private final WorkspaceManager workspaceManager;
+
+    private final UserProfileManager userProfileManager;
+
+
+    public UserHolder getById(String userId) {
+        return UserHolderConverter.toHolder(userService.findById(userId).orElseThrow(() -> new UserManagerException().setCode(UserManagerErrors.USER_WITH_SUCH_EMAIL_ALREADY_EXISTS)));
+    }
+
+    public void switchWorkspace(String userId, String workspaceId) {
+        User user = userService.findById(userId).orElseThrow(() -> new UserManagerException().setCode(UserManagerErrors.USER_WITH_SUCH_EMAIL_ALREADY_EXISTS));
+        if (userProfileManager.getUserProfiles(userId).stream().noneMatch(it -> it.getWorkspaceId().equalsIgnoreCase(workspaceId))) {
+            throw new UserManagerException().setCode(UserManagerErrors.UNABLE_TO_SWITCH_WORKSPACE_DOESNT_EXISTS);
+        }
+        user.setLastActiveWorkspace(workspaceId);
+        userService.update(user);
+    }
+
+    public UserHolder createUser(UserHolder userToCreate) {
+        log.info("Create userToCreate {}", userToCreate);
+
+        if (userService.findByEmail(userToCreate.getEmail()).isPresent()) {
+            throw new UserManagerException().setCode(UserManagerErrors.USER_WITH_SUCH_EMAIL_ALREADY_EXISTS);
+        }
+
+        User user = userService.create(UserHolderConverter.toUser(userToCreate));
+
+        WorkspaceHolder defaultWorkspace = workspaceManager.createDefaultWorkspace(user);
+        user.setLastActiveWorkspace(defaultWorkspace.getId());
+
+        userService.update(user);
+
+        return UserHolderConverter.toHolder(user);
+    }
+
+
+    public void acknowledgeUser(UserHolder holder) {
+        if (userService.findByExternalId(holder.getId()).isPresent() || userService.findByEmail(holder.getEmail()).isPresent()) {
+            return;
+        }
+        createUser(holder);
+    }
+
+    public List<User> getByIds(List<String> userIds) {
+        return StreamSupport.stream(userService.findByIds(userIds).spliterator(), false)
+            .collect(Collectors.toList());
+
+    }
+
+    public UserHolder getByExternalId(String externalId) {
+        return UserHolderConverter.toHolder(userService.findByExternalId(externalId).orElseThrow(() -> new UserManagerException().setCode(UserManagerErrors.USER_WITH_SUCH_EMAIL_ALREADY_EXISTS)));
+    }
+}

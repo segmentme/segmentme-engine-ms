@@ -1,0 +1,35 @@
+def springVersion = '2.4.1'
+def springCloudVersion = '2020.0.0'
+
+def settings = [
+    [name: ':dependencies:mongo-auto-configuration', isJava: true],
+    [name: ':dependencies:web-configuration', isJava: true],
+    [name: ':dependencies:helpers:core-dao', isJava: true],
+    [name: ':dependencies:helpers:context-processor', isJava: true],
+    [name: ':dependencies:models:shared', isJava: true],
+    [name: ':dependencies:models:dto:core-dto', isJava: true],
+    [name: ':dependencies:models:dto:analysis-dto', isJava: true],
+    [name: ':dependencies:models:entities:core-domain', isJava: true],
+    [name: ':dependencies:models:entities:management-domain', isJava: true],
+    [name: ':dependencies:models:entities:analysis-domain', isJava: true],
+    [name: ':dependencies:redis-auto-configuration', isJava: true, isBoot: false],
+    [name: ':services:management-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
+    [name: ':services:management-api-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
+    [name: ':services:analysis-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
+    [name: ':services:measurement-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
+    [name: ':services:analysis-api-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
+    [name: ':services:channel-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80, 7777])]
+
+]
+
+value = new Settings(settings: settings, springVersion: springVersion, springCloudVersion: springCloudVersion)
+
+class Settings {
+    def settings
+    def springVersion
+    def springCloudVersion
+}
+
+class DockerSettings {
+    def exposedPorts
+}

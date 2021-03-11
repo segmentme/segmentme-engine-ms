@@ -1,0 +1,27 @@
+dependencies {
+    compile project(':dependencies:mongo-auto-configuration')
+    compile project(':dependencies:redis-auto-configuration')
+    compile project(':dependencies:models:entities:analysis-domain')
+    compile project(':dependencies:models:entities:management-domain')
+    compile project(':dependencies:helpers:context-processor')
+    compile project(':dependencies:models:dto:analysis-dto')
+    compile project(':dependencies:web-configuration')
+    compile project(':dependencies:helpers:core-dao')
+    testCompile project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
+    testCompile project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
+}
+
+task jarTests(type: Jar, dependsOn: testClasses) {
+    archiveClassifier = 'tests'
+    from sourceSets.test.output
+}
+
+configurations {
+    tests {
+        extendsFrom testRuntime
+    }
+}
+artifacts {
+    tests jarTests
+}
+

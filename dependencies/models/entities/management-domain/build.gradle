@@ -1,0 +1,3 @@
+dependencies {
+    compile project(':dependencies:models:entities:core-domain')
+}

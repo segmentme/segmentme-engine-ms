@@ -1,0 +1,20 @@
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+spring:
+  rsocket:
+    server:
+      port: ${CHANNEL_SERVICE_PORT:7777}
+segmentme:
+  application:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      connectionTimeout: ${REDIS_CONNECTION_TIMEOUT:25}
+      readTimeOut: ${REDIS_READ_TIMEOUT:15}
+      stream:
+        analysisStreamKey: analysis-request-event
+    analysis-service:
+      url: ${ANALYSIS_SERVICE_URL:http://localhost:8080}
+server:
+  port: 9090
