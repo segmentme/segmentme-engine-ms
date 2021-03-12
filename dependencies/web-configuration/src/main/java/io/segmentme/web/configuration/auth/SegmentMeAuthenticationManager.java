@@ -1,8 +1,7 @@
 package io.segmentme.web.configuration.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.segmentme.core.analysis.api.facade.UserFacade;
-import io.segmentme.core.analysis.api.service.Auth0Service;
+import io.segmentme.AuthAcknowledger;
 import io.segmentme.web.configuration.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +15,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class SegmentMeAuthenticationManager implements org.springframework.secur
 
     private final Auth0Service auth0Service;
 
-    private final UserFacade userFacade;
+    private final Optional<AuthAcknowledger> userFacade;
 
     private final ObjectMapper objectMapper;
 
@@ -62,7 +62,7 @@ public class SegmentMeAuthenticationManager implements org.springframework.secur
         //check for app https://segmentme.io:persisted  true
         AuthUser authUser = (AuthUser) authenticate.getPrincipal();
         if (authenticate.isAuthenticated() && !Boolean.TRUE.equals(authUser.isAcknowledged())) {
-            userFacade.acknowledgeUser(authUser.getId(), authUser.getEmail(), authUser.getFullName());
+            userFacade.ifPresent(it -> it.acknowledgeUser(authUser.getId(), authUser.getEmail(), authUser.getFullName()));
             auth0Service.acknowledge(authUser.getId());
         }
 

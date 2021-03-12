@@ -1,9 +1,9 @@
 package io.segmentme.management.service.resource;
 
-import io.segmentme.core.api.config.AuthUser;
-import io.segmentme.core.api.dto.UserDetails;
-import io.segmentme.core.api.facade.UserFacade;
-import io.segmentme.core.api.service.Auth0Service;
+import io.segmentme.management.service.dto.user.UserDetails;
+import io.segmentme.management.service.facade.UserFacade;
+import io.segmentme.web.configuration.AuthUser;
+import io.segmentme.web.configuration.auth.Auth0Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/resend-verification-email")
-    public void resendVerificationEmail(@AuthenticationPrincipal AuthUser authUser){
+    public void resendVerificationEmail(@AuthenticationPrincipal AuthUser authUser) {
         auth0Service.resendVerificationEmail(authUser.getId());
     }
 }

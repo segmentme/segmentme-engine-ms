@@ -1,4 +1,4 @@
-package io.segmentme.management.service.service;
+package io.segmentme.web.configuration.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

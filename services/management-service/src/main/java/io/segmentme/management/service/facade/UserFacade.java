@@ -1,5 +1,6 @@
 package io.segmentme.management.service.facade;
 
+import io.segmentme.AuthAcknowledger;
 import io.segmentme.core.domain.workpsace.UserProfile;
 import io.segmentme.management.service.dto.user.CurrentUserProfile;
 import io.segmentme.management.service.dto.user.UserBasicInfo;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserFacade {
+public class UserFacade implements AuthAcknowledger {
 
     private final UserManager userManager;
 
