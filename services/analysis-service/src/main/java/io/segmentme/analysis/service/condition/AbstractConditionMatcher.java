@@ -1,10 +1,10 @@
 package io.segmentme.analysis.service.condition;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.segmentme.analysis.service.ContextValueHolder;
 import io.segmentme.analysis.service.segment.worm.Worm;
 import io.segmentme.core.domain.condition.AbstractCondition;
 import io.segmentme.core.domain.context.ContextSchema;
+import io.segmentme.helpers.context.processor.ContextValueHolder;
 import io.segmentme.helpers.context.processor.exception.CriteriaValueLocatorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

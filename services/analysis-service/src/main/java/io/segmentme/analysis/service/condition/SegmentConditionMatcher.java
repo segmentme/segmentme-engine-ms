@@ -1,9 +1,9 @@
 package io.segmentme.analysis.service.condition;
 
-import io.segmentme.analysis.service.ContextValueHolder;
 import io.segmentme.analysis.service.segment.SegmentAnalysisService;
 import io.segmentme.analysis.service.segment.worm.Worm;
 import io.segmentme.core.domain.condition.SegmentCondition;
+import io.segmentme.helpers.context.processor.ContextValueHolder;
 import io.segmentme.helpers.dao.repository.SegmentRepository;
 import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Data;

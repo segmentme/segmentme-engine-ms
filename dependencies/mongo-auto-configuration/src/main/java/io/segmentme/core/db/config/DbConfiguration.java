@@ -27,7 +27,7 @@ import java.util.Optional;
 @Order(1)
 @Configuration
 @RequiredArgsConstructor
-@EnableMongoRepositories(basePackages = "io.segmentme.core")
+@EnableMongoRepositories(basePackages = {"io.segmentme.core","io.segmentme.helpers.dao.repository"})
 @EnableConfigurationProperties
 @EnableMongoAuditing
 public class DbConfiguration {

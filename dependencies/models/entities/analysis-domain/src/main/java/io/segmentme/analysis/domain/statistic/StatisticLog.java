@@ -1,7 +1,7 @@
 package io.segmentme.analysis.domain.statistic;
 
 import io.segmentme.core.domain.DbObject;
-import io.segmentme.core.domain.context.ContextSchema;
+import io.segmentme.models.shared.analysis.InlineType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -25,7 +25,7 @@ public class StatisticLog extends DbObject {
 
     private List<SegmentStatistic> segmentStatistics;
 
-    private Map<String, ContextSchema.InlineType> knownTypes;
+    private Map<String, InlineType> knownTypes;
 
     @Indexed
     private String analyzedDataKey;

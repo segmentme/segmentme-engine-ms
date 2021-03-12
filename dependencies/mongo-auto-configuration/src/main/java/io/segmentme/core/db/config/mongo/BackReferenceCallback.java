@@ -1,6 +1,6 @@
 package io.segmentme.core.db.config.mongo;
 
-import io.segmentme.analysis.domain.context.DbObject;
+import io.segmentme.core.domain.DbObject;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.mongodb.core.MongoOperations;
