@@ -1,6 +1,8 @@
 package io.segmentme.management.service.context;
 
 import io.segmentme.core.domain.context.ContextSchema;
+import io.segmentme.models.shared.exception.Errors;
+import io.segmentme.models.shared.exception.SeverityLevel;
 import lombok.Data;
 
 import java.util.List;

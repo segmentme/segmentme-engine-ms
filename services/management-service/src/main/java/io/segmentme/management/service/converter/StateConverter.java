@@ -2,9 +2,9 @@ package io.segmentme.management.service.converter;
 
 import io.segmentme.analysis.dto.state.StateDto;
 import io.segmentme.core.domain.state.State;
+import io.segmentme.helpers.dao.service.SegmentService;
 import io.segmentme.management.service.exception.SegmentManagerException;
 import io.segmentme.management.service.exception.error.SegmentMangerErrors;
-import io.segmentme.management.service.service.segment.SegmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

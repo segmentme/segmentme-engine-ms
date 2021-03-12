@@ -35,4 +35,4 @@ segmentme:
                 groupName: analysis-request-event-group
                 streamPollTimeout: 1000 #milliseconds
 server:
-    port: 8082
+    port: 8084
