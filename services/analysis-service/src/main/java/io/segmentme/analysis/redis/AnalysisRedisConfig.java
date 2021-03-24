@@ -26,18 +26,17 @@ import java.net.UnknownHostException;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class AnalysisRedisConfig extends RedisConfig {
+public class AnalysisRedisConfig {
 
     private final static String REDIS_STREAM_TYPE = "MKSTREAM";
 
-    @Autowired
-    private RedisStreamProperties redisStreamProperties;
+    private final RedisStreamProperties redisStreamProperties;
 
     @Bean
     public StreamReceiver<String, MapRecord<String, Object, Object>> streamReceiver(RedisTemplate<String, Object> redisTemplate, LettuceConnectionFactory connectionFactory) throws UnknownHostException {
         this.initRedisStream(redisTemplate);
 
-        var jsonRedisSerializer = super.prepareJackson2JsonRedisSerializer();
+        var jsonRedisSerializer = RedisConfig.prepareJackson2JsonRedisSerializer();
 
         StreamReceiver.StreamReceiverOptions<String, MapRecord<String, Object, Object>> object = StreamReceiver.StreamReceiverOptions.builder()
                 .hashKeySerializer(RedisSerializationContext.SerializationPair.fromSerializer(jsonRedisSerializer))

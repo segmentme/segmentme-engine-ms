@@ -3,8 +3,10 @@ package io.segmentme.redis.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
@@ -17,11 +19,13 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+@Slf4j
+@Configuration
+@RequiredArgsConstructor
 @EnableRedisRepositories(basePackages = "io.segmentme")
-public abstract class RedisConfig {
+public class RedisConfig {
 
-    @Autowired
-    protected RedisProperties redisProperties;
+    protected final RedisProperties redisProperties;
 
     @Bean
     protected LettuceConnectionFactory redisConnectionFactory() {
@@ -56,7 +60,7 @@ public abstract class RedisConfig {
         return template;
     }
 
-    protected Jackson2JsonRedisSerializer<Object> prepareJackson2JsonRedisSerializer(){
+    public static Jackson2JsonRedisSerializer<Object> prepareJackson2JsonRedisSerializer() {
         var objectMapper = new ObjectMapper();
         var module = new JavaTimeModule();
         objectMapper.registerModule(module);
