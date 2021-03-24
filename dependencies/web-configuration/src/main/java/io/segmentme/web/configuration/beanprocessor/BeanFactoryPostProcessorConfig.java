@@ -7,7 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 @Configuration
-class BeanPosProcessorConfig {
+class BeanFactoryPostProcessorConfig {
 
     @Bean
     static BeanFactoryPostProcessor beanPostProcessor(final Environment environment, final GenericWebApplicationContext context) {
