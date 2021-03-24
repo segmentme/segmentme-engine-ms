@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,7 @@ public class Auth0Service {
 
     private static final String VERIFICATION_EMAIL_URL = "/jobs/verification-email";
 
-
+    @Qualifier("auth0-client")
     private final WebClient auth0WebClient;
 
     public void acknowledge(String userId) {
