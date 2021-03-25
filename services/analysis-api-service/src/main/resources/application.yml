@@ -30,5 +30,12 @@ segmentme:
               readTimeOut:    10000  #milisecond
               writeTimeOut:   10000 #milisecond
             host: ${ANALYSIS_SERVICE_HOST:http://localhost:8082}
+        access-control-service:
+            connection:
+              connectTimeOut: 20000  #milisecond
+              readTimeOut:    10000  #milisecond
+              writeTimeOut:   10000 #milisecond
+            host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+
 server:
   port: 8081

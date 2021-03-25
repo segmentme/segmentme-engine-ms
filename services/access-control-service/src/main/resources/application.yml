@@ -1,7 +1,6 @@
 logging:
   level:
     root: INFO
-    io.segmentme.core.api.facade: INFO
 auth0:
   audience: https://segmentme.us.auth0.com/api/v2/
   managementApi: https://segmentme.us.auth0.com/api/v2/
@@ -24,18 +23,5 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://segmentme.us.auth0.com/
-
-segmentme:
-    application:
-        web-client:
-            configuration:
-                access-control-service:
-                    connection:
-                        connectTimeOut: 20000  #milisecond
-                        readTimeOut: 10000  #milisecond
-                        writeTimeOut: 10000 #milisecond
-                    host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
 server:
-  port: 8083
-
-
+  port: 8085

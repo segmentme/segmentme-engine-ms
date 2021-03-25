@@ -1,10 +1,10 @@
-package io.segmentme.management.service.security;
+package io.segmentme.access.service.security;
 
+import io.segmentme.access.service.repository.UserRepository;
 import io.segmentme.core.domain.DbObject;
 import io.segmentme.core.domain.workpsace.UserProfile;
 import io.segmentme.core.domain.workpsace.Workspace;
 import io.segmentme.helpers.dao.service.WorkspaceService;
-import io.segmentme.management.service.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.Collection;
 public class SecurityService {
 
     private final WorkspaceService workspaceService;
-    private final UserService userService;
+    private final UserRepository userService;
 
     public boolean isValidIntegrationPointKeys(String[] integrationPointKeys, String userId) {
         return Arrays.stream(integrationPointKeys).allMatch(it -> isValidIntegrationPointKey(it, userId));

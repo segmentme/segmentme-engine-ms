@@ -1,5 +1,7 @@
 package io.segmentme.core.service.resource
 
+import ContextSchemaSecurityService
+import SecurityService
 import com.fasterxml.jackson.databind.JsonNode
 import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.analysis.dto.segment.SegmentShortInfo
@@ -10,8 +12,6 @@ import io.segmentme.core.service.configuration.test.ResourceHolder
 import io.segmentme.helpers.dao.repository.SegmentRepository
 import io.segmentme.helpers.dao.repository.StateRepository
 import io.segmentme.management.domain.user.User
-import io.segmentme.management.service.security.ContextSchemaSecurityService
-import io.segmentme.management.service.security.SecurityService
 import io.segmentme.management.service.service.segment.SegmentManager
 import io.segmentme.management.service.service.state.StateManager
 import io.segmentme.management.service.service.user.UserService

@@ -14,7 +14,7 @@ def settings = [
     [name: ':dependencies:models:entities:analysis-domain', isJava: true],
     [name: ':dependencies:redis-auto-configuration', isJava: true, isBoot: false],
     [name: ':services:management-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
-    [name: ':services:management-api-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
+    [name: ':services:access-control-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
     [name: ':services:analysis-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
     [name: ':services:measurement-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],
     [name: ':services:analysis-api-service', isJava: true, isBoot: true, dockerSettings: new DockerSettings(exposedPorts: [80])],

@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':dependencies:web-configuration')
+    compile project(':dependencies:helpers:core-dao')
+    compile project(':dependencies:models:entities:management-domain')
+}

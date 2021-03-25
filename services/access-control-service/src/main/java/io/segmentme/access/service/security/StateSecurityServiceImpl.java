@@ -1,9 +1,10 @@
-package io.segmentme.management.service.security;
+package io.segmentme.access.service.security;
 
+import io.segmentme.access.service.repository.UserRepository;
 import io.segmentme.core.domain.DbObject;
 import io.segmentme.core.domain.state.State;
 import io.segmentme.helpers.dao.service.StateService;
-import io.segmentme.management.service.service.user.UserService;
+import io.segmentme.security.StateSecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,16 +12,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StateSecurityService {
+public class StateSecurityServiceImpl implements StateSecurityService {
 
     private final StateService stateService;
 
     private final SecurityService securityService;
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
+    @Override
     public boolean isManagedState(String stateId, String userId) {
-        String id = userService.findByExternalId(userId).map(DbObject::getId).orElse(null);
+        String id = userRepository.findByExternalId(userId).map(DbObject::getId).orElse(null);
         return stateService.findById(stateId)
             .map(State::getIntegrationPointKey)
             .map(it -> securityService.isValidIntegrationPointKey(it, id))
