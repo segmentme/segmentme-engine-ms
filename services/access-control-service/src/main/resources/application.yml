@@ -13,8 +13,8 @@ spring:
       client:
         registration:
           auth0:
-            client-id: FRFEhM5zwQCva2tSfBxDuM3og5TdjUpC
-            client-secret: Rsic0pW4Wr_q91Ppin-UNRuq5EdH5X7EmhA4ZUTcN-6MBu_Wy8Ce1J89WPCpkD_4
+            client-id: ${AUTH0_CLIENT_ID:FRFEhM5zwQCva2tSfBxDuM3og5TdjUpC}
+            client-secret: ${AUTH0_CLIENT_SECRET:Rsic0pW4Wr_q91Ppin-UNRuq5EdH5X7EmhA4ZUTcN-6MBu_Wy8Ce1J89WPCpkD_4}
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: post
         provider:
