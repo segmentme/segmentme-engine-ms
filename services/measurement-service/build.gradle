@@ -4,6 +4,7 @@ dependencies {
     compile project(':dependencies:helpers:core-dao')
     compile project(':dependencies:web-configuration')
     testCompile project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
+    testCompile project(path: ':dependencies:web-configuration', configuration: 'tests')
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {

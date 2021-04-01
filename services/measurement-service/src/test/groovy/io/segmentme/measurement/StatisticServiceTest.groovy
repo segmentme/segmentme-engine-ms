@@ -1,19 +1,18 @@
 package io.segmentme.measurement
 
-
+import io.segment.security.mock.AccessServiceMock
 import io.segmentme.analysis.domain.statistic.StatisticLog
 import io.segmentme.measurement.repository.StatisticRepository
 import io.segmentme.measurement.service.StatisticService
 import org.apache.commons.lang3.RandomUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import spock.lang.Specification
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @SpringBootTest
-class StatisticServiceTest extends Specification {
+class StatisticServiceTest extends AccessServiceMock {
 
     @Autowired
     private StatisticRepository repository
@@ -37,7 +36,7 @@ class StatisticServiceTest extends Specification {
         when:
         repository.saveAll(datesToSave)
         then:
-        def found = statisticService.getSegmentStatistic(workspaceId, 1, 10);
+        def found = statisticService.getSegmentStatistic(workspaceId, 10);
         !found.isEmpty()
     }
 
@@ -63,14 +62,5 @@ class StatisticServiceTest extends Specification {
         !found.isEmpty()
     }
 
-
-    def 'test find by integration point key'() {
-        when:
-        def workspaceToFind = workspaceHelper.createAndSaveWorkspace()
-        workspaceHelper.createAndSaveWorkspace()
-        then:
-        def found = repository.findByIntegrationPointsKey(workspaceToFind.integrationPoints[0].key)
-        found.get() == workspaceToFind
-    }
 
 }

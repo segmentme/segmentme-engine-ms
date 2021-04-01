@@ -1,6 +1,7 @@
 package io.segmentme.core.service.repository
 
 import io.segmentme.core.SpringCoreDataApplication
+import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.core.service.helper.UserHelper
 import io.segmentme.management.domain.user.User
 import io.segmentme.management.service.repository.UserRepository
@@ -10,15 +11,17 @@ import org.springframework.context.annotation.ComponentScan
 import spock.lang.Specification
 
 
-@ComponentScan("io.segmentme")
-@SpringBootTest(classes = SpringCoreDataApplication.class)
-class UserRepositoryTest extends Specification {
+class UserRepositoryTest extends BaseTestWithContext {
 
     @Autowired
     private UserHelper userHelper;
 
     @Autowired
     private UserRepository repository
+
+    def cleanup(){
+        repository.deleteAll()
+    }
 
     def 'save user '() {
         given:
@@ -27,7 +30,7 @@ class UserRepositoryTest extends Specification {
         def save = repository.save(user)
         then:
         def found = repository.findById(save.getId())
-        found.get() == save
+        found.get().id == save.id
 
     }
 
@@ -38,7 +41,7 @@ class UserRepositoryTest extends Specification {
         def save = repository.save(user)
         then:
         def found = repository.findByEmail(user.getEmail())
-        found.get() == save
+        found.get().id == save.id
     }
 
 }

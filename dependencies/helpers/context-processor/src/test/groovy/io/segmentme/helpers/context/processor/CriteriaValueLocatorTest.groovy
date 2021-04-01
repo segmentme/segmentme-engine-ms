@@ -2,6 +2,7 @@ package io.segmentme.helpers.context.processor
 
 import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.helpers.context.processor.exception.CriteriaValueLocatorException
+import io.segmentme.helpers.context.processor.exception.error.CriteriaValueLocatorErrors
 import io.segmentme.helpers.context.processor.helper.ContextProcessorResourceHolder
 import spock.lang.Specification
 

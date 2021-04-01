@@ -15,6 +15,8 @@ import io.segmentme.management.service.service.state.StateManager
 import io.segmentme.management.service.service.user.UserService
 import io.segmentme.security.ContextSchemaSecurityService
 import io.segmentme.security.IntegrationPointKeySecurityService
+import io.segmentme.security.StateSecurityService
+import io.segmentme.security.WorkspaceSecurityService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -22,6 +24,7 @@ import org.springframework.core.io.Resource
 
 import static java.util.UUID.randomUUID
 import static org.hamcrest.Matchers.hasItem
+import static org.mockito.Mockito.mock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -47,20 +50,12 @@ class StateControllerTest extends BaseControllerTest {
     @Autowired
     protected SegmentRepository segmentRepository
 
-    @SpringBean
-    private IntegrationPointKeySecurityService securityService = Mock(IntegrationPointKeySecurityService.class)
-
     @Autowired
     protected UserService userService
 
     private User user
 
-    @SpringBean
-    protected ContextSchemaSecurityService contextSchemaSecurityService = Mock(ContextSchemaSecurityService.class)
-
     def setup(){
-        securityService.isManaged(_, _) >> true
-        contextSchemaSecurityService.isManagedSchema(_) >> true
         user = new User().setExternalId(randomUUID().toString()).setId(randomUUID().toString())
         userService.create(user)
     }

@@ -8,13 +8,23 @@ import lombok.SneakyThrows
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.TestingAuthenticationToken
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
+
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.mock
 
 @AutoConfigureMockMvc
 class BaseControllerTest extends BaseTestWithContext {
@@ -33,6 +43,33 @@ class BaseControllerTest extends BaseTestWithContext {
 
     @Autowired
     protected UserService userService;
+
+    @SpringBean(name = "access-control-service")
+    protected WebClient accessControlClient = Mock(WebClient.class)
+
+    protected getUriSpecMock = Mock(WebClient.RequestHeadersUriSpec.class)
+
+    protected postUriSpecMock = Mock(WebClient.RequestBodyUriSpec.class)
+
+    protected headersSpecMock = Mock(WebClient.RequestHeadersSpec.class)
+
+    protected requestBodyUriSpec = Mock(WebClient.RequestBodyUriSpec.class)
+
+    protected responseSpecMock = Mock(WebClient.ResponseSpec.class)
+
+    def setup(){
+        accessControlClient.get() >> getUriSpecMock
+        accessControlClient.post() >> postUriSpecMock
+
+        postUriSpecMock.uri(_) >> requestBodyUriSpec
+        requestBodyUriSpec.bodyValue(_) >> headersSpecMock
+        headersSpecMock.retrieve() >> responseSpecMock
+
+        getUriSpecMock.uri(_) >> headersSpecMock
+        headersSpecMock.retrieve() >> responseSpecMock
+
+        responseSpecMock.toEntity(_) >> Mono.just(ResponseEntity.ok(Boolean.TRUE))
+    }
 
     @SneakyThrows
     protected String serializeToJson(Object o) {

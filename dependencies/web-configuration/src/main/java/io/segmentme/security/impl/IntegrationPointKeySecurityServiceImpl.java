@@ -11,8 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Optional;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service(value = "integrationPointKeySecurityService")
 public class IntegrationPointKeySecurityServiceImpl implements IntegrationPointKeySecurityService {
 
     @Qualifier("access-control-service")

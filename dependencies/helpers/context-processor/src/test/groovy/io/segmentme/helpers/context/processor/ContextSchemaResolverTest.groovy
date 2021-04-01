@@ -5,6 +5,7 @@ import io.segmentme.helpers.context.processor.helper.ContextProcessorResourceHol
 import io.segmentme.models.shared.analysis.SchemaNodeType
 import spock.lang.Specification
 
+import static io.segmentme.models.shared.analysis.InlineType.of
 import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
 
 class ContextSchemaResolverTest extends Specification {
