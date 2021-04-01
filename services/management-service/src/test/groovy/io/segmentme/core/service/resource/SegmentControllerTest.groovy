@@ -1,6 +1,5 @@
 package io.segmentme.core.service.resource
 
-import ContextSchemaSecurityService
 import com.fasterxml.jackson.databind.JsonNode
 import io.segmentme.analysis.dto.conditions.ArrayConditionDto
 import io.segmentme.analysis.dto.segment.SegmentDto
@@ -12,6 +11,7 @@ import io.segmentme.helpers.context.processor.ContextValueHolder
 import io.segmentme.helpers.context.processor.ContextValuesExtractorImpl
 import io.segmentme.helpers.dao.repository.SegmentRepository
 import io.segmentme.management.service.service.segment.SegmentManager
+import io.segmentme.security.ContextSchemaSecurityService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

@@ -53,7 +53,7 @@ public class SegmentController {
     }
 
     @PostMapping
-    @PreAuthorize("@securityService.isValidIntegrationPointKeys(#integrationPointKeys, #currentUser.id)")
+    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.id, #integrationPointKeys)")
     public List<?> findByIntegrationPointKeys(
                                               @RequestParam(required = false, defaultValue = "false") boolean shortForm,
                                               @RequestBody @Valid @NotEmpty List<String> integrationPointKeys) {

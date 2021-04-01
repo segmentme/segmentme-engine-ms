@@ -6,11 +6,9 @@ import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.core.service.helper.UserHolderHelper
 import io.segmentme.helpers.dao.service.WorkspaceService
 import io.segmentme.management.service.context.ContextSchemaManager
-import io.segmentme.management.service.context.ContextSchemaValidationService
 import io.segmentme.management.service.exception.ContextSchemaManagerException
-import io.segmentme.management.service.exception.ContextSchemaValidationException
 import io.segmentme.management.service.exception.error.ContextMangerErrors
-import io.segmentme.management.service.exception.error.ContextValidationErrors
+import io.segmentme.management.service.repository.UserRepository
 import io.segmentme.models.shared.analysis.SchemaNodeType
 import io.segmentme.models.shared.exception.AbstractManagerException
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,8 +28,15 @@ class ContextSchemaManagerTest extends BaseTestWithContext {
     @Autowired
     private ContextSchemaManager contextSchemaManager
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Shared
     List<Workspace> workspaces = new ArrayList<>()
+
+    def cleanup() {
+        userRepository.deleteAll()
+    }
 
     def "Create context #rootNode for integration key #integrationKey should #result"() {
         setup:
@@ -48,7 +53,7 @@ class ContextSchemaManagerTest extends BaseTestWithContext {
         rootNode                                                        | integrationKey            || result
         validSchema                                                     | null                      || true
         validSchema                                                     | UNKNOWN_INTEGRATION_POINT || new ContextSchemaManagerException().setCode(ContextMangerErrors.INTEGRATION_POINT_NOT_FOUND)
-        new SchemaNode().setName("root").setType(SchemaNodeType.OBJECT) | null                      || new ContextSchemaValidationException().setSchemaValidationResult([new ContextSchemaValidationService.SchemaValidationEntry().setPath("root").setCode(ContextValidationErrors.CONTEXT_SCHEMA_SHOULD_CONTAINS_AT_LEAST_ONE_ELEMENT)])
+        new SchemaNode().setName("root").setType(SchemaNodeType.OBJECT) | null                      || true
 
 
     }

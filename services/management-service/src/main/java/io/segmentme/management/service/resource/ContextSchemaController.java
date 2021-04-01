@@ -47,7 +47,7 @@ public class ContextSchemaController {
     }
 
     @PostMapping
-    @PreAuthorize("@securityService.isValidIntegrationPointKey(#contextSchemaCreateRequest.integrationPointKey, #authUser.id)")
+    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.id, #contextSchemaCreateRequest.integrationPointKey)")
     public ContextSchemaBasicInfo create(@RequestParam String workspaceId, @RequestBody ContextSchemaCreateRequest contextSchemaCreateRequest) {
         return contextSchemaFacade.create(contextSchemaCreateRequest);
     }

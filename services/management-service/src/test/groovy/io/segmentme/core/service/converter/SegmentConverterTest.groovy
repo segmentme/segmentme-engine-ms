@@ -6,10 +6,12 @@ import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.core.domain.condition.ArrayCondition
 import io.segmentme.core.domain.condition.SingleCondition
 import io.segmentme.core.domain.segment.Segment
+import io.segmentme.management.service.converter.SegmentConverter
 import spock.lang.Specification
 
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition
 import static io.segmentme.core.service.helper.RuleHelper.fillRule
+import static io.segmentme.models.shared.analysis.ConditionType.*
 import static java.util.UUID.randomUUID
 
 class SegmentConverterTest extends Specification {

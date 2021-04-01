@@ -1,8 +1,10 @@
-package io.segmentme.management.service.repository
+package io.segmentme.core.service.repository
 
 import io.segmentme.core.domain.context.ContextSchema
 import io.segmentme.core.domain.context.SchemaNode
-import io.segmentme.core.domain.context.SchemaNodeType
+import io.segmentme.helpers.dao.repository.ContextSchemaRepository
+import io.segmentme.models.shared.analysis.InlineType
+import io.segmentme.models.shared.analysis.SchemaNodeType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
@@ -17,8 +19,8 @@ class AnalysisContextRepositoryTest extends Specification {
         given:
         def analysisContext = new ContextSchema()
                 .setRootNode(new SchemaNode().setName("node").setSubType(SchemaNodeType.STRING))
-        Map<String, ContextSchema.InlineType> schemaNodeMap = new HashMap<>();
-        schemaNodeMap.put("node", ContextSchema.InlineType.of(SchemaNodeType.STRING, null))
+        Map<String, InlineType> schemaNodeMap = new HashMap<>();
+        schemaNodeMap.put("node", InlineType.of(SchemaNodeType.STRING, null))
         analysisContext.setInlinePath(schemaNodeMap)
 
         when:

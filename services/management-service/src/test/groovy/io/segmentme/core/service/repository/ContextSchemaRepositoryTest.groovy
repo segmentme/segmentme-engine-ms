@@ -1,6 +1,7 @@
-package io.segmentme.management.service.repository
+package io.segmentme.core.service.repository
 
 import io.segmentme.core.domain.context.ContextSchema
+import io.segmentme.helpers.dao.repository.ContextSchemaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification

@@ -4,6 +4,8 @@ import io.segmentme.analysis.dto.conditions.ArrayConditionDto
 import io.segmentme.analysis.dto.conditions.SingleConditionDto
 import io.segmentme.core.domain.condition.ArrayCondition
 import io.segmentme.core.domain.condition.SingleCondition
+import io.segmentme.management.service.converter.ConditionConverter
+import io.segmentme.models.shared.analysis.ConditionType
 import spock.lang.Specification
 
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition

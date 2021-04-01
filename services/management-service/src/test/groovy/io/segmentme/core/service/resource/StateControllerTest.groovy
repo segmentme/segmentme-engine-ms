@@ -1,7 +1,5 @@
 package io.segmentme.core.service.resource
 
-import ContextSchemaSecurityService
-import SecurityService
 import com.fasterxml.jackson.databind.JsonNode
 import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.analysis.dto.segment.SegmentShortInfo
@@ -15,6 +13,8 @@ import io.segmentme.management.domain.user.User
 import io.segmentme.management.service.service.segment.SegmentManager
 import io.segmentme.management.service.service.state.StateManager
 import io.segmentme.management.service.service.user.UserService
+import io.segmentme.security.ContextSchemaSecurityService
+import io.segmentme.security.IntegrationPointKeySecurityService
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -48,7 +48,7 @@ class StateControllerTest extends BaseControllerTest {
     protected SegmentRepository segmentRepository
 
     @SpringBean
-    private SecurityService securityService = Mock(SecurityService.class)
+    private IntegrationPointKeySecurityService securityService = Mock(IntegrationPointKeySecurityService.class)
 
     @Autowired
     protected UserService userService
@@ -59,7 +59,7 @@ class StateControllerTest extends BaseControllerTest {
     protected ContextSchemaSecurityService contextSchemaSecurityService = Mock(ContextSchemaSecurityService.class)
 
     def setup(){
-        securityService.isValidIntegrationPointKey(_, _) >> true
+        securityService.isManaged(_, _) >> true
         contextSchemaSecurityService.isManagedSchema(_) >> true
         user = new User().setExternalId(randomUUID().toString()).setId(randomUUID().toString())
         userService.create(user)

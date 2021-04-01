@@ -1,22 +1,28 @@
-package io.segmentme.management.service.repository
+package io.segmentme.core.service.repository
 
-import io.segmentme.core.domain.user.User
+import io.segmentme.core.SpringCoreDataApplication
+import io.segmentme.core.service.helper.UserHelper
+import io.segmentme.management.domain.user.User
+import io.segmentme.management.service.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.ComponentScan
 import spock.lang.Specification
 
-import static io.segmentme.core.db.helper.UserHelper.createUser
 
-@SpringBootTest
+@ComponentScan("io.segmentme")
+@SpringBootTest(classes = SpringCoreDataApplication.class)
 class UserRepositoryTest extends Specification {
 
+    @Autowired
+    private UserHelper userHelper;
 
     @Autowired
     private UserRepository repository
 
     def 'save user '() {
         given:
-        User user = createUser()
+        User user = userHelper.createUser()
         when:
         def save = repository.save(user)
         then:
@@ -27,7 +33,7 @@ class UserRepositoryTest extends Specification {
 
     def 'find user by email'() {
         given:
-        User user = createUser()
+        User user = userHelper.createUser()
         when:
         def save = repository.save(user)
         then:

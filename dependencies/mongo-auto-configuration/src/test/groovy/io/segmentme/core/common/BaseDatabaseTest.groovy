@@ -1,4 +1,4 @@
-package io.segmentme.core.db.common
+package io.segmentme.core.common
 
 
 //import de.flapdoodle.embed.mongo.MongodExecutable

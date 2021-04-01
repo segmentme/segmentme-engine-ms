@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
-@SpringBootApplication(scanBasePackages = {"io.segmentme.core","io.segmentme"})
+@SpringBootApplication(scanBasePackages = {"io.segmentme"})
 public class AnalysisApiApplication {
 
     public static void main(String[] args) {

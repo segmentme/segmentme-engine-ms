@@ -3,7 +3,7 @@ package io.segmentme.helpers.context.processor
 import io.segmentme.core.domain.context.ContextSchema
 import io.segmentme.core.domain.context.SchemaNode
 import io.segmentme.core.domain.workpsace.Workspace
-import io.segmentme.helpers.context.processor.helper.ResourceHolder
+import io.segmentme.helpers.context.processor.helper.ContextProcessorResourceHolder
 import spock.lang.Specification
 
 import java.time.*
@@ -14,7 +14,7 @@ import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DA
 
 class ContextValuesExtractorService extends Specification {
 
-    static ResourceHolder resourceHolder = new ResourceHolder();
+    static ContextProcessorResourceHolder resourceHolder = new ContextProcessorResourceHolder();
 
     static schema = null
 

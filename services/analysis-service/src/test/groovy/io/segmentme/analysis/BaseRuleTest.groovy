@@ -3,7 +3,7 @@ package io.segmentme.analysis
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.segmentme.analysis.dto.SegmentAnalysisResult
-import io.segmentme.analysis.helper.ResourceHolder
+import io.segmentme.analysis.helper.AnalysisResourceHolder
 import io.segmentme.analysis.service.segment.AnalysisService
 import io.segmentme.core.domain.segment.Segment
 import io.segmentme.core.domain.workpsace.Workspace
@@ -23,7 +23,7 @@ abstract class BaseRuleTest extends BaseTestWithContext {
     protected Resource schema
 
     @Autowired
-    protected ResourceHolder resourceHolder
+    protected AnalysisResourceHolder resourceHolder
 
     @Autowired
     protected AnalysisService analysisService

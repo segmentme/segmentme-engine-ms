@@ -1,8 +1,9 @@
-package io.segmentme.management.service.service.statistic
+package io.segmentme.measurement
 
 
 import io.segmentme.analysis.domain.statistic.StatisticLog
-import io.segmentme.core.db.repository.StatisticRepository
+import io.segmentme.measurement.repository.StatisticRepository
+import io.segmentme.measurement.service.StatisticService
 import org.apache.commons.lang3.RandomUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,7 +14,6 @@ import java.time.temporal.ChronoUnit
 
 @SpringBootTest
 class StatisticServiceTest extends Specification {
-
 
     @Autowired
     private StatisticRepository repository
@@ -52,15 +52,15 @@ class StatisticServiceTest extends Specification {
         }
         repository.saveAll(datesToSave)
         for (int i = 0; i < 200; i++) {
-            datesToSave[i].setCreatedDate(Instant.now().minus(i,ChronoUnit.DAYS))
-            datesToSave[i+1].setCreatedDate(Instant.now().minus(i,ChronoUnit.HOURS))
+            datesToSave[i].setCreatedDate(Instant.now().minus(i, ChronoUnit.DAYS))
+            datesToSave[i + 1].setCreatedDate(Instant.now().minus(i, ChronoUnit.HOURS))
 
         }
         when:
         repository.saveAll(datesToSave)
         then:
         def found = statisticService.getAnalysisCount(workspaceId, 1);
-       !found.isEmpty()
+        !found.isEmpty()
     }
 
 

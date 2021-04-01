@@ -1,7 +1,8 @@
-package io.segmentme.management.service.service.statistic
+package io.segmentme.measurement
 
 import io.segmentme.analysis.domain.statistic.AnalyzedData
-import io.segmentme.core.db.repository.AnalyzedDataRepository
+import io.segmentme.measurement.repository.AnalyzedDataRepository
+import io.segmentme.measurement.service.AnalyzedDataService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
@@ -25,10 +26,10 @@ class AnalyzedDataServiceTest extends Specification {
         analyzedDataRepository.save(new AnalyzedData().setIntegrationPointKey("ip1").setClientId("c2").setAnalyzedSegments(["2", "6", "7"]));
 
         when:
-        def found = analyzedDataService.findLatestClientsAnalyzedData("ip1","2",["c1","c2"])
+        def found = analyzedDataService.findLatestClientsAnalyzedData("ip1", "2", ["c1", "c2"])
 
         then:
-        found.size()==2
+        found.size() == 2
     }
 
 
