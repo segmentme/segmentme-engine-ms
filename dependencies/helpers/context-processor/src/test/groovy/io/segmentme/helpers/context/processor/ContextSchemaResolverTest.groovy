@@ -1,16 +1,17 @@
 package io.segmentme.helpers.context.processor
 
 import io.segmentme.core.domain.workpsace.Workspace
-import io.segmentme.helpers.context.processor.helper.ResourceHolder
+import io.segmentme.helpers.context.processor.helper.ContextProcessorResourceHolder
 import io.segmentme.models.shared.analysis.SchemaNodeType
 import spock.lang.Specification
 
+import static io.segmentme.models.shared.analysis.InlineType.of
 import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
 
 class ContextSchemaResolverTest extends Specification {
 
 
-    static ResourceHolder resourceHolder = new ResourceHolder();
+    static ContextProcessorResourceHolder resourceHolder = new ContextProcessorResourceHolder();
     public static final ContextSchemaResolver resolver = new ContextSchemaResolver()
 
 

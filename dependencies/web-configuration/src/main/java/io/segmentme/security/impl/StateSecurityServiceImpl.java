@@ -8,8 +8,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
-@Service
 @RequiredArgsConstructor
+@Service(value = "stateSecurityService")
 public class StateSecurityServiceImpl implements StateSecurityService {
     @Qualifier("access-control-service")
     private final WebClient accessControlClient;

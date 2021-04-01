@@ -4,6 +4,7 @@ import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.core.service.configuration.test.ResourceHolder
 import io.segmentme.helpers.context.processor.ContextSchemaResolver
 import io.segmentme.management.service.context.ContextSchemaValidationServiceImpl
+import io.segmentme.models.shared.exception.SeverityLevel
 import spock.lang.Specification
 
 import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
@@ -32,7 +33,7 @@ class ContextSchemaValidationServiceImplTest extends Specification {
         "root4" | NODE_SUBTYPE_NOT_DEFINED                            || ERRORS_SEVERITY.get(code)
         "root5" | NODE_NAME_NOT_DEFINED                               || ERRORS_SEVERITY.get(code)
         "root6" | NODE_SUBTYPE_SHOULD_NOT_BE_DEFINED                  || ERRORS_SEVERITY.get(code)
-        "root7" | "UNKNOWN"                                           || MID
+        "root7" | "UNKNOWN"                                           || SeverityLevel.MID
     }
 
     def "Test valid json should not contains issues"() {
@@ -53,7 +54,7 @@ class ContextSchemaValidationServiceImplTest extends Specification {
         when:
         def validationResult = validationService.validate(schema);
         then:
-        !validationResult.findAll { it -> it.severity == CRITICAL }
+        !validationResult.findAll { it -> it.severity == SeverityLevel.CRITICAL }
                 .findAll { it -> it.code == NODE_SUBTYPE_NOT_DEFINED }.isEmpty()
     }
 }

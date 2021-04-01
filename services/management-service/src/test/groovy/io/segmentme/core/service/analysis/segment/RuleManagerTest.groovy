@@ -6,6 +6,7 @@ import io.segmentme.analysis.dto.conditions.SingleConditionDto
 import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.management.service.service.segment.SegmentManager
+import io.segmentme.models.shared.analysis.ConditionType
 import org.springframework.beans.factory.annotation.Autowired
 
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition
@@ -36,6 +37,6 @@ class RuleManagerTest extends BaseTestWithContext {
         def condition = source.conditions[0]
         where:
         values                                                                                       | _
-        ['matchResult': true, 'conditions': List.of(fillCondition(new SingleConditionDto(), 1, LT))] | _
+        ['matchResult': true, 'conditions': List.of(fillCondition(new SingleConditionDto(), 1, ConditionType.LT))] | _
     }
 }

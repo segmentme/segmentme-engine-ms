@@ -8,6 +8,8 @@ dependencies {
 
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	testCompile 'org.springframework.boot:spring-boot-starter-web'
+
+	testCompile project(':dependencies:models:entities:core-domain').sourceSets.test.output
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {

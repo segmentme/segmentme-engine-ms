@@ -19,7 +19,7 @@ public class StateController {
     private final StateManager stateManager;
 
     @PostMapping
-    @PreAuthorize("@securityService.isValidIntegrationPointKey(#state.integrationPointKey, #currentUser.id)")
+    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.id, #state.integrationPointKey)")
     public StateDto create(@AuthenticationPrincipal AuthUser currentUser,
                            @Valid @RequestBody StateDto state) {
         state.setId(null);

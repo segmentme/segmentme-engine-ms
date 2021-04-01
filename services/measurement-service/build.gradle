@@ -1,10 +1,10 @@
 dependencies {
-    compile project(':dependencies:redis-auto-configuration')
     compile project(':dependencies:models:entities:analysis-domain')
     compile project(':dependencies:models:dto:analysis-dto')
     compile project(':dependencies:helpers:core-dao')
     compile project(':dependencies:web-configuration')
     testCompile project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
+    testCompile project(path: ':dependencies:web-configuration', configuration: 'tests')
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {

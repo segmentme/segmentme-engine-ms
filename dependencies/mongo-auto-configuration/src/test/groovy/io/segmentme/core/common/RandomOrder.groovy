@@ -1,4 +1,4 @@
-package io.segmentme.core.db.common
+package io.segmentme.core.common
 
 import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension
 import org.spockframework.runtime.model.SpecInfo

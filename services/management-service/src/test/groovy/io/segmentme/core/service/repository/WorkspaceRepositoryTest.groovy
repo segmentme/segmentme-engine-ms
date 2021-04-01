@@ -1,15 +1,14 @@
-package io.segmentme.management.service.repository
+package io.segmentme.core.service.repository
 
-import io.segmentme.core.db.helper.UserHelper
-import io.segmentme.core.db.helper.WorkspaceHelper
+import io.segmentme.core.service.common.BaseTestWithContext
+import io.segmentme.core.service.helper.UserHelper
+import io.segmentme.core.service.helper.WorkspaceHelper
+import io.segmentme.helpers.dao.repository.WorkspaceRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import spock.lang.Specification
 
-import static io.segmentme.core.db.helper.UserProfileHelper.createProfile
+import static io.segmentme.core.service.helper.UserProfileHelper.createProfile
 
-@SpringBootTest
-class WorkspaceRepositoryTest extends Specification {
+class WorkspaceRepositoryTest extends BaseTestWithContext {
 
     @Autowired
     private WorkspaceHelper workspaceHelper;
@@ -31,8 +30,8 @@ class WorkspaceRepositoryTest extends Specification {
         def save = repository.save(workspace)
 
         then:
-        def found = repository.findById(save.getId())
-        found.get() == save
+        def found = repository.findById(save.getId()).get()
+        found.id == save.id
     }
 
 
@@ -41,8 +40,8 @@ class WorkspaceRepositoryTest extends Specification {
         def workspaceToFind = workspaceHelper.createAndSaveWorkspace()
         workspaceHelper.createAndSaveWorkspace()
         then:
-        def found = repository.findByIntegrationPointsKey(workspaceToFind.integrationPoints[0].key)
-        found.get() == workspaceToFind
+        def found = repository.findByIntegrationPointsKey(workspaceToFind.integrationPoints[0].key).get()
+        found.id == workspaceToFind.id
     }
 
 }

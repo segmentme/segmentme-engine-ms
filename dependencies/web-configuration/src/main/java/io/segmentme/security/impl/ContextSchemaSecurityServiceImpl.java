@@ -8,8 +8,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 
-@Service
 @RequiredArgsConstructor
+@Service(value = "contextSchemaSecurityService")
 public class ContextSchemaSecurityServiceImpl implements ContextSchemaSecurityService {
     @Qualifier("access-control-service")
     private final WebClient accessControlClient;

@@ -3,16 +3,12 @@ package io.segmentme.analysis.redis;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.output.StatusOutput;
-import io.lettuce.core.protocol.CommandArgs;
-import io.lettuce.core.protocol.CommandKeyword;
-import io.lettuce.core.protocol.CommandType;
+import io.lettuce.core.protocol.*;
 import io.segmentme.redis.config.RedisConfig;
 import io.segmentme.redis.config.RedisStreamProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -24,6 +20,7 @@ import org.springframework.data.redis.stream.StreamReceiver;
 import java.net.UnknownHostException;
 
 @Slf4j
+@Profile("!test")
 @Configuration
 @RequiredArgsConstructor
 public class AnalysisRedisConfig {

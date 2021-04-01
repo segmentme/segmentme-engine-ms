@@ -1,6 +1,5 @@
 package io.segmentme.core.service.resource
 
-import ContextSchemaSecurityService
 import com.fasterxml.jackson.databind.JsonNode
 import io.segmentme.analysis.dto.conditions.ArrayConditionDto
 import io.segmentme.analysis.dto.segment.SegmentDto
@@ -12,7 +11,6 @@ import io.segmentme.helpers.context.processor.ContextValueHolder
 import io.segmentme.helpers.context.processor.ContextValuesExtractorImpl
 import io.segmentme.helpers.dao.repository.SegmentRepository
 import io.segmentme.management.service.service.segment.SegmentManager
-import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
@@ -21,6 +19,7 @@ import org.springframework.http.MediaType
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition
 import static io.segmentme.core.service.helper.RuleHelper.fillRule
 import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
+import static io.segmentme.models.shared.analysis.ConditionType.IN
 import static java.util.UUID.randomUUID
 import static org.hamcrest.Matchers.hasSize
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -49,13 +48,6 @@ class SegmentControllerTest extends BaseControllerTest {
     protected ResourceHolder resourceHolder
 
     private ContextValueHolder context
-
-    @SpringBean
-    protected ContextSchemaSecurityService contextSchemaSecurityService = Mock(ContextSchemaSecurityService.class)
-
-    def setup(){
-        contextSchemaSecurityService.isManagedSchema(_ as String) >> true
-    }
 
     def cleanup() {
         analysisRuleRepository.deleteAll()

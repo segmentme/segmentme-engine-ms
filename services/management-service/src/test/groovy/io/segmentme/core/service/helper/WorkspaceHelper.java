@@ -1,9 +1,9 @@
-package io.segmentme.core.db.helper;
+package io.segmentme.core.service.helper;
 
-import io.segmentme.core.domain.workpsace.IntegrationPoint;
 import io.segmentme.core.domain.workpsace.Workspace;
 import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
-import io.segmentme.core.service.repository.WorkspaceRepository;
+import io.segmentme.helpers.dao.repository.WorkspaceRepository;
+import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 

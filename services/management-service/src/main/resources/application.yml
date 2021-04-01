@@ -1,9 +1,9 @@
 logging:
-    level:
-        root: INFO
+  level:
+    root: INFO
 auth0:
-    audience: https://segmentme.us.auth0.com/api/v2/
-    managementApi: https://segmentme.us.auth0.com/api/v2/
+  audience: https://segmentme.us.auth0.com/api/v2/
+  managementApi: https://segmentme.us.auth0.com/api/v2/
 spring:
     data:
         mongodb:
@@ -24,23 +24,23 @@ spring:
                 jwt:
                     issuer-uri: https://segmentme.us.auth0.com/
 segmentme:
-    application:
-        web-client:
-            configuration:
-                access-control-service:
-                    connection:
-                        connectTimeOut: 20000  #milisecond
-                        readTimeOut: 10000  #milisecond
-                        writeTimeOut: 10000 #milisecond
-                    host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
-        redis:
-            host: ${REDIS_HOST:localhost}
-            port: ${REDIS_PORT:6379}
-            connectionTimeout: ${REDIS_CONNECTION_TIMEOUT:25}
-            readTimeOut: ${REDIS_READ_TIMEOUT:15}
-            stream:
-                eventKey: analysis-request-event
-                groupName: analysis-request-event-group
-                streamPollTimeout: 1000 #milliseconds
+  application:
+    web-client:
+      configuration:
+        access-control-service:
+          connection:
+            connectTimeOut: 20000  #milisecond
+            readTimeOut: 10000  #milisecond
+            writeTimeOut: 10000 #milisecond
+          host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      connectionTimeout: ${REDIS_CONNECTION_TIMEOUT:25}
+      readTimeOut: ${REDIS_READ_TIMEOUT:15}
+      stream:
+        eventKey: analysis-request-event
+        groupName: analysis-request-event-group
+        streamPollTimeout: 1000 #milliseconds
 server:
-    port: 8084
+  port: 8084

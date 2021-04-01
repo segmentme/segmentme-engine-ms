@@ -1,6 +1,7 @@
 package io.segmentme.analysis
 
-import io.segmentme.management.service.converter.SegmentConverter
+import io.segmentme.analysis.service.converter.SegmentConverter
+import io.segmentme.analysis.service.segment.worm.StatisticWorm
 
 
 class SegmentTest extends BaseRuleTest {
@@ -17,7 +18,7 @@ class SegmentTest extends BaseRuleTest {
         given:
         def segmentDto = SegmentConverter.of(getSegmentsByName(name))
         and:
-        def result = analysisService.analyze(context, Arrays.asList(SegmentConverter.of(segmentDto, null, null)), new StatisticWorm())
+        def result = super.analysisService.analyze(context, Arrays.asList(SegmentConverter.of(segmentDto, null, null)), new StatisticWorm())
         expect:
         def singleResult = resultValue(name, result)
         singleResult.value == isMatch
@@ -37,21 +38,5 @@ class SegmentTest extends BaseRuleTest {
         "NOT_FIRST_POSTAL_CODE_CONTAINS_ANY" | false
         "SECOND_PHONE_CONTAINS_ONLY"         | true
         "SECOND_PHONE_CONTAINS_ONLY_SEGMENT" | false
-    }
-
-
-    def "debug segment #name - should be #isMatch"() {
-        given:
-        def segmentDto = SegmentConverter.of(getSegmentsByName(name))
-        and:
-        def result = analysisService.debug(context, SegmentConverter.of(segmentDto, null, null))
-        expect:
-        result.debugState != null
-        result.debugState.size() == 3
-        def error = result.debugState.values().stream().filter(it -> it.getErrorMessage() != null).findFirst().get();
-        error.criteria == "user.date"
-        where:
-        name                                 | isMatch
-        "SECOND_PHONE_CONTAINS_ONLY_SEGMENT" | true
     }
 }

@@ -18,3 +18,17 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.4.2'
 
 }
+
+task jarTests(type: Jar, dependsOn: testClasses) {
+    archiveClassifier = 'tests'
+    from sourceSets.test.output
+}
+configurations {
+    tests {
+        extendsFrom testRuntime
+    }
+}
+
+artifacts {
+    tests jarTests
+}

@@ -10,8 +10,8 @@ spring:
       client:
         registration:
           auth0:
-              client-id: ${AUTH0_CLIENT_ID:FRFEhM5zwQCva2tSfBxDuM3og5TdjUpC}
-              client-secret: ${AUTH0_CLIENT_SECRET:Rsic0pW4Wr_q91Ppin-UNRuq5EdH5X7EmhA4ZUTcN-6MBu_Wy8Ce1J89WPCpkD_4}
+            client-id: ${AUTH0_CLIENT_ID:FRFEhM5zwQCva2tSfBxDuM3og5TdjUpC}
+            client-secret: ${AUTH0_CLIENT_SECRET:Rsic0pW4Wr_q91Ppin-UNRuq5EdH5X7EmhA4ZUTcN-6MBu_Wy8Ce1J89WPCpkD_4}
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: post
         provider:
@@ -25,17 +25,17 @@ segmentme:
     web-client:
       configuration:
         analysis-service-client:
-            connection:
-              connectTimeOut: 20000  #milisecond
-              readTimeOut:    10000  #milisecond
-              writeTimeOut:   10000 #milisecond
-            host: ${ANALYSIS_SERVICE_HOST:http://localhost:8082}
+          connection:
+            connectTimeOut: 20000  #milisecond
+            readTimeOut:    10000  #milisecond
+            writeTimeOut:   10000 #milisecond
+          host: ${ANALYSIS_SERVICE_HOST:http://localhost:8082}
         access-control-service:
-            connection:
-              connectTimeOut: 20000  #milisecond
-              readTimeOut:    10000  #milisecond
-              writeTimeOut:   10000 #milisecond
-            host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+          connection:
+            connectTimeOut: 20000  #milisecond
+            readTimeOut:    10000  #milisecond
+            writeTimeOut:   10000 #milisecond
+          host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
 
 server:
   port: 8081
