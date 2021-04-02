@@ -5,9 +5,11 @@ import io.segmentme.management.service.converter.SegmentShortInfoConverter;
 import io.segmentme.management.service.dto.SegmentExportRequest;
 import io.segmentme.management.service.dto.SegmentImportResult;
 import io.segmentme.management.service.service.segment.SegmentManager;
+import io.segmentme.web.configuration.AuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,14 +49,15 @@ public class SegmentController {
 
     @PutMapping("/{segmentId}")
     @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.externalId)")
-    public void activate( @PathVariable String segmentId, @RequestParam boolean isActive){
+    public void activate(@AuthenticationPrincipal AuthUser currentUser,
+                         @PathVariable String segmentId, @RequestParam boolean isActive){
         log.info("Request to set active {} for segment with id {}", isActive, segmentId);
         segmentManager.activate(segmentId, isActive);
     }
 
     @PostMapping
     @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.externalId, #integrationPointKeys)")
-    public List<?> findByIntegrationPointKeys(
+    public List<?> findByIntegrationPointKeys(@AuthenticationPrincipal AuthUser currentUser,
                                               @RequestParam(required = false, defaultValue = "false") boolean shortForm,
                                               @RequestBody @Valid @NotEmpty List<String> integrationPointKeys) {
         log.info("Request to find rule for integrationPointKeys {}", integrationPointKeys);
@@ -64,7 +67,7 @@ public class SegmentController {
 
     @GetMapping("/{segmentId}")
     @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.externalId)")
-    public SegmentDto findById(
+    public SegmentDto findById(@AuthenticationPrincipal AuthUser currentUser,
                                @PathVariable String segmentId) {
         log.info("Request to find segment with id {}", segmentId);
         return segmentManager.findById(segmentId);
@@ -72,7 +75,7 @@ public class SegmentController {
 
     @DeleteMapping("/{segmentId}")
     @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.externalId)")
-    public void delete( @PathVariable String segmentId) {
+    public void delete(@AuthenticationPrincipal AuthUser currentUser, @PathVariable String segmentId) {
         log.info("Request to delete segment with id {}", segmentId);
         segmentManager.delete(segmentId);
     }
