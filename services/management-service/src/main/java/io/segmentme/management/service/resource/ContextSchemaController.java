@@ -3,8 +3,10 @@ package io.segmentme.management.service.resource;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.segmentme.management.service.dto.context.*;
 import io.segmentme.management.service.facade.ContextSchemaFacade;
+import io.segmentme.web.configuration.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,7 +50,7 @@ public class ContextSchemaController {
 
     @PostMapping
     @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.externalId, #contextSchemaCreateRequest.integrationPointKey)")
-    public ContextSchemaBasicInfo create(@RequestParam String workspaceId, @RequestBody ContextSchemaCreateRequest contextSchemaCreateRequest) {
+    public ContextSchemaBasicInfo create(@AuthenticationPrincipal AuthUser currentUser, @RequestParam String workspaceId, @RequestBody ContextSchemaCreateRequest contextSchemaCreateRequest) {
         return contextSchemaFacade.create(contextSchemaCreateRequest);
     }
 
