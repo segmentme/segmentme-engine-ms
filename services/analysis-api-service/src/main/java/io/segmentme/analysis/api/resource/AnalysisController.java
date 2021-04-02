@@ -24,6 +24,7 @@ private final AnalysisService analysisService;
     public AnalysisResult analyze(@RequestParam String contextId,
                                @RequestParam String integrationPointKey,
                                @RequestBody @Valid DebugRequest request) {
+        request.setContextId(contextId).setIntegrationPointKey(integrationPointKey);
         return analysisService.debug(integrationPointKey, request);
     }
 
