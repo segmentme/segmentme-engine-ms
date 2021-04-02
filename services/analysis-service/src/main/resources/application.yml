@@ -33,6 +33,7 @@ segmentme:
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+          service-name: access-control-service
     analysis:
       pool:
         corePoolSize: ${ANALYSIS_CORE_POOL_SIZE:10}
@@ -56,3 +57,5 @@ segmentme:
         streamPollTimeout: 1000 #milliseconds
 server:
   port: 8082
+  servlet:
+    context-path: /analysis-service

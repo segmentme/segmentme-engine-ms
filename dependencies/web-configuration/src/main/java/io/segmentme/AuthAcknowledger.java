@@ -2,5 +2,5 @@ package io.segmentme;
 
 public interface AuthAcknowledger {
 
-    void acknowledgeUser(String id, String email, String fullName);
+    String acknowledgeUser(String id, String email, String fullName);
 }

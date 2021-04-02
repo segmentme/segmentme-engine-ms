@@ -14,6 +14,6 @@ public class IntegrationPointKeySecurityResource {
 
     @PostMapping("/has-access")
     public Boolean hasAccess(@RequestBody String[] integrationPointKeys) {
-        return securityService.isValidIntegrationPointKeys(integrationPointKeys, SecurityUtils.currentUserId());
+        return securityService.isValidIntegrationPointKeys(integrationPointKeys, SecurityUtils.currentExternalUserId());
     }
 }

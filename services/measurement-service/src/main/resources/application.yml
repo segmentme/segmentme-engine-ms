@@ -26,16 +26,17 @@ spring:
           issuer-uri: https://segmentme.us.auth0.com/
 
 segmentme:
-    application:
-        web-client:
-            configuration:
-                access-control-service:
-                    connection:
-                        connectTimeOut: 20000  #milisecond
-                        readTimeOut: 10000  #milisecond
-                        writeTimeOut: 10000 #milisecond
-                    host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+  application:
+    web-client:
+      configuration:
+        access-control-service:
+          connection:
+            connectTimeOut: 20000  #milisecond
+            readTimeOut: 10000  #milisecond
+            writeTimeOut: 10000 #milisecond
+          host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+          service-name: access-control-service
 server:
   port: 8083
-
-
+  servlet:
+    context-path: /measurement-service

@@ -24,8 +24,8 @@ public class SecurityService {
         return Arrays.stream(integrationPointKeys).allMatch(it -> isValidIntegrationPointKey(it, userId));
     }
 
-    public boolean isValidIntegrationPointKey(String integrationPointKey, String userId) {
-        String systemUserId = userService.findByExternalId(userId).map(DbObject::getId).orElse(null);
+    public boolean isValidIntegrationPointKey(String integrationPointKey, String externalId) {
+        String systemUserId = userService.findByExternalId(externalId).map(DbObject::getId).orElse(null);
         return workspaceService.findByIntegrationPointKey(integrationPointKey)
             .map(Workspace::getUserProfiles)
             .stream()

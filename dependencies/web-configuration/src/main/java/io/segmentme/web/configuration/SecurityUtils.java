@@ -15,6 +15,12 @@ public class SecurityUtils {
                 .orElseThrow(() -> new RuntimeException("Auth user id not found"));
     }
 
+    public String currentExternalUserId() {
+        return Optional.ofNullable(currentUser())
+                .map(AuthUser::getExternalId)
+                .orElseThrow(() -> new RuntimeException("Auth user id not found"));
+    }
+
     public String currentEmail() {
         return Optional.ofNullable(currentUser())
                 .map(AuthUser::getEmail)

@@ -33,6 +33,7 @@ segmentme:
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+          service-name: access-control-service
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
@@ -44,3 +45,5 @@ segmentme:
         streamPollTimeout: 1000 #milliseconds
 server:
   port: 8084
+  servlet:
+    context-path: /management-service

@@ -46,14 +46,14 @@ public class SegmentController {
     }
 
     @PutMapping("/{segmentId}")
-    @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.id)")
+    @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.externalId)")
     public void activate( @PathVariable String segmentId, @RequestParam boolean isActive){
         log.info("Request to set active {} for segment with id {}", isActive, segmentId);
         segmentManager.activate(segmentId, isActive);
     }
 
     @PostMapping
-    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.id, #integrationPointKeys)")
+    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.externalId, #integrationPointKeys)")
     public List<?> findByIntegrationPointKeys(
                                               @RequestParam(required = false, defaultValue = "false") boolean shortForm,
                                               @RequestBody @Valid @NotEmpty List<String> integrationPointKeys) {
@@ -63,7 +63,7 @@ public class SegmentController {
     }
 
     @GetMapping("/{segmentId}")
-    @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.id)")
+    @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.externalId)")
     public SegmentDto findById(
                                @PathVariable String segmentId) {
         log.info("Request to find segment with id {}", segmentId);
@@ -71,7 +71,7 @@ public class SegmentController {
     }
 
     @DeleteMapping("/{segmentId}")
-    @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.id)")
+    @PreAuthorize("@segmentSecurityService.isManaged(#segmentId, #currentUser.externalId)")
     public void delete( @PathVariable String segmentId) {
         log.info("Request to delete segment with id {}", segmentId);
         segmentManager.delete(segmentId);

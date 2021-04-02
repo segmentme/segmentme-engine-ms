@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping
     public UserDetails getCurrentUserDetails(@AuthenticationPrincipal AuthUser authUser) {
-        return userFacade.getUserDetails(authUser.getId());
+        return userFacade.getUserDetails(authUser.getExternalId());
     }
 
     @PutMapping

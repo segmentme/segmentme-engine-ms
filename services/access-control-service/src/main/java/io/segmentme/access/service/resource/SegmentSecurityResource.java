@@ -17,7 +17,7 @@ public class SegmentSecurityResource {
 
     @GetMapping("/has-access")
     public Boolean hasAccess(@RequestParam String segmentId) {
-        return contextSchemaSecurityService.isManaged(segmentId, SecurityUtils.currentUserId());
+        return contextSchemaSecurityService.isManaged(segmentId, SecurityUtils.currentExternalUserId());
     }
 
 }

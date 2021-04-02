@@ -18,3 +18,5 @@ segmentme:
       url: ${ANALYSIS_SERVICE_URL:http://localhost:8080}
 server:
   port: 9090
+  servlet:
+    context-path: /channel-service

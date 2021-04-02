@@ -19,7 +19,7 @@ public class StateController {
     private final StateManager stateManager;
 
     @PostMapping
-    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.id, #state.integrationPointKey)")
+    @PreAuthorize("@integrationPointKeySecurityService.isManaged(#currentUser.externalId, #state.integrationPointKey)")
     public StateDto create(@AuthenticationPrincipal AuthUser currentUser,
                            @Valid @RequestBody StateDto state) {
         state.setId(null);
@@ -33,14 +33,14 @@ public class StateController {
     }
 
     @GetMapping("/{stateId}")
-    @PreAuthorize("@stateSecurityService.isManagedState(#stateId, #currentUser.id)")
+    @PreAuthorize("@stateSecurityService.isManagedState(#stateId, #currentUser.externalId)")
     public StateDto getById(@AuthenticationPrincipal AuthUser currentUser,
                             @PathVariable String stateId) {
         return stateManager.getById(stateId);
     }
 
     @PutMapping("/{stateId}")
-    @PreAuthorize("@stateSecurityService.isManagedState(#stateId, #currentUser.id)")
+    @PreAuthorize("@stateSecurityService.isManagedState(#stateId, #currentUser.externalId)")
     public StateDto update(@AuthenticationPrincipal AuthUser currentUser,
                            @PathVariable String stateId,
                            @Valid @RequestBody StateDto state) {
@@ -48,7 +48,7 @@ public class StateController {
     }
 
     @DeleteMapping("/{stateId}")
-    @PreAuthorize("@stateSecurityService.isManagedState(#stateId, #currentUser.id)")
+    @PreAuthorize("@stateSecurityService.isManagedState(#stateId, #currentUser.externalId)")
     public void delete(@AuthenticationPrincipal AuthUser currentUser,
                        @PathVariable String stateId) {
         stateManager.delete(stateId);

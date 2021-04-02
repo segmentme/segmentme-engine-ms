@@ -59,11 +59,11 @@ public class UserManager {
     }
 
 
-    public void acknowledgeUser(UserHolder holder) {
+    public String acknowledgeUser(UserHolder holder) {
         if (userService.findByExternalId(holder.getId()).isPresent() || userService.findByEmail(holder.getEmail()).isPresent()) {
-            return;
+            return userService.findByExternalId(holder.getExternalId()).map(it -> it.getId()).orElse(null);
         }
-        createUser(holder);
+        return createUser(holder).getId();
     }
 
     public List<User> getByIds(List<String> userIds) {

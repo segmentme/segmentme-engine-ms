@@ -18,7 +18,7 @@ public class StateSecurityResource {
 
     @GetMapping("/has-access")
     public Boolean hasAccess(@RequestParam String stateId) {
-        return stateSecurityService.isManagedState(stateId, SecurityUtils.currentUserId());
+        return stateSecurityService.isManagedState(stateId, SecurityUtils.currentExternalUserId());
     }
 
 }

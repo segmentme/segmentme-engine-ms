@@ -25,6 +25,6 @@ public class JwtToken extends AbstractOAuth2TokenAuthenticationToken<Jwt> {
 
     @Override
     public String getName() {
-        return ((AuthUser) this.getPrincipal()).getId();
+        return ((AuthUser) this.getPrincipal()).getExternalId();
     }
 }

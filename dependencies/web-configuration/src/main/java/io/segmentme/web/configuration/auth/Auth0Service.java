@@ -25,12 +25,12 @@ public class Auth0Service {
     @Qualifier("auth0-client")
     private final WebClient auth0WebClient;
 
-    public void acknowledge(String userId) {
+    public void acknowledge(String externalUserId, String userId) {
         log.info("Acknowledge request");
 
         auth0WebClient.patch()
-            .uri(USER_URL + userId)
-            .bodyValue(AppMetadata.of(Map.of("acknowledged", true)))
+            .uri(USER_URL + externalUserId)
+            .bodyValue(AppMetadata.of(Map.of("acknowledged", true, "userId", userId)))
             .retrieve().toEntity(String.class)
             .doOnSuccess(response -> log.info("Acknowledge response status {}", response.getStatusCode()))
             .subscribe();

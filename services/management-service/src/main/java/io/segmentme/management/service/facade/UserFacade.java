@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +59,7 @@ public class UserFacade implements AuthAcknowledger {
         userManager.switchWorkspace(userId, workspaceId);
     }
 
-    public void acknowledgeUser(String id, String email, String fullName) {
-        userManager.acknowledgeUser(new UserHolder().setName(fullName).setEmail(email).setExternalId(id));
+    public String acknowledgeUser(String id, String email, String fullName) {
+        return userManager.acknowledgeUser(new UserHolder().setName(fullName).setEmail(email).setExternalId(id));
     }
 }

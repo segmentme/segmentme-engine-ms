@@ -21,7 +21,7 @@ public class ContextSchemaSecurityServiceImpl implements ContextSchemaSecuritySe
     public boolean isManagedSchema(String contextSchemaId) {
         return contextSchemaService.findById(contextSchemaId)
             .map(ContextSchema::getIntegrationPointKey)
-            .map(it -> securityService.isValidIntegrationPointKey(it, SecurityUtils.currentUserId()))
+            .map(it -> securityService.isValidIntegrationPointKey(it, SecurityUtils.currentExternalUserId()))
             .orElse(false);
     }
 }

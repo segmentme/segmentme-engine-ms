@@ -1,6 +1,7 @@
 package io.segmentme.helpers.dao.service;
 
 import io.segmentme.core.db.service.AbstractDatabaseService;
+import io.segmentme.core.domain.condition.AbstractCondition;
 import io.segmentme.core.domain.segment.Segment;
 import io.segmentme.helpers.dao.repository.SegmentRepository;
 import lombok.RequiredArgsConstructor;

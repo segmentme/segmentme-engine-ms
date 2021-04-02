@@ -8,7 +8,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthUser {
 
-    @JsonAlias("sub")
+    @JsonAlias("https://segmentme.io:userId")
     private String id;
 
     @JsonAlias("https://segmentme.io:fullName")
@@ -19,4 +19,8 @@ public class AuthUser {
 
     @JsonAlias("https://segmentme.io:acknowledged")
     private boolean acknowledged;
+
+    @JsonAlias("sub")
+    private String externalId;
+
 }

@@ -32,11 +32,13 @@ class WebClientBeanFactory {
     WebClient buildWebClientBean(String beanId, WebClientConfigurationProperties configuration) {
         log.info("WebClient {} initialization", beanId);
 
+        final String basePath = String.format("%s%s", configuration.getHost(), configuration.getServiceName());
+
         var clientHttpConnector = buildConnector(configuration.getConnection())
                 .orElseThrow(() -> new UnsatisfiedDependencyException("", beanId, "", "Can't find config for webClient " + beanId));
 
         return WebClient.builder()
-                .baseUrl(configuration.getHost())
+                .baseUrl(basePath)
                 .filter(webClientFilter())
                 .clientConnector(clientHttpConnector)
                 .build();
