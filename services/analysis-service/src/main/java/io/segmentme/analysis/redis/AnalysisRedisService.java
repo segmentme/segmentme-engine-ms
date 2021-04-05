@@ -2,7 +2,7 @@ package io.segmentme.analysis.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.segmentme.analysis.service.segment.AnalysisService;
-import io.segmentme.redis.dto.AnalysisRequest;
+import io.segmentme.redis.dto.in.AnalysisMessageIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.Record;
@@ -33,15 +33,15 @@ public class AnalysisRedisService {
 
     private void handleRedisMessage() {
         redisStreamBuilder.buildAnalysisStream()
-            .doOnNext(message -> log.info("Received message from redis {} ", message))
-            .doOnError(err -> log.error("Redis stream error", err))
-            .onErrorResume(t -> Flux.empty())
-            .doOnCancel(() -> log.info("Redis stream was cancelled"))
-            .doOnTerminate(() -> log.info("Redis stream terminated"))
-            .parallel(10)
-            .runOn(Schedulers.fromExecutor(analysisThreadPool))
-            .map(Record::getValue)
-            .map(it -> objectMapper.convertValue(it, AnalysisRequest.class))
-            .subscribe(analysisService::analyseRedisMessage, err -> log.error("Analysis error", err));
+                .doOnNext(message -> log.info("Received message from redis {} ", message))
+                .doOnError(err -> log.error("Redis stream error", err))
+                .onErrorResume(t -> Flux.empty())
+                .doOnCancel(() -> log.info("Redis stream was cancelled"))
+                .doOnTerminate(() -> log.info("Redis stream terminated"))
+                .parallel(10)
+                .runOn(Schedulers.fromExecutor(analysisThreadPool))
+                .map(Record::getValue)
+                .map(it -> objectMapper.convertValue(it, AnalysisMessageIn.class))
+                .subscribe(it -> analysisService.analyseRedisMessage(it.getBody()), err -> log.error("Analysis error", err));
     }
 }
