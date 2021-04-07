@@ -7,7 +7,6 @@ import io.segmentme.analysis.dto.AnalysisData;
 import io.segmentme.analysis.dto.AnalysisResult;
 import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
 import io.segmentme.analysis.dto.SegmentAnalysisResult;
-import io.segmentme.analysis.redis.StatisticMessageOut;
 import io.segmentme.analysis.service.converter.RedisMessageOutConverter;
 import io.segmentme.analysis.service.converter.SegmentConverter;
 import io.segmentme.analysis.service.exception.AnalysisException;
@@ -101,7 +100,7 @@ public class AnalysisService {
     }
 
     private List<SegmentAnalysisResult> analyze(String contextId, String integrationPointKey, AnalysisData analysisData, List<Segment> segments) {
-        StatisticMessageOut statisticLogEntry = new StatisticMessageOut();
+        CollectedAnalysysStatisticDto statisticLogEntry = new CollectedAnalysysStatisticDto();
         statisticLogEntry.setRawPayload(analysisData.getPayload());
         statisticLogEntry.setClientId(analysisData.getClientId());
 
@@ -164,7 +163,7 @@ public class AnalysisService {
         messagePublisher.publish(RedisMessageOutConverter.of(response), analysisResultTopic.getTopic());
     }
 
-    private void publishStatisticMessageStream(StatisticMessageOut message) {
+    private void publishStatisticMessageStream(CollectedAnalysysStatisticDto message) {
         Map<Object, Object> request = objectMapper.convertValue(message, new TypeReference<>() {});
 
         var streamMessage = StreamRecords.newRecord()
