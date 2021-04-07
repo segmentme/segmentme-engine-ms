@@ -52,9 +52,11 @@ segmentme:
       connectionTimeout: ${REDIS_CONNECTION_TIMEOUT:25}
       readTimeOut: ${REDIS_READ_TIMEOUT:15}
       stream:
+        enabled: true
         eventKey: analysis-request-event
         groupName: analysis-request-event-group
         streamPollTimeout: 1000 #milliseconds
+        statisticStreamKey: statistic-event
 server:
   port: 8082
   servlet:

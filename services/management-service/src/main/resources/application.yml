@@ -39,10 +39,6 @@ segmentme:
       port: ${REDIS_PORT:6379}
       connectionTimeout: ${REDIS_CONNECTION_TIMEOUT:25}
       readTimeOut: ${REDIS_READ_TIMEOUT:15}
-      stream:
-        eventKey: analysis-request-event
-        groupName: analysis-request-event-group
-        streamPollTimeout: 1000 #milliseconds
 server:
   port: 8084
   servlet:

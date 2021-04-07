@@ -1,10 +1,13 @@
 package io.segmentme.analysis.service.segment;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.segmentme.analysis.dto.AnalysisData;
 import io.segmentme.analysis.dto.AnalysisResult;
 import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
 import io.segmentme.analysis.dto.SegmentAnalysisResult;
+import io.segmentme.analysis.redis.StatisticMessageOut;
 import io.segmentme.analysis.service.converter.RedisMessageOutConverter;
 import io.segmentme.analysis.service.converter.SegmentConverter;
 import io.segmentme.analysis.service.exception.AnalysisException;
@@ -25,14 +28,13 @@ import io.segmentme.redis.dto.AnalysisRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.connection.stream.StreamRecords;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.segmentme.analysis.service.exception.error.AnalysisErrors.INTEGRATION_POINT_NOT_FOUND;
@@ -56,8 +58,12 @@ public class AnalysisService {
 
     private final WorkspaceService workspaceService;
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ObjectMapper objectMapper;
 
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    @Value("${segmentme.application.redis.stream.statisticStreamKey}")
+    private final String statisticStreamKey;
 
     public AnalysisResult debug(ContextValueHolder context, String segmentId) {
         return debug(context, analysisRuleRepository.findById(segmentId).orElse(null));
@@ -73,10 +79,10 @@ public class AnalysisService {
 
     public AnalysisResult debug(String integrationPointKey, String contextId, JsonNode payload, Segment segment) {
         ContextSchema schema = contextSchemaService.findByIdAndIntegrationPointKey(contextId, integrationPointKey)
-            .orElseThrow(() -> new AnalysisException().setCode(INTEGRATION_POINT_NOT_FOUND));
+                .orElseThrow(() -> new AnalysisException().setCode(INTEGRATION_POINT_NOT_FOUND));
 
         Workspace workspace = workspaceService.findByIntegrationPointKey(integrationPointKey)
-            .orElseThrow(() -> new IllegalArgumentException("Workspace not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Workspace not found"));
 
         return debug(contextValuesExtractor.extractValues(payload, schema, workspace.getConfiguration()), segment);
     }
@@ -95,7 +101,7 @@ public class AnalysisService {
     }
 
     private List<SegmentAnalysisResult> analyze(String contextId, String integrationPointKey, AnalysisData analysisData, List<Segment> segments) {
-        CollectedAnalysysStatisticDto statisticLogEntry = new CollectedAnalysysStatisticDto();
+        StatisticMessageOut statisticLogEntry = new StatisticMessageOut();
         statisticLogEntry.setRawPayload(analysisData.getPayload());
         statisticLogEntry.setClientId(analysisData.getClientId());
 
@@ -118,25 +124,25 @@ public class AnalysisService {
         List<Segment> finalSegments = segments;
         try {
             List<SegmentAnalysisResult> segmentAnalysisResults = schemas.stream()
-                .map(it -> contextValuesExtractor.extractValues(analysisData.getPayload(), it, workspace.getConfiguration()))
-                .peek(contextValueHolder -> statisticLogEntry.setContextDataHolder(convertToStatisticContextData(contextValueHolder)))
-                .map(it -> this.analyze(it, finalSegments, worm))
-                .flatMap(List::stream).collect(Collectors.toList());
+                    .map(it -> contextValuesExtractor.extractValues(analysisData.getPayload(), it, workspace.getConfiguration()))
+                    .peek(contextValueHolder -> statisticLogEntry.setContextDataHolder(convertToStatisticContextData(contextValueHolder)))
+                    .map(it -> this.analyze(it, finalSegments, worm))
+                    .flatMap(List::stream).collect(Collectors.toList());
             statisticLogEntry.setSegmentAnalysisResults(segmentAnalysisResults);
             return segmentAnalysisResults;
         } finally {
             statisticLogEntry.setAnalyzedSegments(segments.stream().map(SegmentConverter::of).collect(Collectors.toList()));
             statisticLogEntry.setConditionResults(worm.getStatisticMap());
             statisticLogEntry.setAnalysisTime(System.currentTimeMillis() - analyzeStartTime);
-            applicationEventPublisher.publishEvent(statisticLogEntry);
+            publishStatisticMessageStream(statisticLogEntry);
         }
     }
 
     private CollectedAnalysysStatisticDto.ContextDataHolder convertToStatisticContextData(ContextValueHolder contextValueHolder) {
         return new CollectedAnalysysStatisticDto.ContextDataHolder()
-            .setValues(contextValueHolder.getValues())
-            .setKnownTypes(Optional.ofNullable(contextValueHolder.getSchema()).map(ContextSchema::getInlinePath).orElse(null))
-            .setExtractedValues(contextValueHolder.getExtractedValues());
+                .setValues(contextValueHolder.getValues())
+                .setKnownTypes(Optional.ofNullable(contextValueHolder.getSchema()).map(ContextSchema::getInlinePath).orElse(null))
+                .setExtractedValues(contextValueHolder.getExtractedValues());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -156,5 +162,15 @@ public class AnalysisService {
         AnalysisResult response = AnalysisResult.of(this.analyze(request.getIntegrationPointKey(), request.getContextId(), new AnalysisData().setClientId(analysisData.getClientId()).setPayload(analysisData.getPayload())), null);
 
         messagePublisher.publish(RedisMessageOutConverter.of(response), analysisResultTopic.getTopic());
+    }
+
+    private void publishStatisticMessageStream(StatisticMessageOut message) {
+        Map<Object, Object> request = objectMapper.convertValue(message, new TypeReference<>() {});
+
+        var streamMessage = StreamRecords.newRecord()
+                .ofMap(request)
+                .withStreamKey(statisticStreamKey);
+
+        redisTemplate.opsForStream().add(streamMessage);
     }
 }

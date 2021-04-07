@@ -36,6 +36,22 @@ segmentme:
             writeTimeOut: 10000 #milisecond
           host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
           service-name: access-control-service
+    async:
+      pool:
+        corePoolSize: ${ASYNC_CORE_POOL_SIZE:10}
+        maxPoolSize: ${ASYNC_MAX_POOL_SIZE:10}
+        queueSize: ${ASYNC_QUEUE_POOL_SIZE:1000}
+        threadNamePrefix: ${ASYNC_THREAD_NAME_PREFIX:'async-executor-'}
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      connectionTimeout: ${REDIS_CONNECTION_TIMEOUT:25}
+      readTimeOut: ${REDIS_READ_TIMEOUT:15}
+      stream:
+        enabled: true
+        eventKey: statistic-event
+        groupName: statistic-group
+        streamPollTimeout: 1000 #milliseconds
 server:
   port: 8083
   servlet:

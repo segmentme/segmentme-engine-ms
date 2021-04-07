@@ -2,7 +2,7 @@ package io.segmentme.analysis
 
 import io.segmentme.analysis.helper.AnalysisResourceHolder
 import io.segmentme.analysis.redis.AnalysisRedisService
-import io.segmentme.analysis.redis.RedisStreamBuilder
+import io.segmentme.redis.config.RedisStreamBuilder
 import io.segmentme.core.SpringCoreDataApplication
 import io.segmentme.redis.config.MessagePublisher
 import lombok.extern.slf4j.Slf4j

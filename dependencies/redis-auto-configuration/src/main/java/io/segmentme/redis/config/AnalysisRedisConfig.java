@@ -1,14 +1,17 @@
-package io.segmentme.analysis.redis;
+package io.segmentme.redis.config;
 
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.output.StatusOutput;
-import io.lettuce.core.protocol.*;
-import io.segmentme.redis.config.RedisConfig;
-import io.segmentme.redis.config.RedisStreamProperties;
+import io.lettuce.core.protocol.CommandArgs;
+import io.lettuce.core.protocol.CommandKeyword;
+import io.lettuce.core.protocol.CommandType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -23,6 +26,7 @@ import java.net.UnknownHostException;
 @Profile("!test")
 @Configuration
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "segmentme.application.redis.stream.enabled", havingValue = "true")
 public class AnalysisRedisConfig {
 
     private final static String REDIS_STREAM_TYPE = "MKSTREAM";

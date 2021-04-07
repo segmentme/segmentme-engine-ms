@@ -31,9 +31,6 @@ public class StatisticManager {
 
     private final AnalyzedDataService analyzedDataService;
 
-    //todo [vk] : listen for redis
-    @Async(value = "asyncExecutor")
-    @EventListener
     public void saveStatistic(CollectedAnalysysStatisticDto collectedStatistic) {
         AnalyzedData analyzedData = aggregateAnalyzedData(collectedStatistic);
 

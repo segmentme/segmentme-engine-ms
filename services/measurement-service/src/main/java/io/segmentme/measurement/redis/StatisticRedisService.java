@@ -1,9 +1,9 @@
-package io.segmentme.analysis.redis;
+package io.segmentme.measurement.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.segmentme.analysis.service.segment.AnalysisService;
+import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
+import io.segmentme.measurement.service.StatisticManager;
 import io.segmentme.redis.config.RedisStreamBuilder;
-import io.segmentme.redis.dto.in.AnalysisMessageIn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.Record;
@@ -17,15 +17,15 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AnalysisRedisService {
+public class StatisticRedisService {
 
     private final ObjectMapper objectMapper;
-
-    private final AnalysisService analysisService;
 
     private final ThreadPoolTaskExecutor analysisThreadPool;
 
     private final RedisStreamBuilder redisStreamBuilder;
+
+    private final StatisticManager statisticManager;
 
     @PostConstruct
     private void init() {
@@ -42,7 +42,7 @@ public class AnalysisRedisService {
                 .parallel(10)
                 .runOn(Schedulers.fromExecutor(analysisThreadPool))
                 .map(Record::getValue)
-                .map(it -> objectMapper.convertValue(it, AnalysisMessageIn.class))
-                .subscribe(it -> analysisService.analyseRedisMessage(it.getBody()), err -> log.error("Analysis error", err));
+                .map(it -> objectMapper.convertValue(it, CollectedAnalysysStatisticDto.class))
+                .subscribe(statisticManager::saveStatistic, err -> log.error("Statistic redis message error", err));
     }
 }
