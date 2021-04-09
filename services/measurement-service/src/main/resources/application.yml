@@ -35,7 +35,6 @@ segmentme:
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
-          service-name: access-control-service
     async:
       pool:
         corePoolSize: ${ASYNC_CORE_POOL_SIZE:10}
@@ -54,5 +53,3 @@ segmentme:
         streamPollTimeout: 1000 #milliseconds
 server:
   port: 8083
-  servlet:
-    context-path: /measurement-service

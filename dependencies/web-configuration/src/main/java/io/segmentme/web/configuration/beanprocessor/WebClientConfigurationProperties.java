@@ -7,8 +7,6 @@ public class WebClientConfigurationProperties {
 
     private String host;
 
-    private String serviceName;
-
     private Connection connection;
 
     @Data

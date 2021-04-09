@@ -30,22 +30,17 @@ segmentme:
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${ANALYSIS_SERVICE_HOST:http://localhost:8082}
-          service-name: analysis-service
         access-control-service:
           connection:
             connectTimeOut: 20000  #milisecond
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
-          service-name: access-control-service
         management-service-client:
           connection:
             connectTimeOut: 20000  #milisecond
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${MANAGEMENT_SERVICE_HOST:http://localhost:8084}
-          service-name: management-service
 server:
   port: 8081
-  servlet:
-    context-path: /analysis-api-service

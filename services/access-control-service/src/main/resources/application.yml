@@ -25,5 +25,3 @@ spring:
           issuer-uri: https://segmentme.us.auth0.com/
 server:
   port: 8085
-  servlet:
-    context-path: /access-control-service
