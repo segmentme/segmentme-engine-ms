@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.UUID;
 
@@ -48,6 +49,16 @@ public class WorkspaceManager {
     private final ContextSchemaManager contextSchemaManager;
 
     private final UserProfileService userProfileService;
+
+    public IntegrationPoint findIntegrationPoint(String integrationPointKey){
+        return workspaceService.findByIntegrationPointKey(integrationPointKey)
+                .map(Workspace::getIntegrationPoints)
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(it -> it.getKey().equals(integrationPointKey))
+                .findFirst()
+                .orElse(null);
+    }
 
     public WorkspaceHolder createDefaultWorkspace(User user) {
         return this.createWorkspace(user.getId(), DEFAULT, true);

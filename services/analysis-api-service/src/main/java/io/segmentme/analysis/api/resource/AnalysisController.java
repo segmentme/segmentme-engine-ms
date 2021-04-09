@@ -18,24 +18,22 @@ import javax.validation.Valid;
 @RequestMapping("/analysis")
 public class AnalysisController {
 
-private final AnalysisService analysisService;
+    private final AnalysisService analysisService;
 
     @PostMapping("/debug")
     public AnalysisResult analyze(@RequestParam String contextId,
-                               @RequestParam String integrationPointKey,
-                               @RequestBody @Valid DebugRequest request) {
+                                  @RequestParam String integrationPointKey,
+                                  @RequestBody @Valid DebugRequest request) {
         request.setContextId(contextId).setIntegrationPointKey(integrationPointKey);
         return analysisService.debug(integrationPointKey, request);
     }
 
     @GetMapping("/connect")
     public IntegrationPoint connect(@RequestHeader("integration-point-key") String integrationPointKey) {
-//        return sdkFacade.connect(integrationPointKey);
-        return null;
+        return analysisService.getIntegrationPointKey(integrationPointKey);
     }
 
-
-    @PostMapping("/analysis/analyze")
+    @PostMapping("/analyze")
     public SdkAnalysisResponse analyze(@RequestHeader("integration-point-key") String integrationPointKey,
                                        @RequestBody SdkAnalysisRequest sdkAnalysisRequest) {
         return analysisService.analyze(integrationPointKey, sdkAnalysisRequest);

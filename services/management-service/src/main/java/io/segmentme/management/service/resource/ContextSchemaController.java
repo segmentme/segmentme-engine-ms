@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/context-schema")
 @RequiredArgsConstructor
-@PreAuthorize("@workspaceSecurityService.isWorkspaceMember(#workspaceId)")
 public class ContextSchemaController {
 
     private final ContextSchemaFacade contextSchemaFacade;
@@ -38,11 +37,13 @@ public class ContextSchemaController {
     }
 
     @PostMapping("/resolve")
+    @PreAuthorize("@workspaceSecurityService.isWorkspaceMember(#workspaceId)")
     public ContextSchemaResolveResult resolveContextSchema(@RequestParam String workspaceId, @RequestBody JsonNode payload) {
         return contextSchemaFacade.resolve(workspaceId, payload);
     }
 
     @PostMapping("/validate")
+    @PreAuthorize("@workspaceSecurityService.isWorkspaceMember(#workspaceId)")
     public ContextSchemaValidationResult validateContextSchema(@RequestParam String workspaceId,
                                                                @RequestBody ContextSchemaValidationRequest validationRequest) {
         return contextSchemaFacade.validate(workspaceId, validationRequest);

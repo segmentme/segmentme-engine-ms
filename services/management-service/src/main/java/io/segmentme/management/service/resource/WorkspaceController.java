@@ -36,6 +36,12 @@ public class WorkspaceController {
         return workspaceFacade.createWorkspace(currentUser.getId(), name);
     }
 
+    @GetMapping("/integration-point")
+    @PreAuthorize("#integrationPointKey != null")
+    public IntegrationPoint getIntegrationPoint(@RequestParam String integrationPointKey){
+        return workspaceFacade.getIntegrationPoint(integrationPointKey);
+    }
+
     @PostMapping("/{workspaceId}/integration-point")
     public IntegrationPoint createIntegrationPoint(@PathVariable String workspaceId, @RequestParam String name) {
         return workspaceFacade.addIntegrationPoint(workspaceId, name);

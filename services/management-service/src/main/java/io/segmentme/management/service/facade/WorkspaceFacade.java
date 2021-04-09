@@ -50,6 +50,10 @@ public class WorkspaceFacade {
                 .setConfiguration(holder.getWorkspaceConfiguration());
     }
 
+    public IntegrationPoint getIntegrationPoint(String integrationPointKey){
+        return workspaceManager.findIntegrationPoint(integrationPointKey);
+    }
+
     public IntegrationPoint addIntegrationPoint(String workspaceId, String name) {
         return workspaceManager.addIntegrationPoint(workspaceId, name);
 

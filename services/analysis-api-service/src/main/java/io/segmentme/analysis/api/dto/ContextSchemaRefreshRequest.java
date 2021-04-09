@@ -7,5 +7,7 @@ import lombok.Data;
 public class ContextSchemaRefreshRequest {
     private String contextKey;
 
-   private JsonNode payload;
+    private String integrationPointId;
+
+    private JsonNode payload;
 }
