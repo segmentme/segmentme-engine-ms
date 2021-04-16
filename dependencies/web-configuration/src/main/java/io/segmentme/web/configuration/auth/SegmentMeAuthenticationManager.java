@@ -61,7 +61,7 @@ public class SegmentMeAuthenticationManager implements org.springframework.secur
 
         //check for app https://segmentme.io:persisted  true
         AuthUser authUser = (AuthUser) authenticate.getPrincipal();
-        if (authenticate.isAuthenticated() && (!Boolean.TRUE.equals(authUser.isAcknowledged()) || authUser.getId() == null)) {
+        if (userFacade.isPresent() && authenticate.isAuthenticated() && (!Boolean.TRUE.equals(authUser.isAcknowledged()) || authUser.getId() == null)) {
 
             String userId = userFacade.map(it -> it.acknowledgeUser(authUser.getExternalId(), authUser.getEmail(), authUser.getFullName()))
                     .orElse(null);
