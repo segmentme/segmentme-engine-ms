@@ -29,11 +29,11 @@ public class Auth0Service {
         log.info("Acknowledge request");
 
         auth0WebClient.patch()
-            .uri(USER_URL + externalUserId)
-            .bodyValue(AppMetadata.of(Map.of("acknowledged", true, "userId", userId)))
-            .retrieve().toEntity(String.class)
-            .doOnSuccess(response -> log.info("Acknowledge response status {}", response.getStatusCode()))
-            .subscribe();
+                .uri(USER_URL + externalUserId)
+                .bodyValue(AppMetadata.of(Map.of("acknowledged", true, "userId", userId)))
+                .retrieve().toEntity(String.class)
+                .doOnSuccess(response -> log.info("Acknowledge response status {}", response.getStatusCode()))
+                .block();
     }
 
     public void resendVerificationEmail(String userId) {
