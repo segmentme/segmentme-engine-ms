@@ -1,5 +1,6 @@
 package io.segmentme.management.service.resource;
 
+import io.segmentme.AuthAcknowledger;
 import io.segmentme.management.service.dto.user.UserDetails;
 import io.segmentme.management.service.facade.UserFacade;
 import io.segmentme.web.configuration.AuthUser;
@@ -17,6 +18,15 @@ public class UserController {
     private final UserFacade userFacade;
 
     private final Auth0Service auth0Service;
+
+    private final AuthAcknowledger authAcknowledger;
+
+    @GetMapping("/acknowledge")
+    public void acknowledgeUser(@AuthenticationPrincipal AuthUser authUser) {
+        if (!Boolean.TRUE.equals(authUser.isAcknowledged()) || authUser.getId() == null) {
+            authAcknowledger.acknowledgeUser(authUser.getExternalId(), authUser.getEmail(), authUser.getFullName());
+        }
+    }
 
     @GetMapping
     public UserDetails getCurrentUserDetails(@AuthenticationPrincipal AuthUser authUser) {
