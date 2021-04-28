@@ -1,11 +1,11 @@
 dependencies {
-    compile project(':dependencies:redis-auto-configuration')
-    compile project(':dependencies:web-configuration')
-    compile project(':dependencies:models:entities:analysis-domain')
-    compile project(':dependencies:helpers:core-dao')
-    compile project(':dependencies:helpers:context-processor')
-    compile project(':dependencies:models:dto:analysis-dto')
-    testCompile project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
-    testCompile project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
+    api project(':dependencies:redis-auto-configuration')
+    api project(':dependencies:web-configuration')
+    api project(':dependencies:models:entities:analysis-domain')
+    api project(':dependencies:helpers:core-dao')
+    api project(':dependencies:helpers:context-processor')
+    api project(':dependencies:models:dto:analysis-dto')
+    testImplementation project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
+    testImplementation project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
 
 }

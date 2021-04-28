@@ -1,9 +1,9 @@
 dependencies {
-    compile project(':dependencies:web-configuration')
-    compile project(':dependencies:models:dto:analysis-dto')
+    api project(':dependencies:web-configuration')
+    api project(':dependencies:models:dto:analysis-dto')
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
-    testCompile project(path: ':services:management-service', configuration: 'tests')
+    testImplementation project(path: ':services:management-service', configuration: 'tests')
     testImplementation 'org.springframework.security:spring-security-test'
 
 }

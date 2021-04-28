@@ -4,8 +4,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    compile group: 'redis.clients', name: 'jedis', version: '3.4.1'
-    compile project(':dependencies:redis-auto-configuration')
+    implementation group: 'redis.clients', name: 'jedis', version: '3.4.1'
+    api project(':dependencies:redis-auto-configuration')
 
 }
 
@@ -17,7 +17,7 @@ task jarTests(type: Jar, dependsOn: testClasses) {
 
 configurations {
     tests {
-        extendsFrom testRuntime
+        extendsFrom testImplementation
     }
 }
 artifacts {

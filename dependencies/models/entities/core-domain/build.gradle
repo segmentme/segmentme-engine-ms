@@ -1,15 +1,15 @@
 dependencies {
-    compile project(':dependencies:mongo-auto-configuration')
-    compile project(':dependencies:models:shared')
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
-	compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
-	compile 'org.apache.commons:commons-lang3'
-	compile 'org.springframework.boot:spring-boot-starter-validation'
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    api project(':dependencies:mongo-auto-configuration')
+    api project(':dependencies:models:shared')
+	api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+	api group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+	api 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	api 'org.apache.commons:commons-lang3'
+	api 'org.springframework.boot:spring-boot-starter-validation'
+    api group: 'commons-codec', name: 'commons-codec', version: '1.15'
 
-    testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
-	testCompile 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+	testImplementation 'org.springframework.boot:spring-boot-starter-web'
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {
@@ -18,7 +18,7 @@ task jarTests(type: Jar, dependsOn: testClasses) {
 }
 configurations {
 	tests {
-		extendsFrom testRuntime
+		extendsFrom testImplementation
 	}
 }
 

@@ -18,6 +18,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         jcenter()
+        maven { url 'https://repo.spring.io/release' }
     }
 }
 plugins {

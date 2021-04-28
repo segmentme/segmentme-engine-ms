@@ -2,11 +2,16 @@ import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import groovy.model.ValueHolder
 
+
+
 plugins {
-    id 'org.springframework.boot' version '2.3.3.RELEASE'
+    id 'org.springframework.experimental.aot' version '0.9.2'
+    id 'org.springframework.boot' version '2.4.5.RELEASE'
     id 'com.bmuschko.docker-remote-api' version '6.6.1'
     id "org.sonarqube" version "3.0"
+
 }
+
 
 def projectSettings = new ValueHolder()
 apply from: 'modules.gradle', to: projectSettings
@@ -40,10 +45,24 @@ def bootProjectConfiguration(Project project, moduleSettings) {
     configure(project) {
         apply plugin: 'org.springframework.boot'
         apply plugin: "com.bmuschko.docker-remote-api"
+        apply plugin: 'org.springframework.experimental.aot'
+
+        repositories {
+            // ...
+            maven { url 'https://repo.spring.io/release' }
+        }
+
+        bootBuildImage {
+            builder = "paketobuildpacks/builder:tiny"
+            environment = [
+                "BP_NATIVE_IMAGE" : "true"
+            ]
+        }
+
         dependencies {
             implementation 'org.springframework.boot:spring-boot-starter-actuator'
         }
-        sourceCompatibility = 14.0
+        sourceCompatibility = 11.0
 
         task copyJar(type: Copy) {
             dependsOn build
@@ -92,8 +111,8 @@ def javaProjectConfiguration(Project project) {
 
         group = 'io.segmentme'
         version = '0.0.1-SNAPSHOT'
-        sourceCompatibility = JavaVersion.VERSION_14
-        targetCompatibility = JavaVersion.VERSION_14
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
 
         configureDependencyManagement(project)
     }
@@ -112,7 +131,7 @@ def configureDependencyManagement(Project project) {
 
         dependencies {
             compileOnly 'org.projectlombok:lombok'
-            compile 'commons-beanutils:commons-beanutils'
+            implementation 'commons-beanutils:commons-beanutils'
 
             annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
             annotationProcessor 'org.projectlombok:lombok'
@@ -125,7 +144,7 @@ def configureDependencyManagement(Project project) {
             testImplementation "org.spockframework:spock-spring"
             testImplementation "cglib:cglib-nodep"
             testImplementation 'org.codehaus.groovy:groovy'
-            testCompileOnly 'org.projectlombok:lombok'
+            testImplementation 'org.projectlombok:lombok'
             testAnnotationProcessor 'org.projectlombok:lombok'
         }
 
@@ -136,7 +155,7 @@ def configureDependencyManagement(Project project) {
             }
 
             dependencies {
-                dependency 'org.projectlombok:lombok:1.18.12'
+                dependency 'org.projectlombok:lombok:1.18.20'
                 dependency 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
                 dependency 'org.spockframework:spock-spring:2.0-M3-groovy-3.0'
                 dependency 'cglib:cglib-nodep:3.3.0'

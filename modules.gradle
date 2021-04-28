@@ -1,4 +1,4 @@
-def springVersion = '2.4.1'
+def springVersion = '2.4.5'
 def springCloudVersion = '2020.0.0'
 
 def settings = [
