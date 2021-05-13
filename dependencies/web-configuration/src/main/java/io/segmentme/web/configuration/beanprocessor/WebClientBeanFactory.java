@@ -72,6 +72,7 @@ class WebClientBeanFactory {
             headers = Collections.list(httpServletRequest.getHeaderNames())
                     .stream()
                     .collect(HttpHeaders::new, (map, value) -> map.put(value, Collections.list(httpServletRequest.getHeaders(value))), HttpHeaders::putAll);
+            headers.remove(HttpHeaders.CONTENT_TYPE);
         }
 
         return headers;
