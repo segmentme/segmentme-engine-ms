@@ -41,7 +41,9 @@ public class StatisticLog extends DbObject {
 
         private Map<String, Integer> conditionsHash;
 
-        private boolean result;
+        private boolean analysisResult;
+
+        private boolean finalResult;
 
         private long analysisTime;
     }

@@ -30,6 +30,8 @@ public class CollectedAnalysysStatisticDto {
 
     private String clientId;
 
+    private long timestamp;
+
     @Data
     public static class ConditionStatisticEntry {
         private boolean result;
@@ -40,9 +42,11 @@ public class CollectedAnalysysStatisticDto {
 
     @Data
     public static class ContextDataHolder {
+        private String contextId;
         private Map<String, Object> values;
         private Map<String, Object> extractedValues = new HashMap<>();
         private Map<String, InlineType> knownTypes;
+        private String uniquenessIndicator;
 
     }
 }

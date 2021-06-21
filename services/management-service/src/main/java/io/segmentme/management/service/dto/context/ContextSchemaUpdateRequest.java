@@ -10,4 +10,6 @@ public class ContextSchemaUpdateRequest {
     private String integrationPointKey;
 
     private String name;
+
+    private String uniquenessIndicator;
 }

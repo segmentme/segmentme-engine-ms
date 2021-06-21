@@ -11,4 +11,5 @@ public class ContextSchemaShortInfo {
     private String id;
 
     private String hash;
+
 }

@@ -10,4 +10,6 @@ import java.util.Map;
 @Data
 public class ContextSchemaBasicInfo extends ContextSchemaShortInfo {
     private Map<String, InlineType> inlinePath;
+
+    private String uniquenessIndicator;
 }

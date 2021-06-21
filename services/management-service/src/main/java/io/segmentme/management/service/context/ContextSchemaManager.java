@@ -88,6 +88,7 @@ public class ContextSchemaManager {
             it.setRootNode(contextSchema.getRootNode());
             it.setHash(holder.getHash() == null ? this.computeHash(contextSchema) : holder.getHash());
             it.setIntegrationPointKey(holder.getIntegrationPointKey());
+            it.setUniquenessIndicator(holder.getUniquenessIndicator());
             it.setName(holder.getName());
             it.setRawPayload(Optional.ofNullable(holder.getRawPayload()).filter(StringUtils::isNoneBlank).orElse(it.getRawPayload()));
             return it;

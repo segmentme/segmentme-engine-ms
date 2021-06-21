@@ -1,15 +1,15 @@
 dependencies {
-    compile project(':dependencies:mongo-auto-configuration')
-    compile project(':dependencies:redis-auto-configuration')
-    compile project(':dependencies:models:entities:analysis-domain')
-    compile project(':dependencies:models:entities:management-domain')
-    compile project(':dependencies:helpers:context-processor')
-    compile project(':dependencies:models:dto:analysis-dto')
-    compile project(':dependencies:web-configuration')
-    compile project(':dependencies:helpers:core-dao')
-    testCompile project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
-    testCompile project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
-    testCompile project(path: ':dependencies:web-configuration', configuration: 'tests')
+    api project(':dependencies:mongo-auto-configuration')
+    api project(':dependencies:redis-auto-configuration')
+    api project(':dependencies:models:entities:analysis-domain')
+    api project(':dependencies:models:entities:management-domain')
+    api project(':dependencies:helpers:context-processor')
+    api project(':dependencies:models:dto:analysis-dto')
+    api project(':dependencies:web-configuration')
+    api project(':dependencies:helpers:core-dao')
+    testImplementation project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
+    testImplementation project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
+    testImplementation project(path: ':dependencies:web-configuration', configuration: 'tests')
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {
@@ -19,7 +19,7 @@ task jarTests(type: Jar, dependsOn: testClasses) {
 
 configurations {
     tests {
-        extendsFrom testRuntime
+        extendsFrom testImplementation
     }
 }
 artifacts {

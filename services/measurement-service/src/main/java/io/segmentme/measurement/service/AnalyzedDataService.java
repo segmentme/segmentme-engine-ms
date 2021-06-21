@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -53,4 +54,12 @@ public class AnalyzedDataService extends AbstractDatabaseService<AnalyzedData, A
 
         return result.getMappedResults();
     }
+
+    public void save(List<AnalyzedData> analyzedDatas) {
+        List<String> existed = repository.findByHashIn(analyzedDatas.stream().map(AnalyzedData::getHash).collect(Collectors.toList())).stream()
+            .map(AnalyzedData::getHash).collect(Collectors.toList());
+
+        this.repository.saveAll(analyzedDatas.stream().filter(it -> !existed.contains(it.getHash())).collect(Collectors.toList()));
+    }
+
 }

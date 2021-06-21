@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':dependencies:models:entities:core-domain')
+    api project(':dependencies:models:entities:core-domain')
 }
 
 
@@ -10,7 +10,7 @@ task jarTests(type: Jar, dependsOn: testClasses) {
 }
 configurations {
     tests {
-        extendsFrom testRuntime
+        extendsFrom testImplementation
     }
 }
 

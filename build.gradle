@@ -3,7 +3,7 @@ import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import groovy.model.ValueHolder
 
 plugins {
-    id 'org.springframework.boot' version '2.3.3.RELEASE'
+    id 'org.springframework.boot' version '2.5.1'
     id 'com.bmuschko.docker-remote-api' version '6.6.1'
     id "org.sonarqube" version "3.0"
 }
@@ -108,11 +108,11 @@ def configureDependencyManagement(Project project) {
             jcenter()
         }
 
-        wrapper.gradleVersion = '6.6.1'
+        wrapper.gradleVersion = '7.1'
 
         dependencies {
             compileOnly 'org.projectlombok:lombok'
-            compile 'commons-beanutils:commons-beanutils'
+            implementation 'commons-beanutils:commons-beanutils'
 
             annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
             annotationProcessor 'org.projectlombok:lombok'

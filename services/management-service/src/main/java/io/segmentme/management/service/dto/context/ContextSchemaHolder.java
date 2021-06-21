@@ -23,4 +23,6 @@ public class ContextSchemaHolder {
     private Map<String, Object> nodeValues;
 
     private String hash;
+
+    private String uniquenessIndicator;
 }

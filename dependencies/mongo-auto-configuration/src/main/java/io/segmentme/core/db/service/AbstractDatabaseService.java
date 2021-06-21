@@ -11,11 +11,21 @@ import java.util.Optional;
 public abstract class AbstractDatabaseService<E extends DbObject, R extends MongoRepository<E, String>> {
 
     public static final String PROP_WORKSPACE_ID = "workspaceId";
+    public static final String PROP_CONTEXT_ID = "contextId";
+    public static final String PROP_TIMESTAMP = "timestamp";
+    public static final String PROP_UNIQUENESS_INDICATOR = "uniquenessIndicator";
+    public static final String PROP_IN_SEGMENT = "inSegment";
+    public static final String PRO_ANALYSIS_RESULT = "analysisResult";
+    public static final String PROP_UNIQUENESS_VALUE = "uniquenessValue";
+    public static final String PROP_LAST_SEGMENT_STATISTICS = "lastSegmentStatistic";
+    public static final String PROP_TOTAL_PARTICIPANTS = "totalParticipants";
+    public static final String PROP_OPENED_PARTICIPANTS = "openedParticipants";
+    public static final String PROP_SEGMENT_ID = "segmentId";
     public static final String PROP_SEGMENT_STATISTICS = "segmentStatistics";
     public static final String CREATED_DATE = "createdDate";
     public static final String SEGMENT_STATISTICS_SEGMENT_ID = "segmentStatistics.segmentId";
     public static final String SEGMENT_ID = "segmentId";
-    public static final String SEGMENT_STATISTICS_RESULT = "segmentStatistics.result";
+    public static final String SEGMENT_STATISTICS_RESULT = "segmentStatistics.analysisResult";
     public static final String SEGMENT_RESULT = "segmentResult";
     public static final String COUNT = "count";
     public static final String ID = "_id";

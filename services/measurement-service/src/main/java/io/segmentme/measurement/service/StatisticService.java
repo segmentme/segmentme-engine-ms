@@ -4,25 +4,33 @@ import io.segmentme.analysis.domain.statistic.AnalyzedData;
 import io.segmentme.analysis.domain.statistic.SegmentStatisticCount;
 import io.segmentme.analysis.domain.statistic.StatisticLog;
 import io.segmentme.core.db.service.AbstractDatabaseService;
+import io.segmentme.core.domain.DbObject;
+import io.segmentme.measurement.domain.ContextStatistic;
+import io.segmentme.measurement.domain.ParticipantStatistic;
 import io.segmentme.measurement.repository.AnalyzedDataRepository;
+import io.segmentme.measurement.repository.ContextStatisticsRepository;
+import io.segmentme.measurement.repository.ParticipantsStatisticRepository;
 import io.segmentme.measurement.repository.StatisticRepository;
 import io.segmentme.models.shared.analysis.AggregatedAnalysisCount;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,13 +39,26 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StatisticService extends AbstractDatabaseService<StatisticLog, StatisticRepository> {
 
 
     private final MongoTemplate mongoTemplate;
 
     private final AnalyzedDataRepository analyzedDataRepository;
+    private final ParticipantsStatisticRepository participantsStatisticRepository;
+    private final ContextStatisticsRepository segmentAnalysisRepository;
 
+    private final StatisticRepository statisticRepository;
+
+
+    public ParticipantStatistic getParticipant(String contextId, Object uniquenessValue) {
+        return participantsStatisticRepository.findByUniquenessValueAndContextId(uniquenessValue, contextId);
+    }
+
+    public List<ParticipantStatistic> getParticipants(List<Object> uniquenessValue) {
+        return participantsStatisticRepository.findAllByUniquenessValueIn(uniquenessValue);
+    }
 
     public List<SegmentStatisticCount> getSegmentStatistic(String workspaceId, int period) {
         LocalDateTime localDateTime = LocalDate.now().minus(period, ChronoUnit.DAYS).atTime(LocalTime.MIDNIGHT);
@@ -223,6 +244,132 @@ public class StatisticService extends AbstractDatabaseService<StatisticLog, Stat
             AnalyzedData hash = analyzedDataRepository.findByHash(log.getAnalyzedDataKey());
             return new ExploreStatisticLog().setRawPayload(hash.getPayload());
         }).orElseGet(ExploreStatisticLog::new);
+    }
+
+
+    public void createParticipant(ParticipantStatistic participantStatistic) {
+
+        Query query = new Query(Criteria.where(PROP_UNIQUENESS_INDICATOR)
+            .is(participantStatistic.getUniquenessIndicator())
+            .and(PROP_UNIQUENESS_VALUE)
+            .is(participantStatistic.getUniquenessValue())
+            .and(PROP_CONTEXT_ID).is(participantStatistic.getContextId()));
+        Instant now = Instant.now();
+        Update update = new Update()
+            .set(PROP_CONTEXT_ID, participantStatistic.getContextId())
+            .set(PROP_UNIQUENESS_INDICATOR, participantStatistic.getUniquenessIndicator())
+            .set(CREATED_DATE, now)
+            .set(LAST_MODIFIED_DATE, now)
+            .set(PROP_UNIQUENESS_VALUE, participantStatistic.getUniquenessValue());
+
+        mongoTemplate.upsert(query, update, ParticipantStatistic.class);
+
+        Update contextTotalUsersCounter = new Update()
+            .set(PROP_CONTEXT_ID, participantStatistic.getContextId())
+            .inc(PROP_TOTAL_PARTICIPANTS, 1);
+        mongoTemplate.upsert(new Query(Criteria.where(PROP_CONTEXT_ID).is(participantStatistic.getContextId())), contextTotalUsersCounter, ContextStatistic.class);
+    }
+
+    public void update(ParticipantStatistic participantStatistic) {
+        Query query = new Query(Criteria.where(PROP_UNIQUENESS_INDICATOR)
+            .is(participantStatistic.getUniquenessIndicator())
+            .and(PROP_UNIQUENESS_VALUE)
+            .is(participantStatistic.getUniquenessValue())
+            .and(PROP_CONTEXT_ID).is(participantStatistic.getContextId()));
+        Update update = new Update()
+            .set(PROP_CONTEXT_ID, participantStatistic.getContextId())
+            .set(PROP_UNIQUENESS_INDICATOR, participantStatistic.getUniquenessIndicator())
+            .set(LAST_MODIFIED_DATE, Instant.now())
+            .set(PROP_UNIQUENESS_VALUE, participantStatistic.getUniquenessValue());
+
+        if (participantStatistic.getLastSegmentStatistic() != null) {
+            update.set(PROP_LAST_SEGMENT_STATISTICS, participantStatistic.getLastSegmentStatistic());
+        }
+        mongoTemplate.findAndModify(query, update, ParticipantStatistic.class);
+    }
+
+    public ContextStatistic findContextStatistic(String contextId) {
+        return segmentAnalysisRepository.findByContextId(contextId);
+    }
+
+
+//    public void updateContextSegmentStatistic(Map<String, Integer> segmentCounters, String contextId, Long timestamp) {
+//
+//        Update openedFor = new Update();
+//        openedFor.set(PROP_TIMESTAMP, timestamp);
+//
+//        log.info("Update time --- {} , segments --- {}", timestamp, segmentCounters);
+//        for (Map.Entry<String, Integer> segRes : segmentCounters.entrySet()) {
+//            openedFor.set("segmentStatistics." + segRes.getKey() + "." + PROP_SEGMENT_ID, segRes.getKey());
+//            openedFor.inc("segmentStatistics." + segRes.getKey() + "." + PROP_OPENED_PARTICIPANTS, segRes.getValue());
+//        }
+//
+//        Query query = new Query(Criteria.where(PROP_CONTEXT_ID)
+//            .is(contextId)
+//            .orOperator(
+//                Criteria.where(PROP_TIMESTAMP).exists(false),
+//                Criteria.where(PROP_TIMESTAMP).lt(timestamp)
+//            ));
+//        mongoTemplate.findAndModify(query, openedFor, ContextStatistic.class);
+//    }
+
+    @Retryable(value = {Exception.class}, backoff = @Backoff(500L))
+    private void bulkExecute(BulkOperations bulkOperations) {
+        bulkOperations.execute();
+    }
+
+    public void update(List<StatisticLog> statisticLogs) {
+        statisticRepository.saveAll(statisticLogs);
+    }
+
+    public long participantsInSegmentCounts(String segmentId) {
+        return participantsStatisticRepository.countAllByInSegmentContaining(segmentId);
+
+    }
+
+    public void includeUsersToSegment(int usersToInclude, String segmentId, String contextId) {
+
+        MatchOperation match = match(Criteria.where(PROP_CONTEXT_ID)
+            .is(contextId)
+            .and(PROP_IN_SEGMENT).not().in(segmentId)
+            .and(PROP_LAST_SEGMENT_STATISTICS)
+            .elemMatch(Criteria.where(SEGMENT_ID).is(segmentId).and(PRO_ANALYSIS_RESULT).is(true)));
+        SortOperation sort = sort(Sort.Direction.DESC, LAST_MODIFIED_DATE);
+        LimitOperation limit = limit(usersToInclude);
+        ProjectionOperation project = project("id");
+
+        TypedAggregation<ParticipantStatistic> idAggregations = new TypedAggregation<>(ParticipantStatistic.class, match, sort, limit, project);
+
+        AggregationResults<ParticipantStatistic> result = mongoTemplate.aggregate(idAggregations, ParticipantStatistic.class);
+        List<String> idsToUpdate = result.getMappedResults().stream().map(DbObject::getId).collect(Collectors.toList());
+
+        Update update = new Update();
+        update.addToSet(PROP_IN_SEGMENT, segmentId);
+
+        Query query = new Query().addCriteria(Criteria.where(ID).in(idsToUpdate));
+        mongoTemplate.updateMulti(query, update, ParticipantStatistic.class);
+    }
+    public void excludeUsersFromSegment(int usersToExclude, String segmentId, String contextId) {
+
+        MatchOperation match = match(Criteria.where(PROP_CONTEXT_ID)
+            .is(contextId)
+            .and(PROP_IN_SEGMENT).in(segmentId)
+            .and(PROP_LAST_SEGMENT_STATISTICS)
+            .elemMatch(Criteria.where(SEGMENT_ID).is(segmentId).and(PRO_ANALYSIS_RESULT).is(true)));
+        SortOperation sort = sort(Sort.Direction.ASC, LAST_MODIFIED_DATE);
+        LimitOperation limit = limit(usersToExclude);
+        ProjectionOperation project = project("id");
+
+        TypedAggregation<ParticipantStatistic> idAggregations = new TypedAggregation<>(ParticipantStatistic.class, match, sort, limit, project);
+
+        AggregationResults<ParticipantStatistic> result = mongoTemplate.aggregate(idAggregations, ParticipantStatistic.class);
+        List<String> idsToUpdate = result.getMappedResults().stream().map(DbObject::getId).collect(Collectors.toList());
+
+        Update update = new Update();
+        update.pull(PROP_IN_SEGMENT, segmentId);
+
+        Query query = new Query().addCriteria(Criteria.where(ID).in(idsToUpdate));
+        mongoTemplate.updateMulti(query, update, ParticipantStatistic.class);
     }
 
     @Data

@@ -28,5 +28,8 @@ public class ContextSchema extends DbObject {
 
     private String hash;
 
+    @Indexed
+    private String uniquenessIndicator;
+
 
 }

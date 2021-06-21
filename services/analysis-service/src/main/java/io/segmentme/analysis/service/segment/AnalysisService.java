@@ -78,10 +78,10 @@ public class AnalysisService {
 
     public AnalysisResult debug(String integrationPointKey, String contextId, JsonNode payload, Segment segment) {
         ContextSchema schema = contextSchemaService.findByIdAndIntegrationPointKey(contextId, integrationPointKey)
-                .orElseThrow(() -> new AnalysisException().setCode(INTEGRATION_POINT_NOT_FOUND));
+            .orElseThrow(() -> new AnalysisException().setCode(INTEGRATION_POINT_NOT_FOUND));
 
         Workspace workspace = workspaceService.findByIntegrationPointKey(integrationPointKey)
-                .orElseThrow(() -> new IllegalArgumentException("Workspace not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Workspace not found"));
 
         return debug(contextValuesExtractor.extractValues(payload, schema, workspace.getConfiguration()), segment);
     }
@@ -123,10 +123,10 @@ public class AnalysisService {
         List<Segment> finalSegments = segments;
         try {
             List<SegmentAnalysisResult> segmentAnalysisResults = schemas.stream()
-                    .map(it -> contextValuesExtractor.extractValues(analysisData.getPayload(), it, workspace.getConfiguration()))
-                    .peek(contextValueHolder -> statisticLogEntry.setContextDataHolder(convertToStatisticContextData(contextValueHolder)))
-                    .map(it -> this.analyze(it, finalSegments, worm))
-                    .flatMap(List::stream).collect(Collectors.toList());
+                .map(it -> contextValuesExtractor.extractValues(analysisData.getPayload(), it, workspace.getConfiguration()))
+                .peek(contextValueHolder -> statisticLogEntry.setContextDataHolder(convertToStatisticContextData(contextValueHolder)))
+                .map(it -> this.analyze(it, finalSegments, worm))
+                .flatMap(List::stream).collect(Collectors.toList());
             statisticLogEntry.setSegmentAnalysisResults(segmentAnalysisResults);
             return segmentAnalysisResults;
         } finally {
@@ -139,9 +139,11 @@ public class AnalysisService {
 
     private CollectedAnalysysStatisticDto.ContextDataHolder convertToStatisticContextData(ContextValueHolder contextValueHolder) {
         return new CollectedAnalysysStatisticDto.ContextDataHolder()
-                .setValues(contextValueHolder.getValues())
-                .setKnownTypes(Optional.ofNullable(contextValueHolder.getSchema()).map(ContextSchema::getInlinePath).orElse(null))
-                .setExtractedValues(contextValueHolder.getExtractedValues());
+            .setContextId(contextValueHolder.getSchema().getId())
+            .setValues(contextValueHolder.getValues())
+            .setKnownTypes(Optional.ofNullable(contextValueHolder.getSchema()).map(ContextSchema::getInlinePath).orElse(null))
+            .setUniquenessIndicator(contextValueHolder.getSchema().getUniquenessIndicator())
+            .setExtractedValues(contextValueHolder.getExtractedValues());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -164,11 +166,12 @@ public class AnalysisService {
     }
 
     private void publishStatisticMessageStream(CollectedAnalysysStatisticDto message) {
-        Map<Object, Object> request = objectMapper.convertValue(message, new TypeReference<>() {});
+        Map<Object, Object> request = objectMapper.convertValue(message, new TypeReference<>() {
+        });
 
         var streamMessage = StreamRecords.newRecord()
-                .ofMap(request)
-                .withStreamKey(statisticStreamKey);
+            .ofMap(request)
+            .withStreamKey(statisticStreamKey);
 
         redisTemplate.opsForStream().add(streamMessage);
     }

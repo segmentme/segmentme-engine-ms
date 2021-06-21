@@ -29,7 +29,7 @@ import static io.segmentme.management.service.exception.error.ContextValidationE
 @Slf4j
 public class ContextSchemaFacade {
     private final ContextSchemaManager contextSchemaManager;
-    
+
     private final WorkspaceService workspaceService;
 
     public List<ContextSchemaBasicInfo> getByWorkspace(String workspaceId, boolean shortForm) {
@@ -93,6 +93,7 @@ public class ContextSchemaFacade {
             .setRootNode(holder.getRootNode())
             .setRawPayload(holder.getRawPayload())
             .setNodeValues(holder.getNodeValues()).setInlinePath(holder.getInlinePath())
+            .setUniquenessIndicator(holder.getUniquenessIndicator())
             .setId(holder.getId())
             .setIntegrationPointKey(holder.getIntegrationPointKey())
             .setHash(holder.getHash())
@@ -102,6 +103,7 @@ public class ContextSchemaFacade {
     public ContextSchemaBasicInfo update(String contextId, ContextSchemaUpdateRequest payload) {
         return convertToBasicDto(contextSchemaManager.updateContextSchema(contextId, new ContextSchemaHolder()
             .setName(payload.getName())
+            .setUniquenessIndicator(payload.getUniquenessIndicator())
             .setIntegrationPointKey(payload.getIntegrationPointKey())
             .setRootNode(payload.getRootNode())));
     }
@@ -109,6 +111,7 @@ public class ContextSchemaFacade {
 
     private ContextSchemaBasicInfo convertToBasicDto(ContextSchemaHolder contextSchema) {
         return (ContextSchemaBasicInfo) new ContextSchemaBasicInfo()
+            .setUniquenessIndicator(contextSchema.getUniquenessIndicator())
             .setInlinePath(contextSchema.getInlinePath())
             .setHash(contextSchema.getHash())
             .setIntegrationPointKey(contextSchema.getIntegrationPointKey())
@@ -118,7 +121,7 @@ public class ContextSchemaFacade {
 
 
     public ContextSchemaShortInfo actualizeSchema(ContextSchemaActualizeRequest payload) {
-        String integrationPointKey=payload.getIntegrationPointId();
+        String integrationPointKey = payload.getIntegrationPointId();
         Workspace workspace = workspaceService.findByIntegrationPointKey(integrationPointKey).orElseThrow(() -> new ContextSchemaManagerException().setCode(INTEGRATION_POINT_NOT_FOUND));
         ContextSchemaHolder resolvedSchema = contextSchemaManager.resolveContextSchema(workspace, payload.getPayload());
         if (resolvedSchema.getInlinePath().entrySet().stream().anyMatch(it -> it.getValue().getRootType() == SchemaNodeType.UNDEFINED || it.getValue().getSubType() == SchemaNodeType.UNDEFINED)) {

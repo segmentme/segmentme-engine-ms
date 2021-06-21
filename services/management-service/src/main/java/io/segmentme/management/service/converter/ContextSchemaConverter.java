@@ -11,6 +11,7 @@ public class ContextSchemaConverter {
     public static ContextSchemaHolder toHolder(ContextSchema contextSchema) {
         return new ContextSchemaHolder().setId(contextSchema.getId())
             .setName(contextSchema.getName())
+            .setUniquenessIndicator(contextSchema.getUniquenessIndicator())
             .setInlinePath(contextSchema.getInlinePath())
             .setRootNode(contextSchema.getRootNode())
             .setRawPayload(contextSchema.getRawPayload())

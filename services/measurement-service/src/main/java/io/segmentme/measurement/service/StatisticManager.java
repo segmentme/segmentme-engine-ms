@@ -7,22 +7,24 @@ import io.segmentme.analysis.dto.SegmentAnalysisResult;
 import io.segmentme.analysis.dto.conditions.SegmentConditionDto;
 import io.segmentme.analysis.dto.segment.SegmentDto;
 import io.segmentme.helpers.dao.service.SegmentService;
+import io.segmentme.measurement.domain.ContextStatistic;
+import io.segmentme.measurement.domain.ParticipantStatistic;
 import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class StatisticManager {
 
     private final StatisticService statisticService;
@@ -30,6 +32,25 @@ public class StatisticManager {
     private final SegmentService segmentService;
 
     private final AnalyzedDataService analyzedDataService;
+    private List<StatisticLog> statisticLogs = Collections.synchronizedList(new ArrayList<>());
+    private List<AnalyzedData> analyzedDatas = Collections.synchronizedList(new ArrayList<>());
+
+
+    public void createParticipantIfNeeded(CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder) {
+        if (StringUtils.isEmpty(contextDataHolder.getUniquenessIndicator())) {
+            return;
+        }
+        Object value = contextDataHolder.getValues().get(contextDataHolder.getUniquenessIndicator());
+        ParticipantStatistic participant = statisticService.getParticipant(contextDataHolder.getContextId(), value);
+        if (participant != null) {
+            return;
+        }
+        participant = new ParticipantStatistic();
+        participant.setContextId(contextDataHolder.getContextId());
+        participant.setUniquenessIndicator(contextDataHolder.getUniquenessIndicator());
+        participant.setUniquenessValue(value);
+        statisticService.createParticipant(participant);
+    }
 
     public void saveStatistic(CollectedAnalysysStatisticDto collectedStatistic) {
         AnalyzedData analyzedData = aggregateAnalyzedData(collectedStatistic);
@@ -43,7 +64,61 @@ public class StatisticManager {
         statisticLog.setSegmentStatistics(getSegmentStatistics(collectedStatistic));
         statisticLog.setConditionStatistics(getConditionsBreakdown(collectedStatistic));
 
-        statisticService.create(statisticLog);
+        batchSave(analyzedData, statisticLog, collectedStatistic);
+    }
+
+    private void batchSave(AnalyzedData analyzedData, StatisticLog statisticLog, CollectedAnalysysStatisticDto collectedStats) {
+        log.info("Add data to batch. statistic log batch size:{}, analyzedData batch size: {}", statisticLogs.size(), analyzedDatas.size());
+        statisticLog.setCreatedDate(Instant.now());
+        analyzedData.setCreatedDate(Instant.now());
+        statisticLogs.add(statisticLog);
+        analyzedDatas.removeIf(it -> it.getHash().equals(analyzedData.getHash()));
+        analyzedDatas.add(analyzedData);
+        CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder = collectedStats.getContextDataHolder();
+
+        updateParticipantStatistics(analyzedData, statisticLog, contextDataHolder, collectedStats.getTimestamp());
+
+        if (RandomUtils.nextInt(0, 50) == 0) {
+            flush();
+        }
+    }
+
+    private void updateParticipantStatistics(AnalyzedData analyzedData, StatisticLog statisticLog, CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder, Long timestamp) {
+        Object participantIdentifier = analyzedData.getNodeValues().get(contextDataHolder.getUniquenessIndicator()).get(0);
+        ParticipantStatistic participant = new ParticipantStatistic();
+        participant.setContextId(contextDataHolder.getContextId());
+        participant.setLastSegmentStatistic(statisticLog.getSegmentStatistics());
+        participant.setUniquenessIndicator(contextDataHolder.getUniquenessIndicator());
+        participant.setUniquenessValue(participantIdentifier);
+        statisticService.update(participant);
+    }
+
+
+    public void redistributePercentage(String contextId, String segmentId, int percentage) {
+        ContextStatistic contextStatistic = statisticService.findContextStatistic(contextId);
+        long inSegmentCounts = statisticService.participantsInSegmentCounts(segmentId);
+        long totalParticipants = contextStatistic.getTotalParticipants();
+        long usersShouldBeIncluded = percentage * totalParticipants / 100;
+
+        if (usersShouldBeIncluded == inSegmentCounts) {
+            return;
+        }
+        int modAmount = (int) Math.abs(usersShouldBeIncluded - inSegmentCounts);
+        if (usersShouldBeIncluded > inSegmentCounts) {
+            statisticService.includeUsersToSegment(modAmount, segmentId, contextId);
+        } else {
+            statisticService.excludeUsersFromSegment(modAmount, segmentId, contextId);
+        }
+    }
+
+
+    public void flush() {
+        statisticService.update(statisticLogs);
+        log.info("Saved {} statisticLogs", statisticLogs.size());
+        analyzedDataService.save(analyzedDatas);
+        log.info("Saved {} analyzed data", statisticLogs.size());
+        statisticLogs.clear();
+        analyzedDatas.clear();
     }
 
     private AnalyzedData aggregateAnalyzedData(CollectedAnalysysStatisticDto collectedStatistic) {
@@ -57,7 +132,6 @@ public class StatisticManager {
             .stream()
             .map(SegmentDto::getId).collect(Collectors.toList()));
         analyzedData.setHash(analyzedData.buildHash());
-        analyzedDataService.insertIfNotExists(analyzedData);
         return analyzedData;
     }
 
@@ -89,7 +163,7 @@ public class StatisticManager {
                     .findFirst()
                     .get();
                 return new StatisticLog.SegmentStatistic().setSegmentId(it.getId())
-                    .setResult(segmentAnalysisResult.isValue())
+                    .setAnalysisResult(segmentAnalysisResult.isValue())
                     .setAnalysisTime(segmentAnalysisResult.getAnalysisTime())
                     .setConditionsHash(getSegmentConditions(it, new HashMap<>()));
             })

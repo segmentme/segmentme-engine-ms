@@ -103,6 +103,6 @@ public class StatisticController {
             .setId(segment.getId())
             .setName(segment.getName())
             .setAnalysisTime(segmentStatistic.getAnalysisTime())
-            .setResult(segmentStatistic.isResult());
+            .setResult(segmentStatistic.isAnalysisResult());
     }
 }
