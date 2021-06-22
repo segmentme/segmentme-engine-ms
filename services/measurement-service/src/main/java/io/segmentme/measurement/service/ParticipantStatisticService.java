@@ -97,7 +97,7 @@ public class ParticipantStatisticService extends AbstractDatabaseService<Partici
     }
 
 
-    private ParticipantStatistic getParticipant(String contextId, Object uniquenessValue) {
+    public ParticipantStatistic getParticipant(String contextId, Object uniquenessValue) {
         return this.repository.findByUniquenessValueAndContextId(uniquenessValue, contextId);
     }
 

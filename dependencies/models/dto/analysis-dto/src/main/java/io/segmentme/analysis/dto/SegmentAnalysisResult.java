@@ -17,5 +17,7 @@ public class SegmentAnalysisResult {
 
     private boolean value;
 
+    private boolean opened;
+
     private long analysisTime;
 }
