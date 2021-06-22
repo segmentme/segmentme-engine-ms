@@ -39,6 +39,8 @@ public class Segment extends DbObject {
     @Indexed
     private String contextId;
 
+    private int openedForPercentage=100;
+
     public void recalculateHash() {
         Optional.ofNullable(conditions).ifPresent(it -> it.forEach(AbstractCondition::recalculateHash));
         this.hash = String.valueOf(this.hashCode());

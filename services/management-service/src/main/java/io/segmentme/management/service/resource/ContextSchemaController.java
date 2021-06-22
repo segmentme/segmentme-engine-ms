@@ -62,7 +62,7 @@ public class ContextSchemaController {
     }
 
     @PutMapping("/actualize")
-    public ContextSchemaShortInfo actualuze(@RequestBody ContextSchemaActualizeRequest payload) {
+    public ContextSchemaShortInfo actualize(@RequestBody ContextSchemaActualizeRequest payload) {
         return contextSchemaFacade.actualizeSchema(payload);
     }
 }

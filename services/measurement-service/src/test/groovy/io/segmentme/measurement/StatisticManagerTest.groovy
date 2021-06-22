@@ -9,6 +9,7 @@ import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.measurement.repository.ContextStatisticsRepository
 import io.segmentme.measurement.repository.ParticipantsStatisticRepository
 import io.segmentme.measurement.repository.StatisticRepository
+import io.segmentme.measurement.service.ParticipantStatisticService
 import io.segmentme.measurement.service.StatisticManager
 import io.segmentme.measurement.service.StatisticService
 import io.segmentme.measurement.test.configuration.TestData
@@ -41,6 +42,9 @@ class StatisticManagerTest extends AccessServiceMock {
     private StatisticManager statisticManager;
 
     @Autowired
+    private ParticipantStatisticService participantStatisticService;
+
+    @Autowired
     private ParticipantsStatisticRepository participantsStatisticRepository;
     @Autowired
     private ContextStatisticsRepository contextStatisticsRepository;
@@ -59,7 +63,7 @@ class StatisticManagerTest extends AccessServiceMock {
 
                 if (it % 4 == 0) {
                     testData = createTestData()
-                    statisticManager.createParticipantIfNeeded(generateAnalysisStatisticEntry(testData).getContextDataHolder())
+                    participantStatisticService.acknowledgeParticipant(generateAnalysisStatisticEntry(testData).getContextDataHolder())
                 }
                 CollectedAnalysysStatisticDto collectedAnalysysStatisticDto = generateAnalysisStatisticEntry(testData)
                 lastParticipantAnalyse.put(testData.getUser().getId(), collectedAnalysysStatisticDto)

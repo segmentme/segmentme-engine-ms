@@ -32,38 +32,38 @@ public class AnalysisService {
         }
 
         AnalysisResult block = analysisServiceWebClient.post()
-                .uri("/analysis/analyze")
-                .bodyValue(new AnalysisRequest().setContextId(response.getContextId()).setIntegrationPointKey(integrationPointKey).setAnalysisData(sdkAnalysisRequest.getAnalysisData()))
-                .retrieve().bodyToMono(AnalysisResult.class).block();
+            .uri("/analysis/analyze")
+            .bodyValue(new AnalysisRequest().setContextId(response.getContextId()).setIntegrationPointKey(integrationPointKey).setAnalysisData(sdkAnalysisRequest.getAnalysisData()))
+            .retrieve().bodyToMono(AnalysisResult.class).block();
 
         return response.setAnalyzedSegments(block.getSegmentAnalysisResults());
     }
 
-    public IntegrationPoint getIntegrationPointKey(String integrationPointKey){
+    public IntegrationPoint getIntegrationPointKey(String integrationPointKey) {
         return managementServiceClient.get()
-                .uri("/workspace/integration-point?integrationPointKey=" + integrationPointKey)
-                .retrieve()
-                .bodyToMono(IntegrationPoint.class)
-                .block();
+            .uri("/workspace/integration-point?integrationPointKey=" + integrationPointKey)
+            .retrieve()
+            .bodyToMono(IntegrationPoint.class)
+            .block();
     }
 
     private String actualizeSchema(String contextKey, String integrationPointKey, JsonNode jsonNode) {
         ContextSchemaShortInfo block = managementServiceClient.put()
-                .uri("/context-schema/actualize")
-                .bodyValue(new ContextSchemaRefreshRequest()
-                        .setIntegrationPointId(integrationPointKey)
-                        .setContextKey(contextKey)
-                        .setPayload(jsonNode)
-                )
-                .retrieve().bodyToMono(ContextSchemaShortInfo.class).block();
+            .uri("/context-schema/actualize")
+            .bodyValue(new ContextSchemaRefreshRequest()
+                .setIntegrationPointId(integrationPointKey)
+                .setContextKey(contextKey)
+                .setPayload(jsonNode)
+            )
+            .retrieve().bodyToMono(ContextSchemaShortInfo.class).block();
         return block.getId();
     }
 
     public AnalysisResult debug(String integrationPointKey, DebugRequest request) {
         return analysisServiceWebClient.post()
-                .uri("/analysis/debug")
-                .bodyValue(request)
-                .retrieve().bodyToMono(AnalysisResult.class).block();
+            .uri("/analysis/debug")
+            .bodyValue(request)
+            .retrieve().bodyToMono(AnalysisResult.class).block();
 
 
     }

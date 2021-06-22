@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,10 @@ public class ContextSchemaFacade {
     private final ContextSchemaManager contextSchemaManager;
 
     private final WorkspaceService workspaceService;
+
+    @Qualifier("measurement-service")
+    private final WebClient measurementServiceClient;
+
 
     public List<ContextSchemaBasicInfo> getByWorkspace(String workspaceId, boolean shortForm) {
         return contextSchemaManager.getAllByWorkspaceId(workspaceId, shortForm).stream()
@@ -128,6 +134,7 @@ public class ContextSchemaFacade {
             log.warn("Integration point key : {} Schema {} contains undefined values", integrationPointKey, payload.getPayload());
         }
 
+
         String hash = StringUtils.isNoneBlank(payload.getContextKey()) ? payload.getContextKey() : contextSchemaManager.computeHash(resolvedSchema);
         resolvedSchema.setHash(hash);
         ContextSchemaHolder existedSchema = contextSchemaManager.findByHash(integrationPointKey, hash);
@@ -144,7 +151,7 @@ public class ContextSchemaFacade {
             actualizedContext = contextSchemaManager.updateContextSchema(existedSchema.getId(), resolvedSchema);
         }
 
-
+        acknowledgeContextParticipant(existedSchema);
         return new ContextSchemaShortInfo().setId(actualizedContext.getId()).setIntegrationPointKey(integrationPointKey).setHash(actualizedContext.getHash());
     }
 
@@ -186,4 +193,13 @@ public class ContextSchemaFacade {
         return inlineType.getRootType() != SchemaNodeType.UNDEFINED || inlineType.getSubType() != SchemaNodeType.UNDEFINED;
     }
 
+
+    private void acknowledgeContextParticipant(ContextSchemaHolder contextSchemaHolder) {
+        measurementServiceClient.post()
+            .uri("/participant")
+            .bodyValue(contextSchemaHolder)
+            .retrieve()
+            .bodyToMono(Void.class)
+            .block();
+    }
 }

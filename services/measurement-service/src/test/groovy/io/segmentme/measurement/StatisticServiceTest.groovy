@@ -6,6 +6,7 @@ import io.segmentme.measurement.domain.ParticipantStatistic
 import io.segmentme.measurement.repository.ContextStatisticsRepository
 import io.segmentme.measurement.repository.ParticipantsStatisticRepository
 import io.segmentme.measurement.repository.StatisticRepository
+import io.segmentme.measurement.service.ParticipantStatisticService
 import io.segmentme.measurement.service.StatisticService
 import org.apache.commons.lang3.RandomUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +27,8 @@ class StatisticServiceTest extends AccessServiceMock {
     private StatisticRepository repository
     @Autowired
     private StatisticService statisticService;
+    @Autowired
+    private ParticipantStatisticService participantStatisticService;
 
     @Autowired
     private ContextStatisticsRepository contextStatisticsRepository;
@@ -40,7 +43,7 @@ class StatisticServiceTest extends AccessServiceMock {
         participantStatistic.sort(Comparator.comparing((ParticipantStatistic p) -> p.getLastModifiedDate()).reversed())
         def expectedToInclude = participantStatistic.findAll { it -> it.getLastSegmentStatistic().get(0).analysisResult }.collect().subList(0, 3)
         when:
-        statisticService.includeUsersToSegment(3, SEGMENT_ID, CONTEXT_ID)
+        participantStatisticService.includeParticipantIntoSegment(3, SEGMENT_ID, CONTEXT_ID)
         then:
         participantsStatisticRepository.findAll().forEach(saved -> {
             if (expectedToInclude.find { expected -> expected.getUniquenessValue() == saved.getUniquenessValue() }) {
@@ -67,7 +70,7 @@ class StatisticServiceTest extends AccessServiceMock {
         participantStatistic.sort(Comparator.comparing((ParticipantStatistic p) -> p.getLastModifiedDate()))
         def expectedToInclude = participantStatistic.findAll { it -> it.getLastSegmentStatistic().get(0).analysisResult }.collect().subList(0, 3)
         when:
-        statisticService.excludeUsersFromSegment(3, SEGMENT_ID, CONTEXT_ID)
+        participantStatisticService.excludeParticipantFromSegment(3, SEGMENT_ID, CONTEXT_ID)
         then:
         participantsStatisticRepository.findAll().forEach(saved -> {
             if (expectedToInclude.find { expected -> expected.getUniquenessValue() == saved.getUniquenessValue() }) {

@@ -33,6 +33,12 @@ segmentme:
             readTimeOut: 10000  #milisecond
             writeTimeOut: 10000 #milisecond
           host: ${ACCESS_SERVICE_HOST:http://localhost:8085}
+        measurement-service:
+          connection:
+            connectTimeOut: 20000  #milisecond
+            readTimeOut: 10000  #milisecond
+            writeTimeOut: 10000 #milisecond
+          host: ${MEASUREMENT_SERVICE_HOST:http://localhost:8083}
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}

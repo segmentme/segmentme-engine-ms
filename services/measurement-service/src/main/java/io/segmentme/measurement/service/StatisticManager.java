@@ -14,7 +14,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -30,27 +29,12 @@ public class StatisticManager {
     private final StatisticService statisticService;
 
     private final SegmentService segmentService;
+    private final ParticipantStatisticService participantStatisticService;
 
     private final AnalyzedDataService analyzedDataService;
     private List<StatisticLog> statisticLogs = Collections.synchronizedList(new ArrayList<>());
     private List<AnalyzedData> analyzedDatas = Collections.synchronizedList(new ArrayList<>());
 
-
-    public void createParticipantIfNeeded(CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder) {
-        if (StringUtils.isEmpty(contextDataHolder.getUniquenessIndicator())) {
-            return;
-        }
-        Object value = contextDataHolder.getValues().get(contextDataHolder.getUniquenessIndicator());
-        ParticipantStatistic participant = statisticService.getParticipant(contextDataHolder.getContextId(), value);
-        if (participant != null) {
-            return;
-        }
-        participant = new ParticipantStatistic();
-        participant.setContextId(contextDataHolder.getContextId());
-        participant.setUniquenessIndicator(contextDataHolder.getUniquenessIndicator());
-        participant.setUniquenessValue(value);
-        statisticService.createParticipant(participant);
-    }
 
     public void saveStatistic(CollectedAnalysysStatisticDto collectedStatistic) {
         AnalyzedData analyzedData = aggregateAnalyzedData(collectedStatistic);
@@ -90,13 +74,13 @@ public class StatisticManager {
         participant.setLastSegmentStatistic(statisticLog.getSegmentStatistics());
         participant.setUniquenessIndicator(contextDataHolder.getUniquenessIndicator());
         participant.setUniquenessValue(participantIdentifier);
-        statisticService.update(participant);
+        participantStatisticService.update(participant);
     }
 
 
     public void redistributePercentage(String contextId, String segmentId, int percentage) {
         ContextStatistic contextStatistic = statisticService.findContextStatistic(contextId);
-        long inSegmentCounts = statisticService.participantsInSegmentCounts(segmentId);
+        long inSegmentCounts = participantStatisticService.participantsInSegmentCounts(segmentId);
         long totalParticipants = contextStatistic.getTotalParticipants();
         long usersShouldBeIncluded = percentage * totalParticipants / 100;
 
@@ -105,9 +89,9 @@ public class StatisticManager {
         }
         int modAmount = (int) Math.abs(usersShouldBeIncluded - inSegmentCounts);
         if (usersShouldBeIncluded > inSegmentCounts) {
-            statisticService.includeUsersToSegment(modAmount, segmentId, contextId);
+            participantStatisticService.includeParticipantIntoSegment(modAmount, segmentId, contextId);
         } else {
-            statisticService.excludeUsersFromSegment(modAmount, segmentId, contextId);
+            participantStatisticService.excludeParticipantFromSegment(modAmount, segmentId, contextId);
         }
     }
 
