@@ -1,5 +1,5 @@
-def springVersion = '2.4.1'
-def springCloudVersion = '2020.0.0'
+def springVersion = '2.5.1'
+def springCloudVersion = '2020.0.3'
 
 def settings = [
     [name: ':dependencies:mongo-auto-configuration', isJava: true],
