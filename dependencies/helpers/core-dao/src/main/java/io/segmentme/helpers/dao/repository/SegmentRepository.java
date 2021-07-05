@@ -16,4 +16,6 @@ public interface SegmentRepository extends MongoRepository<Segment, String> {
     List<Segment> findByContextId(String contextId);
 
     Segment findByIntegrationPointKeyAndName(String integrationPointKey, String name);
+
+    List<Segment> findByOpenedForPercentageLessThan(int percentage);
 }
