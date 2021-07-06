@@ -48,11 +48,11 @@ public class ContextSchemaManager {
 
     private final ObjectMapper objectMapper;
 
-    public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload) {
-        return create(integrationPointKey, root, name, rawPayload, null);
+    public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload, String uniquenessIndicator) {
+        return create(integrationPointKey, root, name, rawPayload, null, uniquenessIndicator);
     }
 
-    public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload, String hash) {
+    public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload, String hash, String uniquenessIndicator) {
         if (workspaceService.findByIntegrationPointKey(integrationPointKey).isEmpty()) {
             throw new ContextSchemaManagerException().setCode(INTEGRATION_POINT_NOT_FOUND);
         }
@@ -61,6 +61,7 @@ public class ContextSchemaManager {
         contextSchema.setName(name);
         contextSchema.setHash(hash == null ? this.computeHash(contextSchema) : hash);
         contextSchema.setRawPayload(rawPayload);
+        contextSchema.setUniquenessIndicator(uniquenessIndicator);
 
         if (StringUtils.isNoneBlank(rawPayload)) {
 
@@ -106,14 +107,14 @@ public class ContextSchemaManager {
     }
 
     public ContextSchemaHolder resolveContextSchema(String workspaceId, JsonNode jsonNode) {
-        Workspace workspace = workspaceService.findById(workspaceId).orElseThrow(()->new ContextSchemaManagerException().setCode(WORKSPACE_NOT_FOUND));
+        Workspace workspace = workspaceService.findById(workspaceId).orElseThrow(() -> new ContextSchemaManagerException().setCode(WORKSPACE_NOT_FOUND));
         return resolveContextSchema(workspace, jsonNode);
     }
 
     public ContextSchemaHolder resolveContextSchema(Workspace workspace, String rawPayload) {
         JsonNode jsonNode;
         try {
-             jsonNode = objectMapper.readValue(rawPayload, JsonNode.class);
+            jsonNode = objectMapper.readValue(rawPayload, JsonNode.class);
         } catch (Exception ex) {
             throw new ContextSchemaManagerException().setCode(INVALID_JSON);
         }

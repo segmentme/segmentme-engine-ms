@@ -13,4 +13,6 @@ public class ContextSchemaCreateRequest {
 
     private String name;
 
+    private String uniquenessIndicator;
+
 }

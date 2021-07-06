@@ -82,7 +82,7 @@ public class ContextSchemaFacade {
     }
 
     public ContextSchemaBasicInfo create(ContextSchemaCreateRequest request) {
-        ContextSchemaHolder contextSchemaHolder = contextSchemaManager.create(request.getIntegrationPointKey(), request.getRootNode(), request.getName(), request.getRawPayload());
+        ContextSchemaHolder contextSchemaHolder = contextSchemaManager.create(request.getIntegrationPointKey(), request.getRootNode(), request.getName(), request.getRawPayload(), request.getUniquenessIndicator());
         return this.convertToBasicDto(contextSchemaHolder);
     }
 
