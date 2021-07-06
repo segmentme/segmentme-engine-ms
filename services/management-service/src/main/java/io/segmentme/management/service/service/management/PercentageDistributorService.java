@@ -31,8 +31,8 @@ public class PercentageDistributorService {
 
     @Scheduled(cron = "0 0/5 * * * ?")
     public void redistributePercentage() {
-
         List<Segment> segments = segmentRepository.findByOpenedForPercentageLessThan(100);
+        log.info("Redistribute percentage for {} segments", segments.size());
         segments.forEach(segment -> {
             Optional.ofNullable(measurementServiceWebClient.put()
                 .uri(builder -> builder.path(REDISTRIBUTE_PERCENTAGE_PATH)
