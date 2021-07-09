@@ -7,7 +7,6 @@ import io.segmentme.analysis.dto.SegmentAnalysisResult;
 import io.segmentme.analysis.dto.conditions.SegmentConditionDto;
 import io.segmentme.analysis.dto.segment.SegmentDto;
 import io.segmentme.helpers.dao.service.SegmentService;
-import io.segmentme.measurement.domain.ContextStatistic;
 import io.segmentme.measurement.domain.ParticipantStatistic;
 import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Data;
@@ -78,24 +77,6 @@ public class StatisticManager {
     }
 
 
-    public void redistributePercentage(String contextId, String segmentId, int percentage) {
-        ContextStatistic contextStatistic = statisticService.findContextStatistic(contextId);
-        long inSegmentCounts = participantStatisticService.participantsInSegmentCounts(segmentId);
-        long totalParticipants = contextStatistic.getTotalParticipants();
-        long usersShouldBeIncluded = percentage * totalParticipants / 100;
-
-        if (usersShouldBeIncluded == inSegmentCounts) {
-            return;
-        }
-        int modAmount = (int) Math.abs(usersShouldBeIncluded - inSegmentCounts);
-        if (usersShouldBeIncluded > inSegmentCounts) {
-            participantStatisticService.includeParticipantIntoSegment(modAmount, segmentId, contextId);
-        } else {
-            participantStatisticService.excludeParticipantFromSegment(modAmount, segmentId, contextId);
-        }
-    }
-
-
     public void flush() {
         statisticService.update(statisticLogs);
         log.info("Saved {} statisticLogs", statisticLogs.size());
@@ -112,6 +93,7 @@ public class StatisticManager {
         analyzedData.setNodeValues(prepareNodeValues(collectedStatistic.getContextDataHolder().getValues()));
         analyzedData.setClientId(collectedStatistic.getClientId());
         analyzedData.setIntegrationPointKey(collectedStatistic.getIntegrationPointKey());
+        analyzedData.setContextId(collectedStatistic.getContextDataHolder().getContextId());
         analyzedData.setAnalyzedSegments(collectedStatistic.getAnalyzedSegments()
             .stream()
             .map(SegmentDto::getId).collect(Collectors.toList()));

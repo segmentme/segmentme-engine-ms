@@ -150,8 +150,9 @@ public class ContextSchemaFacade {
             resolveUnknownProperties(resolvedSchema, existedSchema);
             actualizedContext = contextSchemaManager.updateContextSchema(existedSchema.getId(), resolvedSchema);
         }
-
-        acknowledgeContextParticipant(existedSchema);
+        if (StringUtils.isNoneBlank(existedSchema.getUniquenessIndicator())) {
+            acknowledgeContextParticipant(existedSchema);
+        }
         return new ContextSchemaShortInfo().setId(actualizedContext.getId()).setIntegrationPointKey(integrationPointKey).setHash(actualizedContext.getHash());
     }
 

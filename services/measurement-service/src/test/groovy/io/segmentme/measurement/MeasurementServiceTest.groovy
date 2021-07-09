@@ -9,6 +9,7 @@ import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.measurement.repository.ContextStatisticsRepository
 import io.segmentme.measurement.repository.ParticipantsStatisticRepository
 import io.segmentme.measurement.repository.StatisticRepository
+import io.segmentme.measurement.service.MeasurementService
 import io.segmentme.measurement.service.ParticipantStatisticService
 import io.segmentme.measurement.service.StatisticManager
 import io.segmentme.measurement.service.StatisticService
@@ -24,12 +25,13 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 @SpringBootTest(classes = [TestConfiguration.class])
-class StatisticManagerTest extends AccessServiceMock {
+class MeasurementServiceTest extends AccessServiceMock {
 
     public static final String CONTEXT_ID = "contextId"
     public static final Integer EXPECTED_PERCENTAGE = 20
     public static final String SEGMENT_ID_TO_OPEN = "3"
     public static final String UNIQUENESS_INDICATOR = "user.id"
+    public static final String UNIQUENESS_INDICATOR2 = "user.email"
     public static final String CLIENT_ID = "clientId"
     public static final String IP_KEY = UUID.randomUUID().toString()
     public static final String WORKSPACE_ID = UUID.randomUUID().toString()
@@ -40,6 +42,9 @@ class StatisticManagerTest extends AccessServiceMock {
 
     @Autowired
     private StatisticManager statisticManager;
+
+    @Autowired
+    private MeasurementService measurementService;
 
     @Autowired
     private ParticipantStatisticService participantStatisticService;
@@ -53,8 +58,43 @@ class StatisticManagerTest extends AccessServiceMock {
     @Autowired
     private ObjectMapper objectMapper;
 
+    def "RefreshParticipants"() {
 
-    def 'Inserting single statistic entry '() {
+        TestData testData = null
+        def statsLogs = (0..50).collect {
+            {
+
+                    if (it % 4 == 0) {
+                        testData = createTestData()
+//                        participantStatisticService.acknowledgeParticipant(generateAnalysisStatisticEntry(testData).getContextDataHolder())
+                    }
+                    CollectedAnalysysStatisticDto collectedAnalysysStatisticDto = generateAnalysisStatisticEntry(testData)
+//                    lastParticipantAnalyse.put(testData.getUser().getId(), collectedAnalysysStatisticDto)
+                    return collectedAnalysysStatisticDto
+            }
+        }
+
+        def pool = Executors.newFixedThreadPool(3);
+        statsLogs.forEach(it -> statisticManager.saveStatistic(it))
+
+
+        try {
+            pool.awaitTermination(5, TimeUnit.SECONDS)
+        } catch (Exception ex) {
+            //mute
+        }
+        statisticManager.flush()
+
+        when:
+
+        measurementService.refreshParticipants(CONTEXT_ID, UNIQUENESS_INDICATOR2)
+
+        then:
+        assert participantsStatisticRepository.findAll() != [];
+
+    }
+
+    def 'Redistribute opened segments percentage'() {
         given:
         Map<String, CollectedAnalysysStatisticDto> lastParticipantAnalyse = new HashMap<>()
         TestData testData = null
@@ -82,7 +122,7 @@ class StatisticManagerTest extends AccessServiceMock {
             //mute
         }
 
-        statisticManager.redistributePercentage(CONTEXT_ID, SEGMENT_ID_TO_OPEN, EXPECTED_PERCENTAGE)
+        measurementService.redistributePercentage(CONTEXT_ID, SEGMENT_ID_TO_OPEN, EXPECTED_PERCENTAGE)
         then:
         def contextStatistic = contextStatisticsRepository.findByContextId(CONTEXT_ID)
         assert contextStatistic.getTotalParticipants() == lastParticipantAnalyse.keySet().size()
@@ -110,7 +150,7 @@ class StatisticManagerTest extends AccessServiceMock {
         CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder = new CollectedAnalysysStatisticDto.ContextDataHolder();
         contextDataHolder.setContextId(CONTEXT_ID)
         contextDataHolder.setUniquenessIndicator(UNIQUENESS_INDICATOR)
-        contextDataHolder.setValues([(UNIQUENESS_INDICATOR): testData.user.id])
+        contextDataHolder.setValues([(UNIQUENESS_INDICATOR): testData.user.id,(UNIQUENESS_INDICATOR2): testData.user.email])
         contextDataHolder.setKnownTypes([(UNIQUENESS_INDICATOR): InlineType.of(SchemaNodeType.STRING, null)])
         contextDataHolder.setExtractedValues([(UNIQUENESS_INDICATOR): testData.user.id])
         collectedAnalysysStatisticDto.setContextDataHolder(contextDataHolder)
@@ -134,6 +174,7 @@ class StatisticManagerTest extends AccessServiceMock {
     public TestData createTestData() {
         def testUser = new TestUser()
         testUser.id = UUID.randomUUID().toString()
+        testUser.email = UUID.randomUUID().toString()
 
         def data = new TestData()
         data.user = testUser

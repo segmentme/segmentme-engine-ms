@@ -11,5 +11,4 @@ public interface AnalyzedDataRepository extends MongoRepository<AnalyzedData, St
 
     List<AnalyzedData> findByHashIn(List<String> hash);
 
-
 }

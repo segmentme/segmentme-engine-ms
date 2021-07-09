@@ -21,6 +21,9 @@ public class AnalyzedData extends DbObject {
     @Indexed
     private String integrationPointKey;
 
+    @Indexed
+    private String contextId;
+
     private List<String> analyzedSegments;
 
     @Indexed(unique = true)
