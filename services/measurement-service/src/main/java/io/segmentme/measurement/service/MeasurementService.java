@@ -4,6 +4,7 @@ import io.segmentme.analysis.domain.statistic.StatisticLog;
 import io.segmentme.core.db.service.AbstractDatabaseService;
 import io.segmentme.measurement.domain.ContextStatistic;
 import io.segmentme.measurement.domain.ParticipantStatistic;
+import io.segmentme.measurement.repository.ContextStatisticsRepository;
 import io.segmentme.measurement.repository.StatisticRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,8 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
 
     private final MongoTemplate mongoTemplate;
 
+    private ContextStatisticsRepository contextStatisticsRepository;
+
     public void redistributePercentage(String contextId, String segmentId, int percentage) {
         ContextStatistic contextStatistic = statisticService.findContextStatistic(contextId);
         long inSegmentCounts = participantStatisticService.participantsInSegmentCounts(segmentId);
@@ -50,6 +53,10 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
     }
 
     public void refreshParticipants(String contextId, String uniquenessIdentifier) {
+        ContextStatistic contextStatistic = contextStatisticsRepository.findByContextId(contextId);
+        contextStatistic.setTotalParticipants(0);
+        contextStatisticsRepository.save(contextStatistic);
+
         String identifierPath = NODE_VALUES + uniquenessIdentifier.replace(".", "#");
         MatchOperation match = match(Criteria.where(PROP_CONTEXT_ID).is(contextId).and(identifierPath).exists(true));
         GroupOperation groupOperation = group(PROP_CONTEXT_ID, HASH).first(identifierPath).as(ID);
@@ -69,6 +76,7 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
 
             page++;
         }
+
     }
 
     private List<ParticipantCandidate> getNextPageResult(int page, int pageSize, String contextId, String uniquenessIdentifier) {
