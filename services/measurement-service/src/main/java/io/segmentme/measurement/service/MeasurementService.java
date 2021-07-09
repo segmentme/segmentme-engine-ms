@@ -33,7 +33,7 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
 
     private final MongoTemplate mongoTemplate;
 
-    private ContextStatisticsRepository contextStatisticsRepository;
+    private final ContextStatisticsRepository contextStatisticsRepository;
 
     public void redistributePercentage(String contextId, String segmentId, int percentage) {
         ContextStatistic contextStatistic = statisticService.findContextStatistic(contextId);
@@ -72,6 +72,7 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
             List<ParticipantCandidate> participantsToCreate = getNextPageResult(page, pageSize, contextId, uniquenessIdentifier);
             participantsToCreate.forEach(it -> {
                 participantStatisticService.createParticipant(new ParticipantStatistic().setContextId(contextId).setUniquenessIndicator(uniquenessIdentifier).setUniquenessValue(it.getId()));
+                //fetch last segment statistic
             });
 
             page++;
