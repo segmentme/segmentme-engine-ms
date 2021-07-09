@@ -16,6 +16,7 @@ import io.segmentme.management.service.converter.ContextSchemaConverter;
 import io.segmentme.management.service.dto.context.ContextSchemaHolder;
 import io.segmentme.management.service.exception.ContextSchemaManagerException;
 import io.segmentme.management.service.exception.error.ContextMangerErrors;
+import io.segmentme.management.service.service.clients.MeasurementClient;
 import io.segmentme.management.service.service.segment.SegmentManager;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import io.segmentme.models.shared.analysis.SchemaNodeType;
@@ -47,6 +48,8 @@ public class ContextSchemaManager {
     private final ContextValuesExtractor contextValuesExtractor;
 
     private final ObjectMapper objectMapper;
+
+    private final MeasurementClient measurementClient;
 
     public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload, String uniquenessIndicator) {
         return create(integrationPointKey, root, name, rawPayload, null, uniquenessIndicator);
@@ -85,6 +88,7 @@ public class ContextSchemaManager {
     public ContextSchemaHolder updateContextSchema(String id, ContextSchemaHolder holder) {
         return contextSchemaService.findById(id).map(it -> {
             ContextSchema contextSchema = contextSchemaResolver.resolve(holder.getRootNode());
+            boolean uniquenessIdentifierChanged = StringUtils.equals(it.getUniquenessIndicator(), holder.getUniquenessIndicator());
             it.setInlinePath(contextSchema.getInlinePath());
             it.setRootNode(contextSchema.getRootNode());
             it.setHash(holder.getHash() == null ? this.computeHash(contextSchema) : holder.getHash());
@@ -92,9 +96,15 @@ public class ContextSchemaManager {
             it.setUniquenessIndicator(holder.getUniquenessIndicator());
             it.setName(holder.getName());
             it.setRawPayload(Optional.ofNullable(holder.getRawPayload()).filter(StringUtils::isNoneBlank).orElse(it.getRawPayload()));
+
+            if (uniquenessIdentifierChanged) {
+                measurementClient.refreshContextParticipants(it.getId(), it.getUniquenessIndicator());
+            }
+
             return it;
         }).map(contextSchemaService::update)
-            .map(ContextSchemaConverter::toHolder).orElseThrow(() -> new ContextSchemaManagerException().setCode(ContextMangerErrors.CONTEXT_NOT_FOUND));
+            .map(ContextSchemaConverter::toHolder)
+            .orElseThrow(() -> new ContextSchemaManagerException().setCode(ContextMangerErrors.CONTEXT_NOT_FOUND));
     }
 
     public ContextSchemaHolder resolveContextSchema(Workspace workspace, JsonNode jsonNode) {
