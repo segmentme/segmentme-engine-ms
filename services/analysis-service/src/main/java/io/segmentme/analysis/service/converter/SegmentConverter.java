@@ -22,6 +22,7 @@ public class SegmentConverter {
                 .setConditions(source.getConditions().stream().map(ConditionConverter::of).collect(Collectors.toList()))
                 .setHash(Optional.ofNullable(source.getHash()).orElseGet(() -> UUID.randomUUID().toString()))
                 .setDescription(source.getDescription())
+                .setOpenedForPercentage(source.getOpenedForPercentage())
                 .setId(source.getId());
     }
 
@@ -35,6 +36,7 @@ public class SegmentConverter {
                 .setMatchResult(source.isMatchResult())
                 .setDescription(source.getDescription())
                 .setIntegrationPointKey(source.getIntegrationPointKey())
+                .setOpenedForPercentage(source.getOpenedForPercentage())
                 .setConditions(source.getConditions().stream().map(ConditionConverter::of).collect(Collectors.toList()));
     }
 }

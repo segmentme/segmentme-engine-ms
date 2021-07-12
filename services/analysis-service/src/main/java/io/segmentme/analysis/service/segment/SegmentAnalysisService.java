@@ -59,7 +59,7 @@ public class SegmentAnalysisService {
         String uniquenessIndicator = context.getSchema().getUniquenessIndicator();
 
         if (segmentValue && segment.getOpenedForPercentage() < 100 && uniquenessIndicator != null) {
-            var participantStatistic = findParticipantStatistic(segment.getContextId(), context.getValues().get(uniquenessIndicator));
+            var participantStatistic = findParticipantStatistic(context.getSchema().getId(), context.getValues().get(uniquenessIndicator));
 
             if (participantStatistic.isEmpty()) {
                 return true;
