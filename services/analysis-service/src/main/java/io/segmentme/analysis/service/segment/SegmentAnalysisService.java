@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -58,7 +59,7 @@ public class SegmentAnalysisService {
     private boolean isOpenFor(ContextValueHolder context, Segment segment, boolean segmentValue) {
         String uniquenessIndicator = context.getSchema().getUniquenessIndicator();
 
-        if (segmentValue && segment.getOpenedForPercentage() < 100 && uniquenessIndicator != null) {
+        if (segmentValue && segment.getOpenedForPercentage() < 100 && Objects.nonNull(segment.getId()) && uniquenessIndicator != null) {
             var participantStatistic = findParticipantStatistic(context.getSchema().getId(), context.getValues().get(uniquenessIndicator));
 
             if (participantStatistic.isEmpty()) {
