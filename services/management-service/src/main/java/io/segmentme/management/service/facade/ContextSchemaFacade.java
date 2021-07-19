@@ -5,6 +5,7 @@ import io.segmentme.core.domain.context.SchemaNode;
 import io.segmentme.core.domain.workpsace.Workspace;
 import io.segmentme.helpers.dao.service.WorkspaceService;
 import io.segmentme.management.service.context.ContextSchemaManager;
+import io.segmentme.management.service.dto.ParticipantAcknowledgeRequest;
 import io.segmentme.management.service.dto.context.*;
 import io.segmentme.management.service.exception.ContextSchemaManagerException;
 import io.segmentme.models.shared.analysis.InlineType;
@@ -147,12 +148,17 @@ public class ContextSchemaFacade {
             resolvedSchema.setName(existedSchema.getName());
             resolvedSchema.setIntegrationPointKey(integrationPointKey);
             resolvedSchema.setRawPayload(payloadAsString);
+            resolvedSchema.setUniquenessIndicator(existedSchema.getUniquenessIndicator());
             resolveUnknownProperties(resolvedSchema, existedSchema);
             actualizedContext = contextSchemaManager.updateContextSchema(existedSchema.getId(), resolvedSchema);
         }
-        if (StringUtils.isNoneBlank(existedSchema.getUniquenessIndicator())) {
-            acknowledgeContextParticipant(existedSchema);
+
+        if (StringUtils.isNoneBlank(actualizedContext.getUniquenessIndicator())) {
+            acknowledgeContextParticipant(new ParticipantAcknowledgeRequest()
+                .setContextId(actualizedContext.getId())
+                .setValues(contextSchemaManager.getNodeValues(resolvedSchema.getInlinePath(), payload.getPayload())).setUniquenessIndicator(resolvedSchema.getUniquenessIndicator()));
         }
+
         return new ContextSchemaShortInfo().setId(actualizedContext.getId()).setIntegrationPointKey(integrationPointKey).setHash(actualizedContext.getHash());
     }
 
@@ -195,12 +201,14 @@ public class ContextSchemaFacade {
     }
 
 
-    private void acknowledgeContextParticipant(ContextSchemaHolder contextSchemaHolder) {
+    private void acknowledgeContextParticipant(ParticipantAcknowledgeRequest acknowledgeRequest) {
         measurementServiceClient.post()
             .uri("/participant")
-            .bodyValue(contextSchemaHolder)
+            .bodyValue(acknowledgeRequest)
             .retrieve()
             .bodyToMono(Void.class)
             .block();
     }
+
+
 }

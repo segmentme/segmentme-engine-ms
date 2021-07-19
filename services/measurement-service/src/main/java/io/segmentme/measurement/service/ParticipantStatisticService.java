@@ -1,10 +1,10 @@
 package io.segmentme.measurement.service;
 
-import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
 import io.segmentme.core.db.service.AbstractDatabaseService;
 import io.segmentme.core.domain.DbObject;
 import io.segmentme.measurement.domain.ContextStatistic;
 import io.segmentme.measurement.domain.ParticipantStatistic;
+import io.segmentme.measurement.dto.ParticipantAcknowledgeRequest;
 import io.segmentme.measurement.repository.ParticipantsStatisticRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class ParticipantStatisticService extends AbstractDatabaseService<Partici
 
     private final MongoTemplate mongoTemplate;
 
-    public void acknowledgeParticipant(CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder) {
+    public void acknowledgeParticipant(ParticipantAcknowledgeRequest contextDataHolder) {
         if (StringUtils.isEmpty(contextDataHolder.getUniquenessIndicator())) {
             return;
         }

@@ -6,6 +6,7 @@ import io.segment.security.mock.AccessServiceMock
 import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto
 import io.segmentme.analysis.dto.SegmentAnalysisResult
 import io.segmentme.analysis.dto.segment.SegmentDto
+import io.segmentme.measurement.dto.ParticipantAcknowledgeRequest
 import io.segmentme.measurement.repository.ContextStatisticsRepository
 import io.segmentme.measurement.repository.ParticipantsStatisticRepository
 import io.segmentme.measurement.repository.StatisticRepository
@@ -103,7 +104,7 @@ class MeasurementServiceTest extends AccessServiceMock {
 
                 if (it % 4 == 0) {
                     testData = createTestData()
-                    participantStatisticService.acknowledgeParticipant(generateAnalysisStatisticEntry(testData).getContextDataHolder())
+                    participantStatisticService.acknowledgeParticipant(generateParticipantAcknowledge(testData))
                 }
                 CollectedAnalysysStatisticDto collectedAnalysysStatisticDto = generateAnalysisStatisticEntry(testData)
                 lastParticipantAnalyse.put(testData.getUser().getId(), collectedAnalysysStatisticDto)
@@ -139,6 +140,15 @@ class MeasurementServiceTest extends AccessServiceMock {
         })
     }
 
+
+    private ParticipantAcknowledgeRequest generateParticipantAcknowledge(TestData testData) {
+        ParticipantAcknowledgeRequest participantAcknowledgeRequest = new ParticipantAcknowledgeRequest()
+        participantAcknowledgeRequest.setContextId(CONTEXT_ID)
+        participantAcknowledgeRequest.setUniquenessIndicator(UNIQUENESS_INDICATOR)
+        participantAcknowledgeRequest.setValues([(UNIQUENESS_INDICATOR): testData.user.id,(UNIQUENESS_INDICATOR2): testData.user.email])
+
+        return participantAcknowledgeRequest;
+    }
 
     private CollectedAnalysysStatisticDto generateAnalysisStatisticEntry(TestData testData) {
         CollectedAnalysysStatisticDto collectedAnalysysStatisticDto = new CollectedAnalysysStatisticDto()

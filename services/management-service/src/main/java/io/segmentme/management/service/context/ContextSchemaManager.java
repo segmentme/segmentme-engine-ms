@@ -18,6 +18,7 @@ import io.segmentme.management.service.exception.ContextSchemaManagerException;
 import io.segmentme.management.service.exception.error.ContextMangerErrors;
 import io.segmentme.management.service.service.clients.MeasurementClient;
 import io.segmentme.management.service.service.segment.SegmentManager;
+import io.segmentme.models.shared.analysis.InlineType;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import io.segmentme.models.shared.analysis.SchemaNodeType;
 import lombok.RequiredArgsConstructor;
@@ -68,27 +69,34 @@ public class ContextSchemaManager {
 
         if (StringUtils.isNoneBlank(rawPayload)) {
 
-
-            try {
-                JsonNode rawContext = objectMapper.readValue(rawPayload, JsonNode.class);
-                contextSchema.setNodeValues(
-                    getNodeValues(contextSchema, contextValuesExtractor.extractValues(rawContext, null, null))
-                        .entrySet()
-                        .stream()
-                        .filter(it -> it != null && !CriteriaValueLocatorException.class.equals(it.getValue().getClass())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                );
-            } catch (JsonProcessingException e) {
-                log.error("Unable to parse json", e);
-            }
+            contextSchema.setNodeValues(getNodeValues(contextSchema, rawPayload));
         }
 
         return ContextSchemaConverter.toHolder(contextSchemaService.create(contextSchema));
     }
 
+    private Map<String, Object> getNodeValues(ContextSchema contextSchema, String rawPayload) {
+        try {
+            JsonNode rawContext = objectMapper.readValue(rawPayload, JsonNode.class);
+            return getNodeValues(contextSchema.getInlinePath(), rawContext);
+        } catch (JsonProcessingException e) {
+            log.error("Unable to parse json", e);
+            return null;
+        }
+    }
+
+    public Map<String, Object> getNodeValues(Map<String, InlineType> inlinePath, JsonNode rawContext) {
+        return getNodeValues(inlinePath, contextValuesExtractor.extractValues(rawContext, null, null))
+            .entrySet()
+            .stream()
+            .filter(it -> it != null && !CriteriaValueLocatorException.class.equals(it.getValue().getClass())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+
     public ContextSchemaHolder updateContextSchema(String id, ContextSchemaHolder holder) {
         return contextSchemaService.findById(id).map(it -> {
             ContextSchema contextSchema = contextSchemaResolver.resolve(holder.getRootNode());
-            boolean uniquenessIdentifierChanged = StringUtils.equals(it.getUniquenessIndicator(), holder.getUniquenessIndicator());
+            boolean uniquenessIdentifierChanged = !StringUtils.equals(it.getUniquenessIndicator(), holder.getUniquenessIndicator());
             it.setInlinePath(contextSchema.getInlinePath());
             it.setRootNode(contextSchema.getRootNode());
             it.setHash(holder.getHash() == null ? this.computeHash(contextSchema) : holder.getHash());
@@ -96,7 +104,7 @@ public class ContextSchemaManager {
             it.setUniquenessIndicator(holder.getUniquenessIndicator());
             it.setName(holder.getName());
             it.setRawPayload(Optional.ofNullable(holder.getRawPayload()).filter(StringUtils::isNoneBlank).orElse(it.getRawPayload()));
-
+            //todo [vk]: probably need to mute exception? xz
             if (uniquenessIdentifierChanged) {
                 measurementClient.refreshContextParticipants(it.getId(), it.getUniquenessIndicator());
             }
@@ -167,6 +175,12 @@ public class ContextSchemaManager {
 
     private Map<String, Object> getNodeValues(ContextSchema contextSchema, ContextValueHolder payload) {
         return contextSchema.getInlinePath().entrySet().stream()
+            .filter(it -> it.getValue().getRootType() != SchemaNodeType.OBJECT && it.getValue().getSubType() != SchemaNodeType.OBJECT)
+            .collect(HashMap::new, (m, v) -> m.put(v.getKey(), payload.getValue(v.getKey())), HashMap::putAll);
+    }
+
+    private Map<String, Object> getNodeValues(Map<String, InlineType> inlinePath, ContextValueHolder payload) {
+        return inlinePath.entrySet().stream()
             .filter(it -> it.getValue().getRootType() != SchemaNodeType.OBJECT && it.getValue().getSubType() != SchemaNodeType.OBJECT)
             .collect(HashMap::new, (m, v) -> m.put(v.getKey(), payload.getValue(v.getKey())), HashMap::putAll);
     }
