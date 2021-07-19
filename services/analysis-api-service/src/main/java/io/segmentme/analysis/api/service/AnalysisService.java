@@ -29,6 +29,8 @@ public class AnalysisService {
         SdkAnalysisResponse response = new SdkAnalysisResponse();
         if (StringUtils.isEmpty(sdkAnalysisRequest.getContextId())) {
             response.setContextId(actualizeSchema(sdkAnalysisRequest.getContextKey(), integrationPointKey, sdkAnalysisRequest.getAnalysisData().getPayload()));
+        } else {
+            response.setContextId(sdkAnalysisRequest.getContextId());
         }
 
         AnalysisResult block = analysisServiceWebClient.post()
