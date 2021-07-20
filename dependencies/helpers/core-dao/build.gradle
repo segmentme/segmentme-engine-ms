@@ -1,3 +1,4 @@
+//todo vk : rethink usage of core services modules due to it lead to service coupling.
 dependencies {
     api project(':dependencies:models:entities:core-domain')
 }
