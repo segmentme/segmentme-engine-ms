@@ -1,4 +1,4 @@
-package io.segmentme.management.service.service.management;
+package io.segmentme.management.service.service.workers;
 
 import io.segmentme.core.domain.segment.Segment;
 import io.segmentme.helpers.dao.repository.SegmentRepository;

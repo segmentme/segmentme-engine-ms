@@ -1,4 +1,4 @@
-package io.segmentme.management.service.dto;
+package io.segmentme.management.service.service.clients.dto;
 
 import lombok.Data;
 
