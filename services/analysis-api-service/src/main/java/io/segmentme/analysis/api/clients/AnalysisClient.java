@@ -8,9 +8,11 @@ import io.segmentme.analysis.dto.DebugRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Data
+@Component
 @RequiredArgsConstructor
 public class AnalysisClient {
     private static final String ANALYZE_PATH = "/analysis/analyze";
