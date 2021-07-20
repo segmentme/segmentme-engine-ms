@@ -62,7 +62,14 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
         GroupOperation groupOperation = group(PROP_CONTEXT_ID, HASH).first(identifierPath).as(ID);
 
         Aggregation aggregation = Aggregation.newAggregation(match, groupOperation, count().as("contextId"));
-        String result = mongoTemplate.aggregate(aggregation, "analyzedData", ParticipantCandidate.class).iterator().next().contextId;
+        var analyzedData = mongoTemplate.aggregate(aggregation, "analyzedData", ParticipantCandidate.class).iterator();
+
+        String result = null;
+
+        if (analyzedData.hasNext()) {
+            result = analyzedData.next().contextId;
+        }
+
         long count = StringUtils.isNotEmpty(result) ? Long.parseLong(result) : 0;
 
         int pageSize = 1000;
