@@ -1,5 +1,6 @@
 package io.segmentme.analysis.api.resource;
 
+import io.segmentme.analysis.api.clients.ManagementClient;
 import io.segmentme.analysis.api.dto.SdkAnalysisRequest;
 import io.segmentme.analysis.api.dto.SdkAnalysisResponse;
 import io.segmentme.analysis.api.service.AnalysisService;
@@ -20,17 +21,19 @@ public class AnalysisController {
 
     private final AnalysisService analysisService;
 
+    private final ManagementClient managementClient;
+
     @PostMapping("/debug")
     public AnalysisResult analyze(@RequestParam String contextId,
                                   @RequestParam String integrationPointKey,
                                   @RequestBody @Valid DebugRequest request) {
         request.setContextId(contextId).setIntegrationPointKey(integrationPointKey);
-        return analysisService.debug(integrationPointKey, request);
+        return analysisService.debug(request);
     }
 
     @GetMapping("/connect")
     public IntegrationPoint connect(@RequestHeader("integration-point-key") String integrationPointKey) {
-        return analysisService.getIntegrationPointKey(integrationPointKey);
+        return managementClient.getIntegrationPointKey(integrationPointKey);
     }
 
     @PostMapping("/analyze")

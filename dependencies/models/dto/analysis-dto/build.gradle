@@ -1,3 +1,4 @@
+//todo vk : rethink usage of common DTO's modules due to it lead to service coupling.
 dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.1'
     api project(':dependencies:models:shared')

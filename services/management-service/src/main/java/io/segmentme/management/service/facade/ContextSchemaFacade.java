@@ -5,18 +5,17 @@ import io.segmentme.core.domain.context.SchemaNode;
 import io.segmentme.core.domain.workpsace.Workspace;
 import io.segmentme.helpers.dao.service.WorkspaceService;
 import io.segmentme.management.service.context.ContextSchemaManager;
-import io.segmentme.management.service.dto.ParticipantAcknowledgeRequest;
 import io.segmentme.management.service.dto.context.*;
 import io.segmentme.management.service.exception.ContextSchemaManagerException;
+import io.segmentme.management.service.service.clients.MeasurementClient;
+import io.segmentme.management.service.service.clients.dto.ParticipantAcknowledgeRequest;
 import io.segmentme.models.shared.analysis.InlineType;
 import io.segmentme.models.shared.analysis.SchemaNodeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Map;
@@ -35,8 +34,7 @@ public class ContextSchemaFacade {
 
     private final WorkspaceService workspaceService;
 
-    @Qualifier("measurement-service")
-    private final WebClient measurementServiceClient;
+    private final MeasurementClient measurementClient;
 
 
     public List<ContextSchemaBasicInfo> getByWorkspace(String workspaceId, boolean shortForm) {
@@ -154,7 +152,7 @@ public class ContextSchemaFacade {
         }
 
         if (StringUtils.isNoneBlank(actualizedContext.getUniquenessIndicator())) {
-            acknowledgeContextParticipant(new ParticipantAcknowledgeRequest()
+            measurementClient.acknowledgeContextParticipant(new ParticipantAcknowledgeRequest()
                 .setContextId(actualizedContext.getId())
                 .setValues(contextSchemaManager.getNodeValues(resolvedSchema.getInlinePath(), payload.getPayload())).setUniquenessIndicator(resolvedSchema.getUniquenessIndicator()));
         }
@@ -199,16 +197,5 @@ public class ContextSchemaFacade {
         InlineType inlineType = inlinePath.get(key);
         return inlineType.getRootType() != SchemaNodeType.UNDEFINED || inlineType.getSubType() != SchemaNodeType.UNDEFINED;
     }
-
-
-    private void acknowledgeContextParticipant(ParticipantAcknowledgeRequest acknowledgeRequest) {
-        measurementServiceClient.post()
-            .uri("/participant")
-            .bodyValue(acknowledgeRequest)
-            .retrieve()
-            .bodyToMono(Void.class)
-            .block();
-    }
-
 
 }
