@@ -7,10 +7,12 @@ import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Data
 @RequiredArgsConstructor
+@Component
 public class ManagementClient {
     private static final String WORKSPACE_INTEGRATION_POINT_INTEGRATION_POINT_KEY_PATH = "/workspace/integration-point?integrationPointKey=";
     private static final String CONTEXT_SCHEMA_ACTUALIZE_PATH = "/context-schema/actualize";
