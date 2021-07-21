@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.LoopResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -22,7 +23,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Optional.ofNullable;
-
 
 @Slf4j
 @Component
@@ -45,11 +45,14 @@ class WebClientBeanFactory {
     private Optional<ReactorClientHttpConnector> buildConnector(WebClientConfigurationProperties.Connection connection) {
         return ofNullable(connection)
                 .map(it -> HttpClient.create()
+                        .runOn(LoopResources.create("wClient"))
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, it.getConnectTimeOut())
-                        .doOnConnected(connect -> connect
+                        .doOnConnected(connect -> connect.markPersistent(false)
                                 .addHandlerLast(new ReadTimeoutHandler(it.getReadTimeOut(), TimeUnit.MILLISECONDS))
                                 .addHandlerLast(new WriteTimeoutHandler(it.getWriteTimeOut(), TimeUnit.MILLISECONDS)))
-                ).map(it -> new ReactorClientHttpConnector(it.wiretap(true)));
+                        .wiretap(true)
+                        .compress(true)
+                ).map(ReactorClientHttpConnector::new);
     }
 
     private ExchangeFilterFunction webClientFilter() {

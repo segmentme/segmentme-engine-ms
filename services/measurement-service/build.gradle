@@ -4,9 +4,6 @@ dependencies {
     api project(':dependencies:models:dto:analysis-dto')
     api project(':dependencies:helpers:core-dao')
     api project(':dependencies:web-configuration')
-    implementation 'org.springframework.retry:spring-retry'
-    implementation 'org.springframework:spring-aop'
-    implementation 'org.springframework:spring-aspects'
 
 
     testImplementation(project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')) {
