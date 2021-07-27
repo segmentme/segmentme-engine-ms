@@ -5,6 +5,7 @@ import io.segmentme.AuthAcknowledger;
 import io.segmentme.web.configuration.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.net.MalformedURLException;
 import java.util.Optional;
 
 @Component
@@ -41,8 +43,14 @@ public class SegmentMeAuthenticationManager implements org.springframework.secur
         customJwtAuthenticationProvider.setJwtAuthenticationConverter(new JwtTokenConverter(objectMapper));
     }
 
-    private JwtDecoder jwtDecoder() {
-        var jwtDecoder = (NimbusJwtDecoder) JwtDecoders.fromOidcIssuerLocation(issuer);
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        NimbusJwtDecoder jwtDecoder = null;
+        try {
+            jwtDecoder = (NimbusJwtDecoder) SmeJwtDecoder.fromIssuerLocation(issuer);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);
         OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, jwt -> {
@@ -64,7 +72,7 @@ public class SegmentMeAuthenticationManager implements org.springframework.secur
         if (userFacade.isPresent() && authenticate.isAuthenticated() && (!Boolean.TRUE.equals(authUser.isAcknowledged()) || authUser.getId() == null)) {
 
             String userId = userFacade.map(it -> it.acknowledgeUser(authUser.getExternalId(), authUser.getEmail(), authUser.getFullName()))
-                    .orElse(null);
+                .orElse(null);
 
             auth0Service.acknowledge(authUser.getExternalId(), userId);
         }
