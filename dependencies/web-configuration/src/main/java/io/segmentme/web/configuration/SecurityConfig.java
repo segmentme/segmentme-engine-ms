@@ -3,11 +3,14 @@ package io.segmentme.web.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.segmentme.core.dto.error.ErrorType;
 import io.segmentme.core.dto.error.SimpleErrorDto;
+import io.segmentme.security.IntegrationPointKeySecurityService;
+import io.segmentme.web.configuration.auth.SdkSecurityFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.codec.CharEncoding;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,26 +21,37 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final AntPathRequestMatcher IGNORED_PATH_MATCHER = new AntPathRequestMatcher("/sdk/**");
+    private final IgnoredEndpointProperties ignoredEndpointProperties;
+
+    private static final List<RequestMatcher> IGNORED_PATH_MATCHER = List.of(
+            new AntPathRequestMatcher("/analysis/connect"),
+            new AntPathRequestMatcher("/analysis/analyze/**")
+    );
 
     private final ObjectMapper objectMapper;
 
     private final AuthenticationManager authenticationManager;
 
-
-//    private final WorkspaceService workspaceService;
+    @Lazy
+    private final IntegrationPointKeySecurityService integrationPointKeySecurityService;
 
     @Bean
     public FilterRegistrationBean<CorsFilter> filterRegistrationBean() {
@@ -55,22 +69,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        var ignoredEndpoints = ignoredEndpointProperties.getEndpoints().stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
+        var sdkEndpoints = ignoredEndpointProperties.getSdkEndpoints().stream().map(AntPathRequestMatcher::new).collect(Collectors.toList());
+
         http.cors().disable()
-            .csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/actuator/**").permitAll()
-//            .requestMatchers(request -> !IGNORED_PATH_MATCHER.matches(request)).authenticated()
-            .and()
-//            .addFilterBefore(new SdkSecurityFilter(IGNORED_PATH_MATCHER, workspaceService), BasicAuthenticationFilter.class)
-            .exceptionHandling()
-            .accessDeniedHandler(accessDeniedHandler())
-            .authenticationEntryPoint(entryPointExceptionHandler())
-            .and()
-            .oauth2ResourceServer()
-            .accessDeniedHandler(accessDeniedHandler())
-            .authenticationEntryPoint(entryPointExceptionHandler())
-            .jwt()
-            .authenticationManager(authenticationManager);
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/actuator/**")
+                .permitAll()
+                .requestMatchers(request -> isNotEmpty(ignoredEndpoints) && ignoredEndpoints.stream().noneMatch(it -> it.matches(request))).authenticated();
+
+        if (isNotEmpty(sdkEndpoints)) {
+            http.addFilterBefore(new SdkSecurityFilter(sdkEndpoints, integrationPointKeySecurityService), BasicAuthenticationFilter.class);
+        }
+
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(entryPointExceptionHandler())
+                .and()
+                .oauth2ResourceServer()
+                .accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(entryPointExceptionHandler())
+                .jwt()
+                .authenticationManager(authenticationManager);
     }
 
     private AccessDeniedHandler accessDeniedHandler() {

@@ -2,12 +2,12 @@ package io.segmentme.analysis.service.segment;
 
 import io.segmentme.analysis.dto.SegmentAnalysisResult;
 import io.segmentme.analysis.service.clients.MeasurementClient;
-import io.segmentme.analysis.service.clients.dto.ParticipantStatisticDto;
 import io.segmentme.analysis.service.condition.ConditionMatcher;
 import io.segmentme.analysis.service.segment.worm.Worm;
 import io.segmentme.core.domain.condition.AbstractCondition;
 import io.segmentme.core.domain.segment.Segment;
 import io.segmentme.helpers.context.processor.ContextValueHolder;
+import io.segmentme.statistics.dto.ParticipantStatisticDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;

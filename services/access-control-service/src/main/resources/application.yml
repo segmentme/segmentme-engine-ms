@@ -25,3 +25,9 @@ spring:
           issuer-uri: https://segmentme.us.auth0.com/
 server:
   port: 8085
+
+segmentme:
+  application:
+    security:
+      ignored:
+        endpoints: [ /integration-point-key/is-exist/** ]

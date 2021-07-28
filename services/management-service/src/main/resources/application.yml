@@ -28,6 +28,9 @@ spring:
           issuer-uri: https://segmentme.us.auth0.com/
 segmentme:
   application:
+    security:
+      ignored:
+        endpoints: [ /workspace/integration-point, /context-schema/actualize ]
     web-client:
       configuration:
         access-control-service:

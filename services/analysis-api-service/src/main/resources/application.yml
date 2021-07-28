@@ -26,6 +26,10 @@ spring:
           issuer-uri: https://segmentme.us.auth0.com/
 segmentme:
   application:
+    security:
+      ignored:
+        endpoints: [ /analysis/connect, /analysis/analyze/** ]
+        sdkEndpoints: [ /analysis/connect, /analysis/analyze/** ]
     web-client:
       configuration:
         analysis-service-client:

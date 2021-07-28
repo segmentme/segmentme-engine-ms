@@ -30,4 +30,16 @@ public class IntegrationPointKeySecurityServiceImpl implements IntegrationPointK
                 .map(Boolean.TRUE::equals)
                 .orElse(false);
     }
+
+    @Override
+    public boolean isExist(String integrationPointKey) {
+        return Optional.ofNullable(accessControlClient.get()
+                .uri("/integration-point-key/is-exist?integrationPointKey=" + integrationPointKey)
+                .retrieve()
+                .toEntity(Boolean.class)
+                .block())
+                .map(HttpEntity::getBody)
+                .map(Boolean.TRUE::equals)
+                .orElse(false);
+    }
 }

@@ -1,6 +1,6 @@
 package io.segmentme.analysis.service.clients;
 
-import io.segmentme.analysis.service.clients.dto.ParticipantStatisticDto;
+import io.segmentme.statistics.dto.ParticipantStatisticDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
