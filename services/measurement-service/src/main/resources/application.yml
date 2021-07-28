@@ -1,7 +1,6 @@
 logging:
   level:
-    root: DEBUG
-    io.segmentme.core.api.facade: INFO
+      root: INFO
 auth0:
   audience: https://segmentme.us.auth0.com/api/v2/
   managementApi: https://segmentme.us.auth0.com/api/v2/

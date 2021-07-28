@@ -2,12 +2,12 @@ package io.segmentme.measurement.service;
 
 import io.segmentme.analysis.domain.statistic.AnalyzedData;
 import io.segmentme.analysis.domain.statistic.StatisticLog;
-import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
-import io.segmentme.analysis.dto.SegmentAnalysisResult;
-import io.segmentme.analysis.dto.conditions.SegmentConditionDto;
-import io.segmentme.analysis.dto.segment.SegmentDto;
 import io.segmentme.helpers.dao.service.SegmentService;
 import io.segmentme.measurement.domain.ParticipantStatistic;
+import io.segmentme.measurement.dto.analysis.CollectedAnalysysStatisticDto;
+import io.segmentme.measurement.dto.analysis.SegmentAnalysisResult;
+import io.segmentme.measurement.dto.analysis.SegmentDto;
+import io.segmentme.measurement.dto.analysis.conditions.SegmentConditionDto;
 import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

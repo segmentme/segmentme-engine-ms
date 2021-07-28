@@ -1,7 +1,6 @@
 dependencies {
     api project(':dependencies:models:entities:analysis-domain')
     api project(':dependencies:redis-auto-configuration')
-    api project(':dependencies:models:dto:analysis-dto')
     api project(':dependencies:helpers:core-dao')
     api project(':dependencies:web-configuration')
 

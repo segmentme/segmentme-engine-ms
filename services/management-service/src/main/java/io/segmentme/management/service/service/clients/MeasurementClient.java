@@ -51,7 +51,7 @@ public class MeasurementClient {
             .uri(PARTICIPANT_PATH)
             .bodyValue(acknowledgeRequest)
             .retrieve()
-            .bodyToMono(Void.class)
+            .toBodilessEntity()
             .block();
     }
 }

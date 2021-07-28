@@ -1,4 +1,4 @@
-package io.segmentme.statistics.dto;
+package io.segmentme.measurement.dto.statistic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

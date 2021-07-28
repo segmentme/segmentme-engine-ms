@@ -3,10 +3,10 @@ package io.segmentme.measurement
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.segment.security.mock.AccessServiceMock
-import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto
-import io.segmentme.analysis.dto.SegmentAnalysisResult
-import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.measurement.dto.ParticipantAcknowledgeRequest
+import io.segmentme.measurement.dto.analysis.CollectedAnalysysStatisticDto
+import io.segmentme.measurement.dto.analysis.SegmentAnalysisResult
+import io.segmentme.measurement.dto.analysis.SegmentDto
 import io.segmentme.measurement.repository.ContextStatisticsRepository
 import io.segmentme.measurement.repository.ParticipantsStatisticRepository
 import io.segmentme.measurement.repository.StatisticRepository
@@ -69,7 +69,7 @@ class MeasurementServiceTest extends AccessServiceMock {
                         testData = createTestData()
 //                        participantStatisticService.acknowledgeParticipant(generateAnalysisStatisticEntry(testData).getContextDataHolder())
                     }
-                    CollectedAnalysysStatisticDto collectedAnalysysStatisticDto = generateAnalysisStatisticEntry(testData)
+                CollectedAnalysysStatisticDto collectedAnalysysStatisticDto = generateAnalysisStatisticEntry(testData)
 //                    lastParticipantAnalyse.put(testData.getUser().getId(), collectedAnalysysStatisticDto)
                     return collectedAnalysysStatisticDto
             }

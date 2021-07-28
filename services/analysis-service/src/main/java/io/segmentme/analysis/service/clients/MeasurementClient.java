@@ -1,6 +1,6 @@
 package io.segmentme.analysis.service.clients;
 
-import io.segmentme.statistics.dto.ParticipantStatisticDto;
+import io.segmentme.analysis.service.clients.dto.ParticipantStatisticDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +25,10 @@ public class MeasurementClient {
 
     public Optional<ParticipantStatisticDto> findParticipantStatistic(String contextId, Object uniquenessValue) {
         return measurementServiceWebClient
-                .get()
-                .uri(builder -> builder.path(PARTICIPANT_PATH).queryParam(PARTICIPANT_PATH_UNIQUENESS_VALUE, uniquenessValue).build(contextId))
-                .exchangeToMono(result -> result.statusCode().isError() ? result.createException().flatMap(Mono::error) : result.bodyToMono(ParticipantStatisticDto.class))
-                .blockOptional();
+            .get()
+            .uri(builder -> builder.path(PARTICIPANT_PATH).queryParam(PARTICIPANT_PATH_UNIQUENESS_VALUE, uniquenessValue).build(contextId))
+            .exchangeToMono(result -> result.statusCode().isError() ? result.createException().flatMap(Mono::error) : result.bodyToMono(ParticipantStatisticDto.class))
+            .blockOptional();
     }
 }
 

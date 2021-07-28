@@ -1,6 +1,9 @@
 logging:
-  level:
-    root: INFO
+    level:
+        root: TRACE
+        io.lettuce: ERROR
+        org.springframework.data.redis: ERROR
+        org.mongodb: ERROR
 auth0:
   audience: https://segmentme.us.auth0.com/api/v2/
   managementApi: https://segmentme.us.auth0.com/api/v2/

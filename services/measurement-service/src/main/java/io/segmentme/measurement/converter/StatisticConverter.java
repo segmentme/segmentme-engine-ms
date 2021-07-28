@@ -1,7 +1,7 @@
 package io.segmentme.measurement.converter;
 
 import io.segmentme.analysis.domain.statistic.StatisticLog;
-import io.segmentme.statistics.dto.StatisticShortInfo;
+import io.segmentme.measurement.dto.statistic.StatisticShortInfo;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;

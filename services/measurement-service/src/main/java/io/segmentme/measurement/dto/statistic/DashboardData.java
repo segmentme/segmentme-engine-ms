@@ -1,6 +1,6 @@
-package io.segmentme.statistics.dto;
+package io.segmentme.measurement.dto.statistic;
 
-import io.segmentme.analysis.dto.segment.SegmentShortInfo;
+import io.segmentme.measurement.dto.analysis.SegmentShortInfo;
 import io.segmentme.models.shared.analysis.AggregatedAnalysisCount;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.Data;

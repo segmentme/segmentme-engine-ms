@@ -1,7 +1,7 @@
 package io.segmentme.measurement.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
+import io.segmentme.measurement.dto.analysis.CollectedAnalysysStatisticDto;
 import io.segmentme.measurement.service.StatisticManager;
 import io.segmentme.redis.config.RedisStreamBuilder;
 import lombok.RequiredArgsConstructor;
