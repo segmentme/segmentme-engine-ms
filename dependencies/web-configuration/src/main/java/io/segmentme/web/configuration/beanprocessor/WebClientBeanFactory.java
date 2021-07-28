@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.resources.LoopResources;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,21 +34,21 @@ class WebClientBeanFactory {
         log.info("WebClient {} initialization", beanId);
 
         var clientHttpConnector = buildConnector(configuration.getConnection())
-                .orElseThrow(() -> new UnsatisfiedDependencyException("", beanId, "", "Can't find config for webClient " + beanId));
+            .orElseThrow(() -> new UnsatisfiedDependencyException("", beanId, "", "Can't find config for webClient " + beanId));
 
         return WebClient.builder()
-                .baseUrl(configuration.getHost())
-                .filter(webClientFilter())
-                .clientConnector(clientHttpConnector)
-                .build();
+            .baseUrl(configuration.getHost())
+            .filter(webClientFilter())
+            .clientConnector(clientHttpConnector)
+            .build();
     }
 
     private Optional<ReactorClientHttpConnector> buildConnector(WebClientConfigurationProperties.Connection connection) {
         return ofNullable(connection)
-                .map(it -> HttpClient.create()
-                        .runOn(LoopResources.create("wClient"))
+                .map(it -> HttpClient.create(ConnectionProvider.builder("netty-pool").build())
+                        .runOn(LoopResources.create("nettyLoop"))
                         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, it.getConnectTimeOut())
-                        .doOnConnected(connect -> connect.markPersistent(false)
+                        .doOnConnected(connect -> connect
                                 .addHandlerLast(new ReadTimeoutHandler(it.getReadTimeOut(), TimeUnit.MILLISECONDS))
                                 .addHandlerLast(new WriteTimeoutHandler(it.getWriteTimeOut(), TimeUnit.MILLISECONDS)))
                         .wiretap(true)
@@ -67,15 +68,16 @@ class WebClientBeanFactory {
         HttpHeaders headers = new HttpHeaders();
 
         HttpServletRequest httpServletRequest = ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-                .map(ServletRequestAttributes::getRequest)
-                .filter(it -> it.getHeaderNames() != null)
-                .orElse(null);
+            .map(ServletRequestAttributes::getRequest)
+            .filter(it -> it.getHeaderNames() != null)
+            .orElse(null);
 
         if (httpServletRequest != null) {
             headers = Collections.list(httpServletRequest.getHeaderNames())
-                    .stream()
-                    .collect(HttpHeaders::new, (map, value) -> map.put(value, Collections.list(httpServletRequest.getHeaders(value))), HttpHeaders::putAll);
+                .stream()
+                .collect(HttpHeaders::new, (map, value) -> map.put(value, Collections.list(httpServletRequest.getHeaders(value))), HttpHeaders::putAll);
             headers.remove(HttpHeaders.CONTENT_TYPE);
+            headers.remove(HttpHeaders.CONTENT_LENGTH);
         }
 
         return headers;
