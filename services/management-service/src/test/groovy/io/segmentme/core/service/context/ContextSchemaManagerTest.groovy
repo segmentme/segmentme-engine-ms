@@ -5,10 +5,10 @@ import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.core.service.helper.UserHolderHelper
 import io.segmentme.helpers.dao.service.WorkspaceService
-import io.segmentme.management.service.context.ContextSchemaManager
 import io.segmentme.management.service.exception.ContextSchemaManagerException
 import io.segmentme.management.service.exception.error.ContextMangerErrors
 import io.segmentme.management.service.repository.UserRepository
+import io.segmentme.management.service.service.context.ContextSchemaManager
 import io.segmentme.models.shared.analysis.SchemaNodeType
 import io.segmentme.models.shared.exception.AbstractManagerException
 import org.springframework.beans.factory.annotation.Autowired

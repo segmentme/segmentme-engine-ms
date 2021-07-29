@@ -1,5 +1,4 @@
 dependencies {
     api project(':dependencies:web-configuration')
-    api project(':dependencies:helpers:core-dao')
-    api project(':dependencies:models:entities:management-domain')
+    api project(':dependencies:mongo-auto-configuration')
 }

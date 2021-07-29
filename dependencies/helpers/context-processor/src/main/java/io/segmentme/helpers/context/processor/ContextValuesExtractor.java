@@ -1,10 +1,9 @@
 package io.segmentme.helpers.context.processor;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.segmentme.core.domain.context.ContextSchema;
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
 
 public interface ContextValuesExtractor {
+    ContextValuesExtractor INSTANCE = new ContextValuesExtractorImpl();
 
-    ContextValueHolder extractValues(JsonNode rawContext, ContextSchema schema, WorkspaceConfiguration workspaceConfiguration);
+    <T extends SchemaDescriptor> ContextValueHolder<T> extractValues(JsonNode rawContext, T schema, ExtractorConfiguration configuration);
 }

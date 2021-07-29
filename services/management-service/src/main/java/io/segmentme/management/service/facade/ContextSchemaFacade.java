@@ -1,14 +1,14 @@
 package io.segmentme.management.service.facade;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.segmentme.core.domain.context.SchemaNode;
-import io.segmentme.core.domain.workpsace.Workspace;
-import io.segmentme.helpers.dao.service.WorkspaceService;
-import io.segmentme.management.service.context.ContextSchemaManager;
+import io.segmentme.management.service.domain.context.SchemaNode;
+import io.segmentme.management.service.domain.workpsace.Workspace;
 import io.segmentme.management.service.dto.context.*;
 import io.segmentme.management.service.exception.ContextSchemaManagerException;
+import io.segmentme.management.service.service.WorkspaceService;
 import io.segmentme.management.service.service.clients.MeasurementClient;
 import io.segmentme.management.service.service.clients.dto.ParticipantAcknowledgeRequest;
+import io.segmentme.management.service.service.context.ContextSchemaManager;
 import io.segmentme.models.shared.analysis.InlineType;
 import io.segmentme.models.shared.analysis.SchemaNodeType;
 import lombok.RequiredArgsConstructor;

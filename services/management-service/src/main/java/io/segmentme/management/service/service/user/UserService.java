@@ -1,7 +1,7 @@
 package io.segmentme.management.service.service.user;
 
 import io.segmentme.core.db.service.AbstractDatabaseService;
-import io.segmentme.management.domain.user.User;
+import io.segmentme.management.service.domain.user.User;
 import io.segmentme.management.service.repository.UserRepository;
 import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Service;

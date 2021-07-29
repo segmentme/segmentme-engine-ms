@@ -1,6 +1,5 @@
 package io.segmentme.helpers.context.processor;
 
-import io.segmentme.core.domain.context.ContextSchema;
 import io.segmentme.helpers.context.processor.exception.CriteriaValueLocatorException;
 import io.segmentme.helpers.context.processor.exception.error.CriteriaValueLocatorErrors;
 import lombok.Data;
@@ -13,10 +12,11 @@ import java.util.Map;
 
 @Data
 @Slf4j
-public class ContextValueHolder {
+public class ContextValueHolder<T extends SchemaDescriptor> {
     private Map<String, Object> values;
 
-    private ContextSchema schema;
+    private T schema;
+
 
     private Map<String, Object> extractedValues = new HashMap<>();
 

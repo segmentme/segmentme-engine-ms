@@ -1,6 +1,6 @@
 package io.segmentme.core.service.helper;
 
-import io.segmentme.management.domain.user.User;
+import io.segmentme.management.service.domain.user.User;
 import io.segmentme.management.service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,9 @@
 package io.segmentme.management.service.facade;
 
-import io.segmentme.core.domain.workpsace.UserProfile;
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
 import io.segmentme.helpers.context.processor.DateResolver;
-import io.segmentme.management.domain.user.User;
+import io.segmentme.management.service.domain.user.User;
+import io.segmentme.management.service.domain.workpsace.UserProfile;
+import io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration;
 import io.segmentme.management.service.dto.WorkspaceHolder;
 import io.segmentme.management.service.dto.workspace.WorkspaceDatesValidationRequest;
 import io.segmentme.management.service.dto.workspace.WorkspaceDatesValidationResponse;
@@ -44,13 +44,13 @@ public class WorkspaceFacade {
 
     private WorkspaceDetails convertToWorkspaceDetails(WorkspaceHolder holder) {
         return new WorkspaceDetails()
-                .setId(holder.getId())
-                .setName(holder.getName())
-                .setIntegrationPoints(holder.getIntegrationPoints())
-                .setConfiguration(holder.getWorkspaceConfiguration());
+            .setId(holder.getId())
+            .setName(holder.getName())
+            .setIntegrationPoints(holder.getIntegrationPoints())
+            .setConfiguration(holder.getWorkspaceConfiguration());
     }
 
-    public IntegrationPoint getIntegrationPoint(String integrationPointKey){
+    public IntegrationPoint getIntegrationPoint(String integrationPointKey) {
         return workspaceManager.findIntegrationPoint(integrationPointKey);
     }
 
@@ -78,13 +78,13 @@ public class WorkspaceFacade {
         WorkspaceDatesValidationResponse workspaceDatesValidationResponse = new WorkspaceDatesValidationResponse();
 
         workspaceDatesValidationResponse.setFormats(patterns.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, it -> it.getValue().isPresent())));
+            .collect(Collectors.toMap(Map.Entry::getKey, it -> it.getValue().isPresent())));
 
         if (!CollectionUtils.isEmpty(validationRequest.getDatesToValidate())) {
             Map<String, DateTimeFormatter> validPatterns = patterns.entrySet().stream().filter(it -> it.getValue().isPresent()).collect(Collectors.toMap(Map.Entry::getKey, it -> it.getValue().get()));
             workspaceDatesValidationResponse.setDates(
-                    validationRequest.getDatesToValidate()
-                            .stream().collect(HashMap::new, (m, v) -> m.put(v, tryToParseDate(v, validPatterns)), HashMap::putAll)
+                validationRequest.getDatesToValidate()
+                    .stream().collect(HashMap::new, (m, v) -> m.put(v, tryToParseDate(v, validPatterns)), HashMap::putAll)
             );
         }
 
@@ -93,8 +93,8 @@ public class WorkspaceFacade {
 
     private String tryToParseDate(String candidate, Map<String, DateTimeFormatter> validPatterns) {
         return validPatterns.entrySet().stream()
-                .filter(it -> DateResolver.resolve(candidate, Arrays.asList(it.getValue())).isPresent())
-                .map(Map.Entry::getKey).findAny().orElse(null);
+            .filter(it -> DateResolver.resolve(candidate, Arrays.asList(it.getValue())).isPresent())
+            .map(Map.Entry::getKey).findAny().orElse(null);
     }
 
     private Optional<DateTimeFormatter> silentOfPattern(String format) {

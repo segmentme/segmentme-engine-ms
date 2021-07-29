@@ -1,6 +1,6 @@
 package io.segmentme.management.service.converter;
 
-import io.segmentme.core.domain.context.ContextSchema;
+import io.segmentme.management.service.domain.context.ContextSchema;
 import io.segmentme.management.service.dto.context.ContextSchemaHolder;
 
 public class ContextSchemaConverter {

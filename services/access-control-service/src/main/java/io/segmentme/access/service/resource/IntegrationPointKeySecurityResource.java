@@ -1,7 +1,7 @@
 package io.segmentme.access.service.resource;
 
 import io.segmentme.access.service.security.SecurityService;
-import io.segmentme.helpers.dao.service.WorkspaceService;
+import io.segmentme.access.service.service.WorkspaceService;
 import io.segmentme.web.configuration.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class IntegrationPointKeySecurityResource {
     }
 
     @GetMapping("/is-exist")
-    public Boolean isExist(@RequestParam String integrationPointKey){
+    public Boolean isExist(@RequestParam String integrationPointKey) {
         return workspaceService.findByIntegrationPointKey(integrationPointKey).isPresent();
     }
 }

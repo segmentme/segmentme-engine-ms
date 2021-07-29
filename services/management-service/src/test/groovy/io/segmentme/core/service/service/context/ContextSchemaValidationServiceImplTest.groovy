@@ -2,12 +2,11 @@ package io.segmentme.core.service.service.context
 
 import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.core.service.configuration.test.ResourceHolder
-import io.segmentme.helpers.context.processor.ContextSchemaResolver
-import io.segmentme.management.service.context.ContextSchemaValidationServiceImpl
+import io.segmentme.management.service.service.context.ContextSchemaValidationServiceImpl
 import io.segmentme.models.shared.exception.SeverityLevel
 import spock.lang.Specification
 
-import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
+import static io.segmentme.core.service.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
 import static io.segmentme.management.service.exception.error.ContextValidationErrors.*
 import static io.segmentme.models.shared.exception.Errors.ERRORS_SEVERITY
 

@@ -9,7 +9,6 @@ dependencies {
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	testImplementation 'org.springframework.boot:spring-boot-starter-web'
 
-	testImplementation project(':dependencies:models:entities:core-domain').sourceSets.test.output
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {

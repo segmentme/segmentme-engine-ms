@@ -1,6 +1,6 @@
 package io.segmentme.management.service.dto.context;
 
-import io.segmentme.core.domain.context.SchemaNode;
+import io.segmentme.management.service.domain.context.SchemaNode;
 import io.segmentme.models.shared.analysis.InlineType;
 import lombok.Data;
 

@@ -2,8 +2,8 @@ package io.segmentme.management.service.converter;
 
 import io.segmentme.analysis.dto.conditions.*;
 import io.segmentme.analysis.dto.segment.SegmentDto;
-import io.segmentme.core.domain.condition.*;
-import io.segmentme.core.domain.segment.Segment;
+import io.segmentme.management.service.domain.condition.*;
+import io.segmentme.management.service.domain.segment.Segment;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

@@ -1,6 +1,6 @@
 package io.segmentme.analysis.service.segment.worm;
 
-import io.segmentme.core.domain.condition.AbstractCondition;
+import io.segmentme.analysis.domain.condition.AbstractCondition;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 

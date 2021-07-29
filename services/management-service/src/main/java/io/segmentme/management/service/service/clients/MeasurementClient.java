@@ -1,6 +1,6 @@
 package io.segmentme.management.service.service.clients;
 
-import io.segmentme.core.domain.segment.Segment;
+import io.segmentme.management.service.domain.segment.Segment;
 import io.segmentme.management.service.service.clients.dto.ParticipantAcknowledgeRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

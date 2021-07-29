@@ -1,10 +1,11 @@
 package io.segmentme.analysis.service.condition;
 
+import io.segmentme.analysis.domain.condition.SegmentCondition;
+import io.segmentme.analysis.domain.context.ContextSchema;
+import io.segmentme.analysis.repository.SegmentRepository;
 import io.segmentme.analysis.service.segment.SegmentAnalysisService;
 import io.segmentme.analysis.service.segment.worm.Worm;
-import io.segmentme.core.domain.condition.SegmentCondition;
 import io.segmentme.helpers.context.processor.ContextValueHolder;
-import io.segmentme.helpers.dao.repository.SegmentRepository;
 import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +31,11 @@ public class SegmentConditionMatcher implements Matcher<SegmentCondition> {
 
 
     @Override
-    public boolean match(SegmentCondition condition, ContextValueHolder context, Worm<Object> worm) {
+    public boolean match(SegmentCondition condition, ContextValueHolder<ContextSchema> context, Worm<Object> worm) {
         return worm.computeResult(condition.getHash(), matchFunction(condition, context, worm)) == condition.isMatchResult();
     }
 
-    private Function<String, Boolean> matchFunction(SegmentCondition condition, ContextValueHolder context, Worm<Object> worm) {
+    private Function<String, Boolean> matchFunction(SegmentCondition condition, ContextValueHolder<ContextSchema> context, Worm<Object> worm) {
         return hash -> {
             var conditionMatchResult = analysisRuleService.analyze(context, condition.getValue(), worm).isValue();
             worm.apply(condition, conditionMatchResult);

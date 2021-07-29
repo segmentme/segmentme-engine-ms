@@ -1,9 +1,9 @@
 package io.segmentme.access.service.security;
 
+import io.segmentme.access.service.domain.state.State;
 import io.segmentme.access.service.repository.UserRepository;
+import io.segmentme.access.service.service.StateService;
 import io.segmentme.core.domain.DbObject;
-import io.segmentme.core.domain.state.State;
-import io.segmentme.helpers.dao.service.StateService;
 import io.segmentme.security.StateSecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

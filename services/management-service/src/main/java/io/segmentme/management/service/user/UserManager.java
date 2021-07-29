@@ -1,8 +1,8 @@
 package io.segmentme.management.service.user;
 
 import io.segmentme.core.domain.DbObject;
-import io.segmentme.management.domain.user.User;
 import io.segmentme.management.service.converter.UserHolderConverter;
+import io.segmentme.management.service.domain.user.User;
 import io.segmentme.management.service.dto.WorkspaceHolder;
 import io.segmentme.management.service.dto.user.UserHolder;
 import io.segmentme.management.service.exception.UserManagerException;
@@ -62,9 +62,9 @@ public class UserManager {
 
     public String acknowledgeUser(UserHolder holder) {
         return userService.findByExternalId(holder.getId())
-                .or(() -> userService.findByEmail(holder.getEmail()))
-                .map(DbObject::getId)
-                .orElseGet(() -> createUser(holder).getId());
+            .or(() -> userService.findByEmail(holder.getEmail()))
+            .map(DbObject::getId)
+            .orElseGet(() -> createUser(holder).getId());
     }
 
     public List<User> getByIds(List<String> userIds) {

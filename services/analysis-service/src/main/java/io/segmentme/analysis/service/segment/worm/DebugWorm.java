@@ -1,9 +1,10 @@
 package io.segmentme.analysis.service.segment.worm;
 
+import io.segmentme.analysis.domain.condition.AbstractCondition;
+import io.segmentme.analysis.domain.condition.SegmentCondition;
+import io.segmentme.analysis.domain.condition.SimpleCondition;
+import io.segmentme.analysis.domain.context.ContextSchema;
 import io.segmentme.analysis.dto.DebugResult;
-import io.segmentme.core.domain.condition.AbstractCondition;
-import io.segmentme.core.domain.condition.SegmentCondition;
-import io.segmentme.core.domain.condition.SimpleCondition;
 import io.segmentme.helpers.context.processor.ContextValueHolder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import static io.segmentme.helpers.context.processor.CriteriaValueLocator.cleanP
 @Slf4j
 public class DebugWorm implements BiConsumer<AbstractCondition, Object> {
     private Map<String, DebugResult> debugResultMap = new LinkedHashMap<>();
-    private final ContextValueHolder contextValueHolder;
+    private final ContextValueHolder<ContextSchema> contextValueHolder;
 
     @Override
     public void accept(AbstractCondition condition, Object result) {

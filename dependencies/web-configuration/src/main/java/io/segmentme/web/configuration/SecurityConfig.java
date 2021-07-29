@@ -1,8 +1,8 @@
 package io.segmentme.web.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.segmentme.core.dto.error.ErrorType;
-import io.segmentme.core.dto.error.SimpleErrorDto;
+import io.segmentme.models.shared.dto.ErrorType;
+import io.segmentme.models.shared.dto.SimpleErrorDto;
 import io.segmentme.security.IntegrationPointKeySecurityService;
 import io.segmentme.web.configuration.auth.SdkSecurityFilter;
 import lombok.RequiredArgsConstructor;

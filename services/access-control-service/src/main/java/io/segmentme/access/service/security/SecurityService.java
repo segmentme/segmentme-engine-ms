@@ -1,10 +1,10 @@
 package io.segmentme.access.service.security;
 
+import io.segmentme.access.service.domain.workpsace.UserProfile;
+import io.segmentme.access.service.domain.workpsace.Workspace;
 import io.segmentme.access.service.repository.UserRepository;
+import io.segmentme.access.service.service.WorkspaceService;
 import io.segmentme.core.domain.DbObject;
-import io.segmentme.core.domain.workpsace.UserProfile;
-import io.segmentme.core.domain.workpsace.Workspace;
-import io.segmentme.helpers.dao.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

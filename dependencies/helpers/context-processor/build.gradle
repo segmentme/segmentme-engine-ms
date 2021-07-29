@@ -1,5 +1,7 @@
 dependencies {
-    api project(':dependencies:models:entities:core-domain')
+    api project(':dependencies:models:shared')
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
+
 }
 
 

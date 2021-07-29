@@ -1,6 +1,5 @@
 package io.segmentme.management.service.repository;
-
-import io.segmentme.management.domain.user.User;
+import io.segmentme.management.service.domain.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

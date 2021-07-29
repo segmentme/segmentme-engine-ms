@@ -1,6 +1,6 @@
 package io.segmentme.management.service.exception;
 
-import io.segmentme.management.service.context.ContextSchemaValidationService;
+import io.segmentme.management.service.service.context.ContextSchemaValidationService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

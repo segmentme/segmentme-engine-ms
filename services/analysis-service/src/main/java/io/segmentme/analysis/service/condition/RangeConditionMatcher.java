@@ -1,8 +1,7 @@
 package io.segmentme.analysis.service.condition;
 
-import io.segmentme.core.domain.condition.RangeCondition;
+import io.segmentme.analysis.domain.condition.RangeCondition;
 import io.segmentme.models.shared.analysis.ConditionType;
-import io.segmentme.models.shared.analysis.RangeValue;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 

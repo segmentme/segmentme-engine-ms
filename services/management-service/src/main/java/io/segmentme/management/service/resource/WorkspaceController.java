@@ -1,6 +1,6 @@
 package io.segmentme.management.service.resource;
 
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
+import io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration;
 import io.segmentme.management.service.dto.workspace.WorkspaceDatesValidationRequest;
 import io.segmentme.management.service.dto.workspace.WorkspaceDatesValidationResponse;
 import io.segmentme.management.service.dto.workspace.WorkspaceDetails;

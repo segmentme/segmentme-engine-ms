@@ -6,10 +6,10 @@ import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.core.service.common.BaseControllerTest
 import io.segmentme.core.service.configuration.test.ResourceHolder
-import io.segmentme.helpers.context.processor.ContextSchemaResolver
 import io.segmentme.helpers.context.processor.ContextValueHolder
 import io.segmentme.helpers.context.processor.ContextValuesExtractorImpl
-import io.segmentme.helpers.dao.repository.SegmentRepository
+import io.segmentme.management.service.repository.SegmentRepository
+import io.segmentme.management.service.service.context.ContextSchemaResolver
 import io.segmentme.management.service.service.segment.SegmentManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -18,7 +18,7 @@ import org.springframework.http.MediaType
 
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition
 import static io.segmentme.core.service.helper.RuleHelper.fillRule
-import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
+import static io.segmentme.core.service.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
 import static io.segmentme.models.shared.analysis.ConditionType.IN
 import static java.util.UUID.randomUUID
 import static org.hamcrest.Matchers.hasSize

@@ -1,6 +1,6 @@
 package io.segmentme.management.service.dto.user;
 
-import io.segmentme.core.domain.workpsace.Role;
+import io.segmentme.management.service.domain.workpsace.Role;
 import lombok.Data;
 
 @Data

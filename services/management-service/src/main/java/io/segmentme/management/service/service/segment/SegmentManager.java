@@ -3,16 +3,16 @@ package io.segmentme.management.service.service.segment;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.segmentme.analysis.dto.segment.SegmentDto;
-import io.segmentme.core.domain.context.ContextSchema;
-import io.segmentme.core.domain.segment.Segment;
-import io.segmentme.core.domain.workpsace.Workspace;
-import io.segmentme.helpers.dao.service.ContextSchemaService;
-import io.segmentme.helpers.dao.service.SegmentService;
-import io.segmentme.helpers.dao.service.WorkspaceService;
 import io.segmentme.management.service.converter.SegmentConverter;
+import io.segmentme.management.service.domain.context.ContextSchema;
+import io.segmentme.management.service.domain.segment.Segment;
+import io.segmentme.management.service.domain.workpsace.Workspace;
 import io.segmentme.management.service.dto.SegmentImportResult;
 import io.segmentme.management.service.exception.SegmentManagerException;
 import io.segmentme.management.service.exception.error.SegmentMangerErrors;
+import io.segmentme.management.service.service.SegmentService;
+import io.segmentme.management.service.service.WorkspaceService;
+import io.segmentme.management.service.service.context.ContextSchemaService;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import io.segmentme.redis.config.MessagePublisher;
 import io.segmentme.redis.dto.out.SegmentStateChangedMessageOut;
@@ -159,7 +159,7 @@ public class SegmentManager {
         objectMapper.writeValue(outputStream, segments);
     }
 
-    private SegmentStateChangedMessageOut of(String segmentId, String contextId, String integrationPointKey){
+    private SegmentStateChangedMessageOut of(String segmentId, String contextId, String integrationPointKey) {
         var messageOut = new SegmentStateChangedMessageOut();
         var body = new SegmentStateChangedMessageOut.SegmentStateChanged();
         messageOut.setBody(body.setContextId(contextId).setIntegrationPointKey(integrationPointKey).setSegmentId(segmentId));

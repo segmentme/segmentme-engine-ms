@@ -1,9 +1,9 @@
 package io.segmentme.analysis.service.converter;
 
+import io.segmentme.analysis.domain.condition.*;
+import io.segmentme.analysis.domain.segment.Segment;
 import io.segmentme.analysis.dto.conditions.*;
 import io.segmentme.analysis.dto.segment.SegmentDto;
-import io.segmentme.core.domain.condition.*;
-import io.segmentme.core.domain.segment.Segment;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -47,12 +47,12 @@ public class ConditionConverter {
         }
 
         return target.setValue(conditionValue)
-                .setNullValid(source.isNullValid())
-                .setCriteria(source.getCriteria())
-                .setMatchResult(source.isMatchResult())
-                .setType(source.getType())
-                .setHash(source.getHash())
-                .setDescription(source.getDescription());
+            .setNullValid(source.isNullValid())
+            .setCriteria(source.getCriteria())
+            .setMatchResult(source.isMatchResult())
+            .setType(source.getType())
+            .setHash(source.getHash())
+            .setDescription(source.getDescription());
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -65,11 +65,11 @@ public class ConditionConverter {
         }
 
         return target.setValue(conditionValue)
-                .setNullValid(source.isNullValid())
-                .setCriteria(source.getCriteria())
-                .setMatchResult(source.isMatchResult())
-                .setType(source.getType())
-                .setHash(source.getHash())
-                .setDescription(source.getDescription());
+            .setNullValid(source.isNullValid())
+            .setCriteria(source.getCriteria())
+            .setMatchResult(source.isMatchResult())
+            .setType(source.getType())
+            .setHash(source.getHash())
+            .setDescription(source.getDescription());
     }
 }

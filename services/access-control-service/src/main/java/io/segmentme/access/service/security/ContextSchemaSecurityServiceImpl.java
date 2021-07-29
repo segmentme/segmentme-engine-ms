@@ -1,7 +1,7 @@
 package io.segmentme.access.service.security;
 
-import io.segmentme.core.domain.context.ContextSchema;
-import io.segmentme.helpers.dao.service.ContextSchemaService;
+import io.segmentme.access.service.domain.context.ContextSchema;
+import io.segmentme.access.service.service.ContextSchemaService;
 import io.segmentme.security.ContextSchemaSecurityService;
 import io.segmentme.web.configuration.SecurityUtils;
 import lombok.RequiredArgsConstructor;

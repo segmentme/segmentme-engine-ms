@@ -1,6 +1,6 @@
 package io.segmentme.analysis.service.condition;
 
-import io.segmentme.core.domain.condition.SimpleCondition;
+import io.segmentme.analysis.domain.condition.SimpleCondition;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;

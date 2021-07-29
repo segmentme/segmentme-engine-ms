@@ -1,7 +1,7 @@
 package io.segmentme.management.service.service.workers;
 
-import io.segmentme.core.domain.segment.Segment;
-import io.segmentme.helpers.dao.repository.SegmentRepository;
+import io.segmentme.management.service.domain.segment.Segment;
+import io.segmentme.management.service.repository.SegmentRepository;
 import io.segmentme.management.service.service.clients.MeasurementClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

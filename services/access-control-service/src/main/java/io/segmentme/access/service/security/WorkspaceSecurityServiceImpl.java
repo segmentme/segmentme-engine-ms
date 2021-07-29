@@ -1,7 +1,7 @@
 package io.segmentme.access.service.security;
 
-import io.segmentme.core.domain.workpsace.UserProfile;
-import io.segmentme.helpers.dao.service.UserProfileService;
+import io.segmentme.access.service.domain.workpsace.UserProfile;
+import io.segmentme.access.service.service.UserProfileService;
 import io.segmentme.security.WorkspaceSecurityService;
 import io.segmentme.web.configuration.SecurityUtils;
 import lombok.RequiredArgsConstructor;

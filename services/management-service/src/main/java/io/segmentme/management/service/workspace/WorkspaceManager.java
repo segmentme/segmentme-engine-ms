@@ -1,16 +1,16 @@
 package io.segmentme.management.service.workspace;
 
-import io.segmentme.core.domain.workpsace.Role;
-import io.segmentme.core.domain.workpsace.UserProfile;
-import io.segmentme.core.domain.workpsace.Workspace;
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
-import io.segmentme.helpers.dao.service.UserProfileService;
-import io.segmentme.helpers.dao.service.WorkspaceService;
-import io.segmentme.management.domain.user.User;
-import io.segmentme.management.service.context.ContextSchemaManager;
 import io.segmentme.management.service.converter.WorkspaceHolderConverter;
+import io.segmentme.management.service.domain.user.User;
+import io.segmentme.management.service.domain.workpsace.Role;
+import io.segmentme.management.service.domain.workpsace.UserProfile;
+import io.segmentme.management.service.domain.workpsace.Workspace;
+import io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration;
 import io.segmentme.management.service.dto.WorkspaceHolder;
 import io.segmentme.management.service.exception.WorkspaceManagerException;
+import io.segmentme.management.service.service.UserProfileService;
+import io.segmentme.management.service.service.WorkspaceService;
+import io.segmentme.management.service.service.context.ContextSchemaManager;
 import io.segmentme.management.service.service.segment.SegmentManager;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.UUID;
 
-import static io.segmentme.core.domain.workpsace.WorkspaceConfiguration.DEFAULT_DATE_PATTERNS;
+import static io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration.DEFAULT_DATE_PATTERNS;
 import static io.segmentme.management.service.exception.error.WorkspaceManagerErrors.UNABLE_TO_DELETE_DEFAULT_WORKSAPCE;
 
 @Service
@@ -50,14 +50,14 @@ public class WorkspaceManager {
 
     private final UserProfileService userProfileService;
 
-    public IntegrationPoint findIntegrationPoint(String integrationPointKey){
+    public IntegrationPoint findIntegrationPoint(String integrationPointKey) {
         return workspaceService.findByIntegrationPointKey(integrationPointKey)
-                .map(Workspace::getIntegrationPoints)
-                .stream()
-                .flatMap(Collection::stream)
-                .filter(it -> it.getKey().equals(integrationPointKey))
-                .findFirst()
-                .orElse(null);
+            .map(Workspace::getIntegrationPoints)
+            .stream()
+            .flatMap(Collection::stream)
+            .filter(it -> it.getKey().equals(integrationPointKey))
+            .findFirst()
+            .orElse(null);
     }
 
     public WorkspaceHolder createDefaultWorkspace(User user) {

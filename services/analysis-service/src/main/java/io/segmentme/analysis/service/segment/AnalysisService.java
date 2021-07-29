@@ -3,10 +3,16 @@ package io.segmentme.analysis.service.segment;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.segmentme.analysis.domain.context.ContextSchema;
+import io.segmentme.analysis.domain.segment.Segment;
+import io.segmentme.analysis.domain.workpsace.Workspace;
 import io.segmentme.analysis.dto.AnalysisData;
 import io.segmentme.analysis.dto.AnalysisResult;
 import io.segmentme.analysis.dto.CollectedAnalysysStatisticDto;
 import io.segmentme.analysis.dto.SegmentAnalysisResult;
+import io.segmentme.analysis.repository.SegmentRepository;
+import io.segmentme.analysis.service.ContextSchemaService;
+import io.segmentme.analysis.service.WorkspaceService;
 import io.segmentme.analysis.service.converter.RedisMessageOutConverter;
 import io.segmentme.analysis.service.converter.SegmentConverter;
 import io.segmentme.analysis.service.exception.AnalysisException;
@@ -14,14 +20,8 @@ import io.segmentme.analysis.service.segment.worm.DebugWorm;
 import io.segmentme.analysis.service.segment.worm.StatisticWorm;
 import io.segmentme.analysis.service.segment.worm.Worm;
 import io.segmentme.analysis.service.segment.worm.WormConsumer;
-import io.segmentme.core.domain.context.ContextSchema;
-import io.segmentme.core.domain.segment.Segment;
-import io.segmentme.core.domain.workpsace.Workspace;
 import io.segmentme.helpers.context.processor.ContextValueHolder;
 import io.segmentme.helpers.context.processor.ContextValuesExtractor;
-import io.segmentme.helpers.dao.repository.SegmentRepository;
-import io.segmentme.helpers.dao.service.ContextSchemaService;
-import io.segmentme.helpers.dao.service.WorkspaceService;
 import io.segmentme.redis.config.MessagePublisher;
 import io.segmentme.redis.dto.AnalysisRequest;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +53,6 @@ public class AnalysisService {
 
     private final ContextSchemaService contextSchemaService;
 
-    private final ContextValuesExtractor contextValuesExtractor;
-
     private final WorkspaceService workspaceService;
 
     private final ObjectMapper objectMapper;
@@ -64,11 +62,11 @@ public class AnalysisService {
     @Value("${segmentme.application.redis.stream.statisticStreamKey}")
     private final String statisticStreamKey;
 
-    public AnalysisResult debug(ContextValueHolder context, String segmentId) {
+    public AnalysisResult debug(ContextValueHolder<ContextSchema> context, String segmentId) {
         return debug(context, analysisRuleRepository.findById(segmentId).orElse(null));
     }
 
-    public AnalysisResult debug(ContextValueHolder context, Segment segment) {
+    public AnalysisResult debug(ContextValueHolder<ContextSchema> context, Segment segment) {
 
         DebugWorm worm = new DebugWorm(context);
         SegmentAnalysisResult result = analyze(context, segment, WormConsumer.of(Collections.singletonList(worm)));
@@ -83,10 +81,10 @@ public class AnalysisService {
         Workspace workspace = workspaceService.findByIntegrationPointKey(integrationPointKey)
             .orElseThrow(() -> new IllegalArgumentException("Workspace not found"));
 
-        return debug(contextValuesExtractor.extractValues(payload, schema, workspace.getConfiguration()), segment);
+        return debug(ContextValuesExtractor.INSTANCE.extractValues(payload, schema, workspace.getConfiguration()), segment);
     }
 
-    public List<SegmentAnalysisResult> analyze(ContextValueHolder context, List<Segment> rules, StatisticWorm statisticWorm) {
+    public List<SegmentAnalysisResult> analyze(ContextValueHolder<ContextSchema> context, List<Segment> rules, StatisticWorm statisticWorm) {
         WormConsumer worm = WormConsumer.of(Collections.singletonList(statisticWorm));
         return rules.stream().map(it -> this.analyze(context, it, worm)).collect(Collectors.toList());
     }
@@ -123,7 +121,7 @@ public class AnalysisService {
         List<Segment> finalSegments = segments;
         try {
             List<SegmentAnalysisResult> segmentAnalysisResults = schemas.stream()
-                .map(it -> contextValuesExtractor.extractValues(analysisData.getPayload(), it, workspace.getConfiguration()))
+                .map(it -> ContextValuesExtractor.INSTANCE.extractValues(analysisData.getPayload(), it, workspace.getConfiguration()))
                 .peek(contextValueHolder -> statisticLogEntry.setContextDataHolder(convertToStatisticContextData(contextValueHolder)))
                 .map(it -> this.analyze(it, finalSegments, worm))
                 .flatMap(List::stream).collect(Collectors.toList());
@@ -137,17 +135,18 @@ public class AnalysisService {
         }
     }
 
-    private CollectedAnalysysStatisticDto.ContextDataHolder convertToStatisticContextData(ContextValueHolder contextValueHolder) {
+    private CollectedAnalysysStatisticDto.ContextDataHolder convertToStatisticContextData(ContextValueHolder<ContextSchema> contextValueHolder) {
+        ContextSchema schema = contextValueHolder.getSchema();
         return new CollectedAnalysysStatisticDto.ContextDataHolder()
-            .setContextId(contextValueHolder.getSchema().getId())
+            .setContextId(schema.getId())
             .setValues(contextValueHolder.getValues())
-            .setKnownTypes(Optional.ofNullable(contextValueHolder.getSchema()).map(ContextSchema::getInlinePath).orElse(null))
-            .setUniquenessIndicator(contextValueHolder.getSchema().getUniquenessIndicator())
+            .setKnownTypes(Optional.ofNullable(schema).map(ContextSchema::getInlinePath).orElse(null))
+            .setUniquenessIndicator(schema.getUniquenessIndicator())
             .setExtractedValues(contextValueHolder.getExtractedValues());
     }
 
     @SuppressWarnings({"unchecked"})
-    private SegmentAnalysisResult analyze(ContextValueHolder context, Segment rule, Worm<?> worm) {
+    private SegmentAnalysisResult analyze(ContextValueHolder<ContextSchema> context, Segment rule, Worm<?> worm) {
         long startTime = System.currentTimeMillis();
         SegmentAnalysisResult analyze = segmentAnalysisService.analyze(context, rule, (Worm<Object>) worm);
         analyze.setAnalysisTime(System.currentTimeMillis() - startTime);

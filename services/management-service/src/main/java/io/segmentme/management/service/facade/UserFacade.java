@@ -1,7 +1,7 @@
 package io.segmentme.management.service.facade;
 
 import io.segmentme.AuthAcknowledger;
-import io.segmentme.core.domain.workpsace.UserProfile;
+import io.segmentme.management.service.domain.workpsace.UserProfile;
 import io.segmentme.management.service.dto.user.CurrentUserProfile;
 import io.segmentme.management.service.dto.user.UserBasicInfo;
 import io.segmentme.management.service.dto.user.UserDetails;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

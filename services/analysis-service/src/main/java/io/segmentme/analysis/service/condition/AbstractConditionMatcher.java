@@ -1,9 +1,9 @@
 package io.segmentme.analysis.service.condition;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.segmentme.analysis.domain.condition.AbstractCondition;
+import io.segmentme.analysis.domain.context.ContextSchema;
 import io.segmentme.analysis.service.segment.worm.Worm;
-import io.segmentme.core.domain.condition.AbstractCondition;
-import io.segmentme.core.domain.context.ContextSchema;
 import io.segmentme.helpers.context.processor.ContextValueHolder;
 import io.segmentme.helpers.context.processor.exception.CriteriaValueLocatorException;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +47,12 @@ abstract class AbstractConditionMatcher<T extends AbstractCondition, E, P> imple
     }
 
 
-    protected P getProperty(String propertyName, ContextValueHolder context) {
+    protected P getProperty(String propertyName, ContextValueHolder<ContextSchema> context) {
         return context.getValue(propertyName, comparableValueClass);
     }
 
 
-    public boolean match(T condition, ContextValueHolder context, Worm<Object> worm) {
+    public boolean match(T condition, ContextValueHolder<ContextSchema> context, Worm<Object> worm) {
         P actualValue = null;
 
         try {

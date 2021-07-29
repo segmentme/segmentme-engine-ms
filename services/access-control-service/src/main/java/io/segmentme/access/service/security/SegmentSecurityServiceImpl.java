@@ -1,7 +1,7 @@
 package io.segmentme.access.service.security;
 
-import io.segmentme.core.domain.segment.Segment;
-import io.segmentme.helpers.dao.service.SegmentService;
+import io.segmentme.access.service.domain.segment.Segment;
+import io.segmentme.access.service.service.SegmentService;
 import io.segmentme.security.SegmentSecurityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

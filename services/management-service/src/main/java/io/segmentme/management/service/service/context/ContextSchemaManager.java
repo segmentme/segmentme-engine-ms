@@ -1,0 +1,196 @@
+package io.segmentme.management.service.service.context;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.segmentme.helpers.context.processor.ContextValueHolder;
+import io.segmentme.helpers.context.processor.ContextValuesExtractor;
+import io.segmentme.helpers.context.processor.exception.CriteriaValueLocatorException;
+import io.segmentme.management.service.converter.ContextSchemaConverter;
+import io.segmentme.management.service.domain.context.ContextSchema;
+import io.segmentme.management.service.domain.context.SchemaNode;
+import io.segmentme.management.service.domain.workpsace.Workspace;
+import io.segmentme.management.service.dto.context.ContextSchemaHolder;
+import io.segmentme.management.service.exception.ContextSchemaManagerException;
+import io.segmentme.management.service.exception.error.ContextMangerErrors;
+import io.segmentme.management.service.service.WorkspaceService;
+import io.segmentme.management.service.service.clients.MeasurementClient;
+import io.segmentme.management.service.service.segment.SegmentManager;
+import io.segmentme.models.shared.analysis.InlineType;
+import io.segmentme.models.shared.analysis.IntegrationPoint;
+import io.segmentme.models.shared.analysis.SchemaNodeType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static io.segmentme.management.service.exception.error.ContextMangerErrors.*;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class ContextSchemaManager {
+
+    private final ContextSchemaValidationService validationService;
+
+    private final ContextSchemaService contextSchemaService;
+
+    private final ContextSchemaResolver contextSchemaResolver;
+
+    private final WorkspaceService workspaceService;
+
+    private final SegmentManager segmentManager;
+
+    private final ObjectMapper objectMapper;
+
+    private final MeasurementClient measurementClient;
+
+    public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload, String uniquenessIndicator) {
+        return create(integrationPointKey, root, name, rawPayload, null, uniquenessIndicator);
+    }
+
+    public ContextSchemaHolder create(String integrationPointKey, SchemaNode root, String name, String rawPayload, String hash, String uniquenessIndicator) {
+        if (workspaceService.findByIntegrationPointKey(integrationPointKey).isEmpty()) {
+            throw new ContextSchemaManagerException().setCode(INTEGRATION_POINT_NOT_FOUND);
+        }
+        ContextSchema contextSchema = contextSchemaResolver.resolve(root);
+        contextSchema.setIntegrationPointKey(integrationPointKey);
+        contextSchema.setName(name);
+        contextSchema.setHash(hash == null ? this.computeHash(contextSchema) : hash);
+        contextSchema.setRawPayload(rawPayload);
+        contextSchema.setUniquenessIndicator(uniquenessIndicator);
+
+        if (StringUtils.isNoneBlank(rawPayload)) {
+
+            contextSchema.setNodeValues(getNodeValues(contextSchema, rawPayload));
+        }
+
+        return ContextSchemaConverter.toHolder(contextSchemaService.create(contextSchema));
+    }
+
+    private Map<String, Object> getNodeValues(ContextSchema contextSchema, String rawPayload) {
+        try {
+            JsonNode rawContext = objectMapper.readValue(rawPayload, JsonNode.class);
+            return getNodeValues(contextSchema.getInlinePath(), rawContext);
+        } catch (JsonProcessingException e) {
+            log.error("Unable to parse json", e);
+            return null;
+        }
+    }
+
+    public Map<String, Object> getNodeValues(Map<String, InlineType> inlinePath, JsonNode rawContext) {
+        return getNodeValues(inlinePath, ContextValuesExtractor.INSTANCE.extractValues(rawContext, null, null))
+            .entrySet()
+            .stream()
+            .filter(it -> it != null && !CriteriaValueLocatorException.class.equals(it.getValue().getClass())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+
+    public ContextSchemaHolder updateContextSchema(String id, ContextSchemaHolder holder) {
+        return contextSchemaService.findById(id).map(it -> {
+            ContextSchema contextSchema = contextSchemaResolver.resolve(holder.getRootNode());
+            boolean uniquenessIdentifierChanged = !StringUtils.equals(it.getUniquenessIndicator(), holder.getUniquenessIndicator());
+            it.setInlinePath(contextSchema.getInlinePath());
+            it.setRootNode(contextSchema.getRootNode());
+            it.setHash(holder.getHash() == null ? this.computeHash(contextSchema) : holder.getHash());
+            it.setIntegrationPointKey(holder.getIntegrationPointKey());
+            it.setUniquenessIndicator(holder.getUniquenessIndicator());
+            it.setName(holder.getName());
+            it.setRawPayload(Optional.ofNullable(holder.getRawPayload()).filter(StringUtils::isNoneBlank).orElse(it.getRawPayload()));
+            //todo [vk]: probably need to mute exception? xz
+            if (uniquenessIdentifierChanged) {
+                measurementClient.refreshContextParticipants(it.getId(), it.getUniquenessIndicator());
+            }
+
+            return it;
+        }).map(contextSchemaService::update)
+            .map(ContextSchemaConverter::toHolder)
+            .orElseThrow(() -> new ContextSchemaManagerException().setCode(ContextMangerErrors.CONTEXT_NOT_FOUND));
+    }
+
+    public ContextSchemaHolder resolveContextSchema(Workspace workspace, JsonNode jsonNode) {
+        ContextSchema resolve = contextSchemaResolver.resolve(workspace, jsonNode);
+
+        ContextSchemaHolder contextSchemaHolder = ContextSchemaConverter.toHolder(resolve);
+        contextSchemaHolder.setNodeValues(getNodeValues(resolve, ContextValuesExtractor.INSTANCE.extractValues(jsonNode, null, null)));
+        contextSchemaHolder.setRawPayload(jsonNode.toString());
+        return contextSchemaHolder;
+    }
+
+    public ContextSchemaHolder resolveContextSchema(String workspaceId, JsonNode jsonNode) {
+        Workspace workspace = workspaceService.findById(workspaceId).orElseThrow(() -> new ContextSchemaManagerException().setCode(WORKSPACE_NOT_FOUND));
+        return resolveContextSchema(workspace, jsonNode);
+    }
+
+    public ContextSchemaHolder resolveContextSchema(Workspace workspace, String rawPayload) {
+        JsonNode jsonNode;
+        try {
+            jsonNode = objectMapper.readValue(rawPayload, JsonNode.class);
+        } catch (Exception ex) {
+            throw new ContextSchemaManagerException().setCode(INVALID_JSON);
+        }
+        return resolveContextSchema(workspace.getId(), jsonNode);
+
+    }
+
+    public ContextSchemaHolder resolveContextSchema(SchemaNode rootNode) {
+        ContextSchema resolve = contextSchemaResolver.resolve(rootNode);
+        ContextSchemaHolder contextSchemaHolder = ContextSchemaConverter.toHolder(resolve);
+        contextSchemaHolder.setHash(this.computeHash(resolve));
+        return contextSchemaHolder;
+    }
+
+    public List<ContextSchemaValidationService.SchemaValidationEntry> validate(ContextSchemaHolder contextSchema) {
+        return validationService.validate(new ContextSchema().setRootNode(contextSchema.getRootNode()));
+    }
+
+    public void unlinkFromIntegrationPoint(String integrationPointKey) {
+        contextSchemaService.updateAll(contextSchemaService.findByIntegrationPointKeys(Collections.singletonList(integrationPointKey), false).stream()
+            .map(it -> it.setIntegrationPointKey(null)).collect(Collectors.toList()));
+    }
+
+    public List<ContextSchemaHolder> getAllByWorkspaceId(String workspaceId, boolean shortForm) {
+        Map<String, IntegrationPoint> points = workspaceService.findById(workspaceId)
+            .map(Workspace::getIntegrationPoints).stream().flatMap(Collection::stream).collect(Collectors.toMap(IntegrationPoint::getKey, it -> it));
+
+        return contextSchemaService.findByIntegrationPointKeys(points.keySet(), shortForm).stream().map(ContextSchemaConverter::toHolder).collect(Collectors.toList());
+    }
+
+    public void deleteContextSchema(String contextSchemaId) {
+        contextSchemaService.deleteById(contextSchemaId);
+        segmentManager.unlinkFromContext(contextSchemaId);
+    }
+
+    public ContextSchemaHolder getById(String contextSchemaId) {
+        return contextSchemaService.findById(contextSchemaId).map(ContextSchemaConverter::toHolder).orElse(null);
+    }
+
+
+    private Map<String, Object> getNodeValues(ContextSchema contextSchema, ContextValueHolder payload) {
+        return contextSchema.getInlinePath().entrySet().stream()
+            .filter(it -> it.getValue().getRootType() != SchemaNodeType.OBJECT && it.getValue().getSubType() != SchemaNodeType.OBJECT)
+            .collect(HashMap::new, (m, v) -> m.put(v.getKey(), payload.getValue(v.getKey())), HashMap::putAll);
+    }
+
+    private Map<String, Object> getNodeValues(Map<String, InlineType> inlinePath, ContextValueHolder payload) {
+        return inlinePath.entrySet().stream()
+            .filter(it -> it.getValue().getRootType() != SchemaNodeType.OBJECT && it.getValue().getSubType() != SchemaNodeType.OBJECT)
+            .collect(HashMap::new, (m, v) -> m.put(v.getKey(), payload.getValue(v.getKey())), HashMap::putAll);
+    }
+
+
+    public ContextSchemaHolder findByHash(String integrationPointKey, String hash) {
+        return contextSchemaService.findByHashAndIntegrationPointKey(integrationPointKey, hash).map(ContextSchemaConverter::toHolder).orElse(null);
+    }
+
+    public String computeHash(ContextSchemaHolder contextSchema) {
+        return String.valueOf(contextSchema.getInlinePath().hashCode());
+    }
+
+    public String computeHash(ContextSchema contextSchema) {
+        return String.valueOf(contextSchema.getInlinePath().hashCode());
+    }
+}

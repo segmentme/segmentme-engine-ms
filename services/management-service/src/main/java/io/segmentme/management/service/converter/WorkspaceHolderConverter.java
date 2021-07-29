@@ -1,6 +1,6 @@
 package io.segmentme.management.service.converter;
 
-import io.segmentme.core.domain.workpsace.Workspace;
+import io.segmentme.management.service.domain.workpsace.Workspace;
 import io.segmentme.management.service.dto.WorkspaceHolder;
 
 public class WorkspaceHolderConverter {

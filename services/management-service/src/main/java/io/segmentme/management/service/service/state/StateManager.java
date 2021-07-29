@@ -1,12 +1,12 @@
 package io.segmentme.management.service.service.state;
 
 import io.segmentme.analysis.dto.state.StateDto;
-import io.segmentme.core.domain.state.State;
-import io.segmentme.core.domain.workpsace.Workspace;
-import io.segmentme.helpers.dao.service.StateService;
-import io.segmentme.helpers.dao.service.WorkspaceService;
 import io.segmentme.management.service.converter.StateConverter;
+import io.segmentme.management.service.domain.state.State;
+import io.segmentme.management.service.domain.workpsace.Workspace;
 import io.segmentme.management.service.exception.StateManagerException;
+import io.segmentme.management.service.service.StateService;
+import io.segmentme.management.service.service.WorkspaceService;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

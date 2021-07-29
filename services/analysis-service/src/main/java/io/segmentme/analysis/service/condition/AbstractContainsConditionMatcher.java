@@ -1,6 +1,6 @@
 package io.segmentme.analysis.service.condition;
 
-import io.segmentme.core.domain.condition.ArrayCondition;
+import io.segmentme.analysis.domain.condition.ArrayCondition;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 

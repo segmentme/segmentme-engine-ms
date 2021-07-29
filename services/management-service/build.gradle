@@ -1,12 +1,9 @@
 dependencies {
     api project(':dependencies:mongo-auto-configuration')
     api project(':dependencies:redis-auto-configuration')
-    api project(':dependencies:models:entities:analysis-domain')
-    api project(':dependencies:models:entities:management-domain')
     api project(':dependencies:helpers:context-processor')
     api project(':dependencies:models:dto:analysis-dto')
     api project(':dependencies:web-configuration')
-    api project(':dependencies:helpers:core-dao')
     testImplementation project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
     testImplementation project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
     testImplementation project(path: ':dependencies:web-configuration', configuration: 'tests')

@@ -1,6 +1,6 @@
 package io.segmentme.management.service.dto;
 
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
+import io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package io.segmentme.management.service.converter;
 
-import io.segmentme.management.domain.user.User;
+import io.segmentme.management.service.domain.user.User;
 import io.segmentme.management.service.dto.user.UserHolder;
 
 public class UserHolderConverter {

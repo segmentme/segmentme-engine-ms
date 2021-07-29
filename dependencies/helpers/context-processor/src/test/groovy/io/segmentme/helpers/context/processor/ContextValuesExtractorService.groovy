@@ -9,7 +9,7 @@ import spock.lang.Specification
 import java.time.*
 import java.time.format.DateTimeFormatter
 
-import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
+import static WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
 import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT
 
 class ContextValuesExtractorService extends Specification {

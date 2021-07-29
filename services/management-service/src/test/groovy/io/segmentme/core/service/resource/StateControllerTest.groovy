@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import io.segmentme.analysis.dto.segment.SegmentDto
 import io.segmentme.analysis.dto.segment.SegmentShortInfo
 import io.segmentme.analysis.dto.state.StateDto
-import io.segmentme.core.dto.error.ErrorType
 import io.segmentme.core.service.common.BaseControllerTest
 import io.segmentme.core.service.configuration.test.ResourceHolder
 import io.segmentme.helpers.dao.repository.SegmentRepository
@@ -13,18 +12,13 @@ import io.segmentme.management.domain.user.User
 import io.segmentme.management.service.service.segment.SegmentManager
 import io.segmentme.management.service.service.state.StateManager
 import io.segmentme.management.service.service.user.UserService
-import io.segmentme.security.ContextSchemaSecurityService
-import io.segmentme.security.IntegrationPointKeySecurityService
-import io.segmentme.security.StateSecurityService
-import io.segmentme.security.WorkspaceSecurityService
-import org.spockframework.spring.SpringBean
+import io.segmentme.models.shared.dto.ErrorType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 
 import static java.util.UUID.randomUUID
 import static org.hamcrest.Matchers.hasItem
-import static org.mockito.Mockito.mock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath

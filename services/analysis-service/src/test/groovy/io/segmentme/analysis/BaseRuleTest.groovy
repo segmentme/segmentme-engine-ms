@@ -2,20 +2,16 @@ package io.segmentme.analysis
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.segmentme.analysis.domain.segment.Segment
 import io.segmentme.analysis.dto.SegmentAnalysisResult
 import io.segmentme.analysis.helper.AnalysisResourceHolder
+import io.segmentme.analysis.repository.SegmentRepository
 import io.segmentme.analysis.service.segment.AnalysisService
-import io.segmentme.core.domain.segment.Segment
-import io.segmentme.core.domain.workpsace.Workspace
-import io.segmentme.helpers.context.processor.ContextSchemaResolver
 import io.segmentme.helpers.context.processor.ContextValueHolder
 import io.segmentme.helpers.context.processor.ContextValuesExtractorImpl
-import io.segmentme.helpers.dao.repository.SegmentRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
-
-import static io.segmentme.helpers.context.processor.helper.WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
 
 abstract class BaseRuleTest extends BaseTestWithContext {
 
@@ -34,8 +30,6 @@ abstract class BaseRuleTest extends BaseTestWithContext {
     @Autowired
     private ContextValuesExtractorImpl contextValuesExtractor
 
-    @Autowired
-    private ContextSchemaResolver contextSchemaResolver
 
     @Autowired
     protected SegmentRepository analysisRuleRepository;
@@ -44,14 +38,15 @@ abstract class BaseRuleTest extends BaseTestWithContext {
 
     def setup() {
         def json = objectMapper.readValue(schema.getInputStream(), JsonNode.class)
-        context = contextValuesExtractor.extractValues(json, contextSchemaResolver.resolve(new Workspace().setConfiguration(defaultWorkspaceConfiguration()), json), defaultWorkspaceConfiguration())
+        //TODO[vk]: refactore
+        //context = contextValuesExtractor.extractValues(json, contextSchemaResolver.resolve(new Workspace().setConfiguration(defaultWorkspaceConfiguration()), json), defaultWorkspaceConfiguration())
     }
 
     protected static SegmentAnalysisResult resultValue(String name, List<SegmentAnalysisResult> results) {
         return results.stream()
-                .filter(it -> it.getName().contains(name))
-                .findFirst()
-                .orElse(null)
+            .filter(it -> it.getName().contains(name))
+            .findFirst()
+            .orElse(null)
     }
 
     def getContext() {

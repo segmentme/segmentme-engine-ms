@@ -1,0 +1,38 @@
+package io.segmentme.access.service.dto.analysis;
+
+import io.segmentme.access.service.dto.analysis.conditions.AbstractConditionDto;
+import io.segmentme.models.shared.analysis.AggregationType;
+import lombok.Data;
+
+import javax.validation.constraints.*;
+import java.util.List;
+
+@Data
+public class SegmentDto {
+
+    private String id;
+
+    @NotNull
+    private AggregationType aggregation;
+
+    @NotBlank
+    private String name;
+
+    private String hash;
+
+    private boolean active = true;
+
+    private String description;
+
+    private String integrationPointKey;
+
+    @NotEmpty
+    private List<AbstractConditionDto> conditions;
+
+    private boolean matchResult;
+
+    @Min(0)
+    @Max(100)
+    private int openedForPercentage;
+
+}

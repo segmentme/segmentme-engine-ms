@@ -1,7 +1,7 @@
 package io.segmentme.management.service.workspace;
 
-import io.segmentme.core.domain.workpsace.UserProfile;
-import io.segmentme.helpers.dao.service.UserProfileService;
+import io.segmentme.management.service.domain.workpsace.UserProfile;
+import io.segmentme.management.service.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

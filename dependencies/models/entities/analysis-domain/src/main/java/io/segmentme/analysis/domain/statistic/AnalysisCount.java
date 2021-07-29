@@ -1,6 +1,5 @@
 package io.segmentme.analysis.domain.statistic;
 
-import io.segmentme.models.shared.analysis.AggregatedAnalysisCount;
 import lombok.Data;
 
 import java.util.List;

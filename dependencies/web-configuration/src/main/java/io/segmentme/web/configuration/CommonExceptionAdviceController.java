@@ -1,9 +1,9 @@
 package io.segmentme.web.configuration;
 
-import io.segmentme.core.dto.error.ErrorMessage;
-import io.segmentme.core.dto.error.ErrorType;
-import io.segmentme.core.dto.error.SimpleErrorDto;
-import io.segmentme.core.dto.error.ValidationErrorDto;
+import io.segmentme.models.shared.dto.ErrorMessage;
+import io.segmentme.models.shared.dto.ErrorType;
+import io.segmentme.models.shared.dto.SimpleErrorDto;
+import io.segmentme.models.shared.dto.ValidationErrorDto;
 import io.segmentme.models.shared.exception.AbstractManagerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;

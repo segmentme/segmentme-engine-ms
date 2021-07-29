@@ -1,6 +1,6 @@
 package io.segmentme.analysis.service.condition;
 
-import io.segmentme.core.domain.condition.SingleCondition;
+import io.segmentme.analysis.domain.condition.SingleCondition;
 import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Getter;
 import org.springframework.stereotype.Service;

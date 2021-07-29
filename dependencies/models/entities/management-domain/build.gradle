@@ -1,3 +1,2 @@
 dependencies {
-    api project(':dependencies:models:entities:core-domain')
 }

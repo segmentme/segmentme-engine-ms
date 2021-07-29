@@ -1,10 +1,10 @@
 package io.segmentme.analysis.service.state;
 
+import io.segmentme.analysis.domain.state.State;
 import io.segmentme.analysis.dto.AnalysisData;
 import io.segmentme.analysis.dto.SegmentAnalysisResult;
+import io.segmentme.analysis.service.StateService;
 import io.segmentme.analysis.service.segment.AnalysisService;
-import io.segmentme.core.domain.state.State;
-import io.segmentme.helpers.dao.service.StateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

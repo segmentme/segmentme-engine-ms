@@ -1,6 +1,6 @@
 package io.segmentme.management.service.dto;
 
-import io.segmentme.core.domain.workpsace.Role;
+import io.segmentme.management.service.domain.workpsace.Role;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
