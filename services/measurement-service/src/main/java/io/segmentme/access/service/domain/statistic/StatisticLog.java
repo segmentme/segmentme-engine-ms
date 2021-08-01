@@ -1,5 +1,6 @@
 package io.segmentme.access.service.domain.statistic;
 
+import io.segmentme.core.domain.DbDomain;
 import io.segmentme.core.domain.DbObject;
 import io.segmentme.models.shared.analysis.InlineType;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class StatisticLog extends DbObject {
     private String workspaceId;
 
     @Data
-    public static class SegmentStatistic {
+    public static class SegmentStatistic implements DbDomain {
         private String segmentId;
 
         private String hash;
@@ -49,7 +50,7 @@ public class StatisticLog extends DbObject {
     }
 
     @Data
-    public static class ConditionStatistic {
+    public static class ConditionStatistic implements DbDomain {
         private String hash;
         private String criteria;
         private String errors;
