@@ -44,6 +44,7 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
         if (usersShouldBeIncluded == inSegmentCounts) {
             return;
         }
+        log.info("Redistribute segmentation percentage {} to {} %, number {}", segmentId, percentage, (usersShouldBeIncluded - inSegmentCounts));
         int modAmount = (int) Math.abs(usersShouldBeIncluded - inSegmentCounts);
         if (usersShouldBeIncluded > inSegmentCounts) {
             participantStatisticService.includeParticipantIntoSegment(modAmount, segmentId, contextId);
