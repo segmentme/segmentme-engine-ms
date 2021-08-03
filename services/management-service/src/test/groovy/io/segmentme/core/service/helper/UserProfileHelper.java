@@ -1,9 +1,9 @@
 package io.segmentme.core.service.helper;
 
-import io.segmentme.core.domain.workpsace.Role;
-import io.segmentme.core.domain.workpsace.UserProfile;
-import io.segmentme.core.domain.workpsace.Workspace;
 import io.segmentme.management.service.domain.user.User;
+import io.segmentme.management.service.domain.workpsace.Role;
+import io.segmentme.management.service.domain.workpsace.UserProfile;
+import io.segmentme.management.service.domain.workpsace.Workspace;
 import io.segmentme.management.service.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

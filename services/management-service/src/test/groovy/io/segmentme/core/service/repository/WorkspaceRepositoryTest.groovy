@@ -3,7 +3,7 @@ package io.segmentme.core.service.repository
 import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.core.service.helper.UserHelper
 import io.segmentme.core.service.helper.WorkspaceHelper
-import io.segmentme.helpers.dao.repository.WorkspaceRepository
+import io.segmentme.management.service.repository.WorkspaceRepository
 import org.springframework.beans.factory.annotation.Autowired
 
 import static io.segmentme.core.service.helper.UserProfileHelper.createProfile

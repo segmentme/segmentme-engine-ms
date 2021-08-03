@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.segmentme.analysis.dto.segment.SegmentDto;
-import io.segmentme.core.domain.segment.Segment;
+import io.segmentme.management.service.domain.segment.Segment;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,13 +42,15 @@ public class ResourceHolder {
 
     @SneakyThrows
     public List<Segment> getSegments() {
-        return OBJECT_MAPPER.readValue(ruleSchema.getInputStream(), new TypeReference<>() {});
+        return OBJECT_MAPPER.readValue(ruleSchema.getInputStream(), new TypeReference<>() {
+        });
     }
 
 
     @SneakyThrows
     public List<SegmentDto> getSegmentsDto() {
-        return OBJECT_MAPPER.readValue(ruleSchema.getInputStream(), new TypeReference<>() {});
+        return OBJECT_MAPPER.readValue(ruleSchema.getInputStream(), new TypeReference<>() {
+        });
     }
 
     @SneakyThrows

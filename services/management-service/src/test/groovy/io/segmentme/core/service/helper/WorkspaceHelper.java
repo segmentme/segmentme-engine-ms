@@ -1,7 +1,7 @@
 package io.segmentme.core.service.helper;
 
-import io.segmentme.core.domain.workpsace.Workspace;
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration;
+import io.segmentme.management.service.domain.workpsace.Workspace;
+import io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration;
 import io.segmentme.management.service.repository.WorkspaceRepository;
 import io.segmentme.models.shared.analysis.IntegrationPoint;
 import lombok.Data;

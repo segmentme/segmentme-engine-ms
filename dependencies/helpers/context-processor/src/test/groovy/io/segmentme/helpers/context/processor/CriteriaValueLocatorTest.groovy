@@ -1,15 +1,15 @@
 package io.segmentme.helpers.context.processor
 
-import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.helpers.context.processor.exception.CriteriaValueLocatorException
 import io.segmentme.helpers.context.processor.exception.error.CriteriaValueLocatorErrors
 import io.segmentme.helpers.context.processor.helper.ContextProcessorResourceHolder
+import io.segmentme.helpers.context.processor.helper.ExtractorConfigurationHelper
 import spock.lang.Specification
 
 import java.time.*
 import java.time.format.DateTimeFormatter
 
-import static WorkspaceConfigurationHelper.defaultWorkspaceConfiguration
+import static io.segmentme.helpers.context.processor.helper.ExtractorConfigurationHelper.defaultWorkspaceConfiguration
 import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT
 
 class CriteriaValueLocatorTest extends Specification {
@@ -20,7 +20,7 @@ class CriteriaValueLocatorTest extends Specification {
 
     def setupSpec() {
         resourceHolder.init();
-        schema = new ContextSchemaResolver().resolve(new Workspace().setConfiguration(defaultWorkspaceConfiguration()), resourceHolder.getValidJsonPayloadConfiguration())
+        schema = ExtractorConfigurationHelper.getSchemaDescriptor();
     }
 
     def "Context criteria  #criteria value should be #expectedValue"() {

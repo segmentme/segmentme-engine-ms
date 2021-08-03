@@ -15,7 +15,7 @@ class UserHelper {
     private final UserRepository userRepository;
 
     public static User createUser() {
-        return new User().setEmail(UUID.randomUUID().toString() + "@aa.com").setName("name");
+        return new User().setEmail(UUID.randomUUID().toString() + "@aa.com").setName("name").setExternalId(UUID.randomUUID().toString());
     }
 
     public User createAndSaveUser() {

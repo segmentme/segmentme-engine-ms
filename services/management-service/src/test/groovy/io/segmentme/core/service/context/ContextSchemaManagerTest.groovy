@@ -1,13 +1,13 @@
 package io.segmentme.core.service.context
 
-import io.segmentme.core.domain.context.SchemaNode
-import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.core.service.helper.UserHolderHelper
-import io.segmentme.helpers.dao.service.WorkspaceService
+import io.segmentme.management.service.domain.context.SchemaNode
+import io.segmentme.management.service.domain.workpsace.Workspace
 import io.segmentme.management.service.exception.ContextSchemaManagerException
 import io.segmentme.management.service.exception.error.ContextMangerErrors
 import io.segmentme.management.service.repository.UserRepository
+import io.segmentme.management.service.repository.WorkspaceRepository
 import io.segmentme.management.service.service.context.ContextSchemaManager
 import io.segmentme.models.shared.analysis.SchemaNodeType
 import io.segmentme.models.shared.exception.AbstractManagerException
@@ -23,7 +23,7 @@ class ContextSchemaManagerTest extends BaseTestWithContext {
     private UserHolderHelper userHelper
 
     @Autowired
-    private WorkspaceService workspaceService
+    private WorkspaceRepository workspaceRepository
 
     @Autowired
     private ContextSchemaManager contextSchemaManager
@@ -41,10 +41,10 @@ class ContextSchemaManagerTest extends BaseTestWithContext {
     def "Create context #rootNode for integration key #integrationKey should #result"() {
         setup:
         def user = userHelper.createUserAndState();
-        workspaces = workspaceService.findAllUserWorkspaces(user.getId())
+        workspaces = workspaceRepository.findAll().findAll { it -> it.userProfiles.any { profile -> profile.userId == user.id } }
         expect:
         try {
-            def create = contextSchemaManager.create(integrationKey ?: workspaces[0].integrationPoints[0].key, rootNode, null, null)
+            def create = contextSchemaManager.create(integrationKey ?: workspaces[0].integrationPoints[0].key, rootNode, null, null, null)
             assert create != null && result == true
         } catch (AbstractManagerException ex) {
             assert ex == result

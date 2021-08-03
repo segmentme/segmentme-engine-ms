@@ -3,10 +3,10 @@ package io.segmentme.core.service.converter
 import io.segmentme.analysis.dto.conditions.ArrayConditionDto
 import io.segmentme.analysis.dto.conditions.SingleConditionDto
 import io.segmentme.analysis.dto.segment.SegmentDto
-import io.segmentme.core.domain.condition.ArrayCondition
-import io.segmentme.core.domain.condition.SingleCondition
-import io.segmentme.core.domain.segment.Segment
 import io.segmentme.management.service.converter.SegmentConverter
+import io.segmentme.management.service.domain.condition.ArrayCondition
+import io.segmentme.management.service.domain.condition.SingleCondition
+import io.segmentme.management.service.domain.segment.Segment
 import spock.lang.Specification
 
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition
@@ -29,7 +29,7 @@ class SegmentConverterTest extends Specification {
         convertedCondition.type == condition.type
         where:
         values                                                                                                                                 | isDto
-        ['value': true, 'conditions': List.of(fillCondition(new ArrayConditionDto(), true, IN))] | true
+        ['value': true, 'conditions': List.of(fillCondition(new ArrayConditionDto(), true, IN))]       | true
         ['value': false, 'conditions': List.of(fillCondition(new ArrayConditionDto(), true, IN))]                                              | true
         ['value': true, 'conditions': List.of(fillCondition(new ArrayCondition(), true, IN))]                                                  | false
         ['value': false, 'conditions': List.of(fillCondition(new ArrayCondition(), true, IN))]                                                 | false

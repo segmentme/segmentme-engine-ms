@@ -36,8 +36,8 @@ public class ContextValuesExtractorImpl implements ContextValuesExtractor {
     }
 
     private void buildValuesMap(String path, JsonNode value, List<NodeDescriptor> schemaNodes, Map<String, Object> values, List<DateTimeFormatter> dateFormats) {
-        Optional<NodeDescriptor> NodeDescriptor = Optional.ofNullable(schemaNodes).orElseGet(ArrayList::new).stream().filter(it -> it.getName().equalsIgnoreCase(path)).findFirst();
-        getNodeValue(value, NodeDescriptor.orElseGet(() -> new NodeDescriptorProxy().setPath(path)
+        Optional<NodeDescriptor> nodeDescriptor = Optional.ofNullable(schemaNodes).orElseGet(ArrayList::new).stream().filter(it -> it.getPath().equalsIgnoreCase(path)).findFirst();
+        getNodeValue(value, nodeDescriptor.orElseGet(() -> new NodeDescriptorProxy().setPath(path)
             .setType(getPossibleSchemaNodeTypes(value.getNodeType()).get(0))), values, dateFormats);
     }
 
@@ -77,7 +77,7 @@ public class ContextValuesExtractorImpl implements ContextValuesExtractor {
     }
 
     private void collectObjectValues(NodeDescriptor nodeDescriptor, Map<String, Object> objectValues, Map.Entry<String, JsonNode> objectField, List<DateTimeFormatter> dateFormats) {
-        buildValuesMap(Optional.ofNullable(nodeDescriptor.getNodes()).map(subnodes -> objectField.getKey()).orElse(nodeDescriptor.getPath() + "." + objectField.getKey()), objectField.getValue(), nodeDescriptor.getNodes(), objectValues, dateFormats);
+        buildValuesMap(nodeDescriptor.getPath() + "." + objectField.getKey(), objectField.getValue(), nodeDescriptor.getNodes(), objectValues, dateFormats);
     }
 
     private void putValue(Map<String, List<Object>> objects, String key, Object value) {

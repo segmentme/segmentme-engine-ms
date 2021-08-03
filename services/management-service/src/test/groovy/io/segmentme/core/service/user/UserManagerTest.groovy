@@ -1,11 +1,11 @@
 package io.segmentme.core.service.user
 
-import io.segmentme.core.domain.workpsace.Role
-import io.segmentme.core.domain.workpsace.WorkspaceConfiguration
 import io.segmentme.core.service.common.BaseTestWithContext
-import io.segmentme.helpers.dao.service.UserProfileService
-import io.segmentme.helpers.dao.service.WorkspaceService
+import io.segmentme.management.service.domain.workpsace.Role
+import io.segmentme.management.service.domain.workpsace.WorkspaceConfiguration
 import io.segmentme.management.service.repository.UserRepository
+import io.segmentme.management.service.service.UserProfileService
+import io.segmentme.management.service.service.WorkspaceService
 import io.segmentme.management.service.service.user.UserService
 import io.segmentme.management.service.user.UserManager
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,11 +28,11 @@ class UserManagerTest extends BaseTestWithContext {
     @Autowired
     private UserRepository userRepository
 
-    def setup(){
+    def setup() {
         userRepository.deleteAll()
     }
 
-    def cleanup(){
+    def cleanup() {
         userRepository.deleteAll()
     }
 

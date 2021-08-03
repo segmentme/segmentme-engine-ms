@@ -1,15 +1,11 @@
 package io.segmentme.core.service.repository
 
-import io.segmentme.core.SpringCoreDataApplication
+
 import io.segmentme.core.service.common.BaseTestWithContext
 import io.segmentme.core.service.helper.UserHelper
-import io.segmentme.management.domain.user.User
+import io.segmentme.management.service.domain.user.User
 import io.segmentme.management.service.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
-import spock.lang.Specification
-
 
 class UserRepositoryTest extends BaseTestWithContext {
 
@@ -19,7 +15,7 @@ class UserRepositoryTest extends BaseTestWithContext {
     @Autowired
     private UserRepository repository
 
-    def cleanup(){
+    def cleanup() {
         repository.deleteAll()
     }
 

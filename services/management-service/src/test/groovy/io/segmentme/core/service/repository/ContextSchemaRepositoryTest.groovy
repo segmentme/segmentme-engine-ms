@@ -1,11 +1,10 @@
 package io.segmentme.core.service.repository
 
-import io.segmentme.core.domain.context.ContextSchema
+
 import io.segmentme.core.service.common.BaseTestWithContext
-import io.segmentme.helpers.dao.repository.ContextSchemaRepository
+import io.segmentme.management.service.domain.context.ContextSchema
+import io.segmentme.management.service.repository.ContextSchemaRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import spock.lang.Specification
 
 class ContextSchemaRepositoryTest extends BaseTestWithContext {
 

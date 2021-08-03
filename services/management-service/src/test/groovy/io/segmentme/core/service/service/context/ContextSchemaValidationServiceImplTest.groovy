@@ -1,7 +1,8 @@
 package io.segmentme.core.service.service.context
 
-import io.segmentme.core.domain.workpsace.Workspace
 import io.segmentme.core.service.configuration.test.ResourceHolder
+import io.segmentme.management.service.domain.workpsace.Workspace
+import io.segmentme.management.service.service.context.ContextSchemaResolver
 import io.segmentme.management.service.service.context.ContextSchemaValidationServiceImpl
 import io.segmentme.models.shared.exception.SeverityLevel
 import spock.lang.Specification
@@ -54,6 +55,6 @@ class ContextSchemaValidationServiceImplTest extends Specification {
         def validationResult = validationService.validate(schema);
         then:
         !validationResult.findAll { it -> it.severity == SeverityLevel.CRITICAL }
-                .findAll { it -> it.code == NODE_SUBTYPE_NOT_DEFINED }.isEmpty()
+            .findAll { it -> it.code == NODE_SUBTYPE_NOT_DEFINED }.isEmpty()
     }
 }

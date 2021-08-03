@@ -1,7 +1,8 @@
 package io.segmentme.core.service
 
-import io.segmentme.core.domain.workpsace.Workspace
+
 import io.segmentme.helpers.context.processor.helper.ContextProcessorResourceHolder
+import io.segmentme.management.service.domain.workpsace.Workspace
 import io.segmentme.management.service.service.context.ContextSchemaResolver
 import io.segmentme.models.shared.analysis.SchemaNodeType
 import spock.lang.Specification

@@ -4,9 +4,7 @@ dependencies {
     api project(':dependencies:web-configuration')
 
 
-    testImplementation(project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')) {
-        exclude group: 'de.flapdoodle.embed'
-    }
+    testImplementation(project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests'))
     testImplementation project(path: ':dependencies:web-configuration', configuration: 'tests')
 }
 
