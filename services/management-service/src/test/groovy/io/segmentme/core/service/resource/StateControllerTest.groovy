@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@Ignore
 class StateControllerTest extends BaseControllerTest {
 
     @Value("classpath:rules/schema.json")
@@ -88,7 +87,7 @@ class StateControllerTest extends BaseControllerTest {
         def stateDto = createState(null)
         stateDto.setName(null).setValue(null)
         and:
-        def response = sendRequest(post("/state"), stateDto)
+        def response = sendRequest(auth(post("/state"), user.externalId), stateDto)
         expect:
         response.andExpect(status().isBadRequest())
             .andDo(print())

@@ -82,7 +82,9 @@ class BaseControllerTest extends BaseTestWithContext {
     }
 
     private AbstractAuthenticationToken accessToken(String id = uuid(), String email = 'test@test.test') {
-        return new TestingAuthenticationToken(new AuthUser().setEmail(email).setId(id).setAcknowledged(true), null)
+        def auth = new TestingAuthenticationToken(new AuthUser().setEmail(email).setId(id).setAcknowledged(true), null)
+        auth.setAuthenticated(true)
+        return auth
     }
 
     private String uuid() {

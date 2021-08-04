@@ -9,7 +9,7 @@
         "value": [
           "test@email.com"
         ],
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "41254sasda"
       }
@@ -26,7 +26,7 @@
         "value": [
           "test@email.com"
         ],
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": false,
         "hash": "12321321421"
       }
@@ -41,7 +41,7 @@
         "type": "GT",
         "criteria": "user.age",
         "value": 38,
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "124125124"
       }
@@ -56,7 +56,7 @@
         "type": "GTE",
         "criteria": "user.age",
         "value": 40,
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "sdase32sadd12"
       }
@@ -71,7 +71,7 @@
         "type": "LT",
         "criteria": "user.birthDate",
         "value": "1961-06-06T00:00:00Z",
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "1212asdxac23"
       }
@@ -86,7 +86,7 @@
         "type": "LTE",
         "criteria": "user.birthDate",
         "value": "1961-06-06T00:00:00Z",
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "askdoask23"
       }
@@ -104,7 +104,7 @@
           "min": "2000-06-03T00:00:00Z",
           "max": "2000-06-07T00:00:00Z"
         },
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "aspdlplk23o1213"
       }
@@ -122,7 +122,7 @@
           "min": "2000-06-03T00:00:00Z",
           "max": "2000-06-07T00:00:00Z"
         },
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": false,
         "hash": "1243123acabsa"
       }
@@ -141,7 +141,7 @@
           888888,
           220015
         ],
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "65hgtw324326a"
       }
@@ -158,7 +158,7 @@
         "value": [
           220015
         ],
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "jjgfd5642w2"
       }
@@ -175,7 +175,7 @@
         "value": [
           44423
         ],
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "123214123vdfassafd"
       }
@@ -192,7 +192,7 @@
         "value": [
           "(29)9999999"
         ],
-        "nullValid": false,
+        "isNullValid": false,
         "matchResult": true,
         "hash": "235bhdxfj534578"
       }
@@ -217,7 +217,7 @@
               "value": [
                 "test@email.com"
               ],
-              "nullValid": false,
+              "isNullValid": false,
               "matchResult": true,
               "hash": "dsaf423qv4324"
             },
@@ -227,7 +227,7 @@
               "value": [
                 "test@email.com"
               ],
-              "nullValid": false,
+              "isNullValid": false,
               "matchResult": true,
               "hash": "dsaf423qv4324"
             },
@@ -237,7 +237,7 @@
               "value": [
                 "123123dsadasd34q2213123213"
               ],
-              "nullValid": false,
+              "isNullValid": false,
               "matchResult": true,
               "hash": "sdafsadd43wb32423"
             }
