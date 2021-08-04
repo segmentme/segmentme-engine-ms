@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
-import spock.lang.Ignore
 
 import static io.segmentme.core.service.helper.ConditionHelper.fillCondition
 import static io.segmentme.core.service.helper.RuleHelper.fillRule
@@ -24,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@Ignore
 class SegmentControllerTest extends BaseControllerTest {
 
     @Autowired
