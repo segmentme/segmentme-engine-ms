@@ -2,10 +2,12 @@ package io.segment.security.mock
 
 import org.spockframework.spring.SpringBean
 import org.springframework.http.ResponseEntity
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import spock.lang.Specification
 
+@ActiveProfiles("test")
 public class AccessServiceMock extends Specification {
 
     @SpringBean(name = "access-control-service")

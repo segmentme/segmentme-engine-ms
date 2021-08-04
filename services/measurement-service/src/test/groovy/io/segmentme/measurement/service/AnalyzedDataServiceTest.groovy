@@ -7,7 +7,7 @@ import io.segmentme.measurement.service.service.AnalyzedDataService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+@SpringBootTest(classes = [TestConfiguration.class])
 class AnalyzedDataServiceTest extends AccessServiceMock {
 
     @Autowired

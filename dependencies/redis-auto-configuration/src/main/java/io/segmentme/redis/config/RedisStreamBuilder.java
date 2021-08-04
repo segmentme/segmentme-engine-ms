@@ -3,6 +3,7 @@ package io.segmentme.redis.config;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @Component
+@Profile("!test")
 @RequiredArgsConstructor
 @ConditionalOnProperty(value = "segmentme.application.redis.stream.enabled", havingValue = "true")
 public class RedisStreamBuilder {

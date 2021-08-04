@@ -11,12 +11,13 @@ import io.segmentme.measurement.service.service.StatisticService
 import org.apache.commons.lang3.RandomUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @SpringBootTest(classes = [TestConfiguration.class])
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 class StatisticServiceTest extends AccessServiceMock {
 
     public static final String CONTEXT_ID = "contextId"
@@ -53,9 +54,9 @@ class StatisticServiceTest extends AccessServiceMock {
         then:
         participantsStatisticRepository.findAll().forEach(saved -> {
             if (expectedToInclude.find { expected -> expected.getUniquenessValue() == saved.getUniquenessValue() }) {
-                assert saved.inSegment.contains(SEGMENT_ID);
+                saved.inSegment.contains(SEGMENT_ID);
             } else {
-                assert !saved.inSegment.contains(SEGMENT_ID);
+                !saved.inSegment.contains(SEGMENT_ID);
             }
         })
 

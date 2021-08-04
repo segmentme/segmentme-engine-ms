@@ -5,12 +5,7 @@ dependencies {
     api 'org.springframework.boot:spring-boot-starter-validation'
     api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.1'
     api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.1'
-
-
-    testImplementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 }
-
-
 
 
 task jarTests(type: Jar, dependsOn: testClasses) {
