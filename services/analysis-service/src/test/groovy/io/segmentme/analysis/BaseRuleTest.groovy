@@ -2,6 +2,8 @@ package io.segmentme.analysis
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.segmentme.analysis.domain.context.ContextSchema
+import io.segmentme.analysis.domain.context.SchemaNode
 import io.segmentme.analysis.domain.segment.Segment
 import io.segmentme.analysis.dto.SegmentAnalysisResult
 import io.segmentme.analysis.helper.AnalysisResourceHolder
@@ -9,9 +11,14 @@ import io.segmentme.analysis.repository.SegmentRepository
 import io.segmentme.analysis.service.segment.AnalysisService
 import io.segmentme.helpers.context.processor.ContextValueHolder
 import io.segmentme.helpers.context.processor.ContextValuesExtractorImpl
+import io.segmentme.redis.config.MessagePublisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.Resource
+import org.springframework.data.redis.core.RedisTemplate
+
+import static io.segmentme.helpers.context.processor.helper.ExtractorConfigurationHelper.defaultWorkspaceConfiguration
 
 abstract class BaseRuleTest extends BaseTestWithContext {
 
@@ -21,15 +28,17 @@ abstract class BaseRuleTest extends BaseTestWithContext {
     @Autowired
     protected AnalysisResourceHolder resourceHolder
 
+    @MockBean
+    protected MessagePublisher messagePublisher
+
+    @MockBean
+    protected RedisTemplate<String, Object> redisTemplate;
+
     @Autowired
     protected AnalysisService analysisService
 
     @Autowired
     protected ObjectMapper objectMapper
-
-    @Autowired
-    private ContextValuesExtractorImpl contextValuesExtractor
-
 
     @Autowired
     protected SegmentRepository analysisRuleRepository;
@@ -38,8 +47,9 @@ abstract class BaseRuleTest extends BaseTestWithContext {
 
     def setup() {
         def json = objectMapper.readValue(schema.getInputStream(), JsonNode.class)
-        //TODO[vk]: refactore
-        //context = contextValuesExtractor.extractValues(json, contextSchemaResolver.resolve(new Workspace().setConfiguration(defaultWorkspaceConfiguration()), json), defaultWorkspaceConfiguration())
+        ContextSchema contextSchema = new ContextSchema()
+        contextSchema.setRootNode(new SchemaNode())
+        context = ContextValuesExtractorImpl.INSTANCE.extractValues(json, contextSchema, defaultWorkspaceConfiguration())
     }
 
     protected static SegmentAnalysisResult resultValue(String name, List<SegmentAnalysisResult> results) {
