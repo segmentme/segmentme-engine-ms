@@ -53,6 +53,8 @@ jobs:
         steps:
             -   attach_workspace:
                     at: .
+            -   setup_remote_docker:
+                    docker_layer_caching: true
             -   run: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
 
 # the default pipeline parameters, which will be updated according to
