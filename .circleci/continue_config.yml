@@ -11,16 +11,9 @@ executors:
             -   image: cimg/openjdk:14.0.2
 
 jobs:
-    build:
-        executor: java-executor
-        working_directory: ~/repo
-
-        environment:
-            # Customize the JVM maximum heap limit
-            JVM_OPTS: -Xmx3200m
-            TERM: dumb
     test:
         executor: java-executor
+        working_directory: ~/repo
         parameters:
             service-name:
                 type: string
@@ -58,7 +51,6 @@ workflows:
     access-control-service:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
-            - build
             -   test:
                     matrix:
                         parameters:
