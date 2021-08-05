@@ -60,6 +60,9 @@ parameters:
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
+    always-run:
+        jobs:
+            - checkout
     # when pipeline parameter, access-control-service-changed is true, the
     # build-service-1 job is triggered.
     access-control-service:
