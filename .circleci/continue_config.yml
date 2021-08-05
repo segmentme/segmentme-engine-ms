@@ -29,7 +29,7 @@ jobs:
                         - ~/project/bin/test
                         - ~/project/bin/testIntegration
             -   persist_to_workspace:
-                    root: /root
+                    root: .
                     paths:
                         - ./*
             -   run: ls
@@ -43,9 +43,9 @@ jobs:
 
         steps:
             -   attach_workspace:
-                    at: /root
+                    at: .
             -   run: ls
-            -   run: ls /root
+            -   run: ls ./
             -   run: pwd
             #            -   run: ls /home/circleci/project
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
