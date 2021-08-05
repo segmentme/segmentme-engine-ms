@@ -28,6 +28,7 @@ jobs:
                         - ~/project/bin/main
                         - ~/project/bin/test
                         - ~/project/bin/testIntegration
+            -   run: mkdir /root
             -   persist_to_workspace:
                     root: /root
                     paths:
