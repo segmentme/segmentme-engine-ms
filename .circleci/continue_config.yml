@@ -11,17 +11,13 @@ executors:
             -   image: cimg/openjdk:14.0.2
 
 jobs:
-    checkout:
-        executor: java-executor
-        working_directory: ~/repo
-        steps:
-            - checkout
     test:
         executor: java-executor
         parameters:
             service-name:
                 type: string
         steps:
+            - checkout
             -   run: ls
             -   run: pwd
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
@@ -64,9 +60,6 @@ parameters:
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
-    always-run:
-        jobs:
-            - checkout
     # when pipeline parameter, access-control-service-changed is true, the
     # build-service-1 job is triggered.
     access-control-service:
