@@ -14,9 +14,6 @@ jobs:
     checkout:
         executor: java-executor
         working_directory: ~/repo
-        parameters:
-            service-name:
-                type: string
         steps:
             - checkout
     test:
