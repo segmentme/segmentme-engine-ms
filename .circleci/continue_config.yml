@@ -33,7 +33,6 @@ jobs:
                     paths:
                         - ./*
             -   run: ls
-            -   run: ls /root
             -   run: pwd
     test:
         executor: java-executor
