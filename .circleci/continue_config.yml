@@ -15,18 +15,39 @@ jobs:
         executor: java-executor
         steps:
             - checkout
+            -   restore_cache:
+                    keys:
+                        - gradle-{{ .Branch }}-{{ checksum "build.gradle" }}
+                        - gradle-{{ .Branch }}-
+                        - gradle-
+            -   save_cache:
+                    key: gradle-{{ .Branch }}-{{ checksum "build.gradle" }}
+                    paths:
+                        - ~/.gradle/caches
+                        - ~/.gradle/wrapper
+                        - ~/project/bin/main
+                        - ~/project/bin/test
+                        - ~/project/bin/testIntegration
             -   persist_to_workspace:
-                    root: .
+                    root: /tmp/workspace
                     paths:
                         - .
+            -   run: ls
+            -   run: ls
+            -   run: pwd
     test:
         executor: java-executor
         parameters:
             service-name:
                 type: string
+
         steps:
+            -   attach_workspace:
+                    at: /tmp/workspace
             -   run: ls
+            -   run: ls /tmp/workspace
             -   run: pwd
+            #            -   run: ls /home/circleci/project
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
     buildDocker:
         executor: java-executor
