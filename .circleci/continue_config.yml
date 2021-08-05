@@ -18,10 +18,21 @@ jobs:
             service-name:
                 type: string
         steps:
-            - checkout
             -   run: ls
             -   run: pwd
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
+    buildDocker:
+        executor: java-executor
+        working_directory: ~/repo
+        environment:
+            SME_BE_HOST: http://192.168.1.14
+        parameters:
+            service-name:
+                type: string
+        steps:
+            -   run: ls
+            -   run: pwd
+            -   run: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
 
 # the default pipeline parameters, which will be updated according to
 # the results of the path-filtering orb
@@ -55,6 +66,14 @@ workflows:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
             -   test:
+                    name: test
+                    matrix:
+                        parameters:
+                            service-name: [ access-control-service ]
+            -   buildDocker:
+                    name: build
+                    requires:
+                        - test
                     matrix:
                         parameters:
                             service-name: [ access-control-service ]
