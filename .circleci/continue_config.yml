@@ -58,7 +58,6 @@ jobs:
                     at: .
             -   setup_remote_docker:
                     docker_layer_caching: false
-            -   run: echo 'export FULL_IMAGE_NAME=${AWS_ECR_ACCOUNT_URL}segmentme-<<parameters.service-name>>' >> $BASH_ENV
             -   run:
                     name: Build docker image
                     command: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
@@ -66,7 +65,7 @@ jobs:
                     name: Save image to an archive
                     command: |
                         mkdir docker-image
-                        docker save -o docker-image/image.tar $FULL_IMAGE_NAME
+                        docker save -o docker-image/image.tar ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:${CIRCLE_SHA1}
             -   persist_to_workspace:
                     root: .
                     paths:
@@ -91,7 +90,7 @@ jobs:
                     name: Push image
                     command: |
                         eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-                        docker push ${AWS_ECR_ACCOUNT_URL}segmentme-<<parameters.service-name>>
+                        docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:${CIRCLE_SHA1}
 #            -   aws-ecs/update-service:
 #                    family: "${ECS_SERVICE_NAME}"
 #                    cluster-name: "${ECS_CLUSTER_NAME}"
