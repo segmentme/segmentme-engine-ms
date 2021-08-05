@@ -3,6 +3,14 @@ version: 2.1
 # this allows you to use CircleCI's dynamic configuration feature
 setup: true
 
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+executors:
+    java-executor: # linux executor using the node base image
+        docker:
+            -   image: cimg/openjdk:14.0.2
 
 # the path-filtering orb is required to continue a pipeline based on
 # the path of an updated fileset
@@ -33,4 +41,7 @@ workflows:
                     # complete. In this case, we are using the parent dynamic
                     # configuration itself.
                     config-path: .circleci/continue_config.yml
-            - checkout
+            -   checkout:
+                    executor: java-executor
+                    steps:
+                        - checkout
