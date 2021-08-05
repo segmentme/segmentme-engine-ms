@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-    aws-ecr: circleci/aws-ecr@7.0.0
+    aws-cli: circleci/aws-cli@2.0.3
     aws-ecs: circleci/aws-ecs@02.2.1
 
 # Java Gradle CircleCI 2.0 configuration file
