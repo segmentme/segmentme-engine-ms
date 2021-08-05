@@ -30,7 +30,6 @@ jobs:
                         - ~/.gradle/wrapper
                         - ~/project/bin/main
                         - ~/project/bin/test
-                        - ~/project/bin/testIntegration
             -   persist_to_workspace:
                     root: .
                     paths:
@@ -61,6 +60,7 @@ jobs:
             -   run:
                     name: Build docker image
                     command: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
+            -   run: docker images
             -   run:
                     name: Save image to an archive
                     command: |
