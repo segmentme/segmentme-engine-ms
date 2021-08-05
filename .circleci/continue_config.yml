@@ -18,6 +18,7 @@ jobs:
             service-name:
                 type: string
         steps:
+            -   run: ls
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
 
 # the default pipeline parameters, which will be updated according to
