@@ -65,7 +65,7 @@ jobs:
                     name: Save image to an archive
                     command: |
                         mkdir docker-image
-                        docker save -o docker-image/image.tar ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:${CIRCLE_SHA1}
+                        docker save -o docker-image/image.tar ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
             -   persist_to_workspace:
                     root: .
                     paths:
@@ -90,7 +90,7 @@ jobs:
                     name: Push image
                     command: |
                         eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-                        docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:${CIRCLE_SHA1}
+                        docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
 #            -   aws-ecs/update-service:
 #                    family: "${ECS_SERVICE_NAME}"
 #                    cluster-name: "${ECS_CLUSTER_NAME}"
