@@ -32,8 +32,6 @@ jobs:
                     root: .
                     paths:
                         - ./*
-            -   run: ls
-            -   run: pwd
     test:
         executor: java-executor
         parameters:
@@ -43,9 +41,6 @@ jobs:
         steps:
             -   attach_workspace:
                     at: .
-            -   run: ls
-            -   run: ls ./
-            -   run: pwd
             #            -   run: ls /home/circleci/project
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
     buildDocker:
@@ -56,8 +51,8 @@ jobs:
             service-name:
                 type: string
         steps:
-            -   run: ls
-            -   run: pwd
+            -   attach_workspace:
+                    at: .
             -   run: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
 
 # the default pipeline parameters, which will be updated according to
@@ -93,10 +88,14 @@ workflows:
         jobs:
             - checkout
             -   test:
+                    context:
+                        - sme
                     service-name: access-control-service
                     requires:
                         - checkout
             -   buildDocker:
+                    context:
+                        - sme
                     service-name: access-control-service
                     requires:
                         - test
