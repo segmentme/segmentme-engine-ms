@@ -28,14 +28,12 @@ jobs:
                         - ~/project/bin/main
                         - ~/project/bin/test
                         - ~/project/bin/testIntegration
-            -   run: rm -rf /tmp/workspace
-            -   run: mkdir /tmp/workspace
             -   persist_to_workspace:
-                    root: /tmp/workspace
+                    root: /root
                     paths:
-                        - .
+                        - project
             -   run: ls
-            -   run: ls
+            -   run: ls /root
             -   run: pwd
     test:
         executor: java-executor
@@ -45,9 +43,9 @@ jobs:
 
         steps:
             -   attach_workspace:
-                    at: /tmp/workspace
+                    at: /root
             -   run: ls
-            -   run: ls /tmp/workspace
+            -   run: ls /root
             -   run: pwd
             #            -   run: ls /home/circleci/project
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
