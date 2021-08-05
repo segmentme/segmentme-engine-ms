@@ -11,9 +11,16 @@ executors:
             -   image: cimg/openjdk:14.0.2
 
 jobs:
-    test:
+    checkout:
         executor: java-executor
         working_directory: ~/repo
+        parameters:
+            service-name:
+                type: string
+        steps:
+            - checkout
+    test:
+        executor: java-executor
         parameters:
             service-name:
                 type: string
