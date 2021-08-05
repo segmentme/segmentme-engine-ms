@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+    aws-ecr: circleci/aws-ecr@7.0.0
+    aws-ecs: circleci/aws-ecs@02.2.1
 
 # Java Gradle CircleCI 2.0 configuration file
 #
@@ -55,7 +58,59 @@ jobs:
                     at: .
             -   setup_remote_docker:
                     docker_layer_caching: false
-            -   run: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
+            -   run: echo 'export FULL_IMAGE_NAME=${AWS_ECR_ACCOUNT_URL}segmentme-<<parameters.service-name>>' >> $BASH_ENV
+            -   run:
+                    name: Build docker image
+                    command: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
+            -   run:
+                    name: Save image to an archive
+                    command: |
+                        mkdir docker-image
+                        docker save -o docker-image/image.tar $FULL_IMAGE_NAME
+            -   persist_to_workspace:
+                    root: .
+                    paths:
+                        - docker-image
+    deploy:
+        executor: java-executor
+        parameters:
+            service-name:
+                type: string
+        environment:
+            AWS_DEFAULT_OUTPUT: json
+        steps:
+            - setup_remote_docker
+            -   attach_workspace:
+                    at: workspace
+            - aws-cli/install
+            -   aws-cli/configure:
+                    aws-access-key-id: "$AWS_ACCESS_KEY_ID"
+                    aws-region: "$AWS_DEFAULT_REGION"
+            -   run:
+                    name: Load image
+                    command: |
+                        docker load --input workspace/docker-image/image.tar
+            -   run:
+                    name: Push image
+                    command: |
+                        eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+                        docker push ${AWS_ECR_ACCOUNT_URL}segmentme-<<parameters.service-name>>
+#            -   aws-ecs/update-service:
+#                    family: "${ECS_SERVICE_NAME}"
+#                    cluster-name: "${ECS_CLUSTER_NAME}"
+#                    container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
+#                    container-env-var-updates: "container=${ECS_SERVICE_NAME},name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=${ECS_SERVICE_NAME},name=BUILD_DATE,value=\"$(date)\""
+#                    verify-revision-is-deployed: true
+#            -   run:
+#                    name: Test deployment (Please manually tear down AWS resources after use, if desired)
+#                    command: |
+#                        TARGET_GROUP_ARN=$(aws ecs describe-services --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME | jq -r '.services[0].loadBalancers[0].targetGroupArn')
+#                        ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
+#                        ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
+#                        # Test multiple times to verify that the new revision has been deployed across the entire cluster
+#                        for attempt in {1..50}; do
+#                          curl -s --retry 10 http://$ELB_DNS_NAME | grep -E "Hello World!.*${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM}"
+#                        done
 
 # the default pipeline parameters, which will be updated according to
 # the results of the path-filtering orb
@@ -101,6 +156,12 @@ workflows:
                     service-name: access-control-service
                     requires:
                         - test
+            -   deploy:
+                    context:
+                        - sme
+                    service-name: access-control-service
+                    requires:
+                        - buildDocker
 
 #    measurement-service:
 #        when: << pipeline.parameters.measurement-service-changed >>
