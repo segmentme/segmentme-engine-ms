@@ -7,7 +7,7 @@ version: 2.1
 #
 
 jobs:
-    setup:
+    build:
         docker:
             # specify the version you desire here
             -   image: cimg/openjdk:14.0.2
@@ -23,9 +23,6 @@ jobs:
             # Customize the JVM maximum heap limit
             JVM_OPTS: -Xmx3200m
             TERM: dumb
-    #            # run tests!
-    #            -   run: dir
-    #            -   run: ./gradlew test
 
     test:
         parameters:
@@ -65,6 +62,7 @@ workflows:
     access-control-service:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
+            - build
             -   test:
                     matrix:
                         parameters:
