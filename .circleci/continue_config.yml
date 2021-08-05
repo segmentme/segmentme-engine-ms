@@ -1,0 +1,74 @@
+version: 2.1
+
+# the path-filtering orb is required to continue a pipeline based on
+# the path of an updated fileset
+orbs:
+    gradle: circleci/gradle@2.2.0
+
+# the default pipeline parameters, which will be updated according to
+# the results of the path-filtering orb
+parameters:
+    access-control-service-changed:
+        type: boolean
+        default: false
+    measurement-service-changed:
+        type: boolean
+        default: false
+    management-service-changed:
+        type: boolean
+        default: false
+    analysis-service-changed:
+        type: boolean
+        default: false
+    analysis-api-service-changed:
+        type: boolean
+        default: false
+    channel-service-changed:
+        type: boolean
+        default: false
+
+# here we specify our workflows, most of which are conditionally
+# executed based upon pipeline parameter values. Each workflow calls a
+# specific job defined above, in the jobs section.
+workflows:
+    # when pipeline parameter, access-control-service-changed is true, the
+    # build-service-1 job is triggered.
+    access-control-service:
+        when: << pipeline.parameters.access-control-service-changed >>
+        jobs:
+            -   run: ./gradlew  :services:access-control-service:test
+    measurement-service:
+        when: << pipeline.parameters.measurement-service-changed >>
+        jobs:
+            -   run: ./gradlew  :services:measurement-service:test
+    management-service:
+        when: << pipeline.parameters.management-service-changed >>
+        jobs:
+            -   run: ./gradlew  :services:management-service:test
+    # when pipeline parameter, measurement-service-changed is true, the
+    analysis-service:
+        when: << pipeline.parameters.analysis-service-changed >>
+        jobs:
+            -   run: ./gradlew  :services:analysis-service:test
+    analysis-api-service:
+        when: << pipeline.parameters.analysis-api-service-changed >>
+        jobs:
+            -   run: ./gradlew  :services:analysis-api-service:test
+    channel-service:
+        when: << pipeline.parameters.channel-service-changed >>
+        jobs:
+            -   run: ./gradlew  :services:channel-service:test
+
+#    # when pipeline parameter, access-control-service-changed OR
+#    # measurement-service-changed is true, run-integration-tests job is
+#    # triggered. see:
+#    # https://circleci.com/docs/2.0/configuration-reference/#logic-statements
+#    # for more information.
+#    run-integration-tests:
+#        when:
+#            or: [<< pipeline.parameters.access-control-service-changed >>, << pipeline.parameters.measurement-service-changed >>]
+#        jobs:
+#            - maven/test:
+#                  name: run-integration-tests
+#                  command: '-X verify'
+#                  app_src_directory: 'tests'

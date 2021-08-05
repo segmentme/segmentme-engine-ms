@@ -1,43 +1,34 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
-version: 2
-jobs:
-    build:
-        docker:
-            # specify the version you desire here
-            -   image: cimg/openjdk:14.0.2
+version: 2.1
 
-            # Specify service dependencies here if necessary
-            # CircleCI maintains a library of pre-built images
-            # documented at https://circleci.com/docs/2.0/circleci-images/
-            # - image: circleci/postgres:9.4
+# this allows you to use CircleCI's dynamic configuration feature
+setup: true
 
-        working_directory: ~/repo
+# the path-filtering orb is required to continue a pipeline based on
+# the path of an updated fileset
+orbs:
+    path-filtering: circleci/path-filtering@0.0.2
 
-        environment:
-            # Customize the JVM maximum heap limit
-            JVM_OPTS: -Xmx3200m
-            TERM: dumb
-
-        steps:
-            - checkout
-
-            # Download and cache dependencies
-            -   restore_cache:
-                    keys:
-                        - v1-dependencies-{{ checksum "build.gradle" }}
-                        # fallback to using the latest cache if no exact match is found
-                        - v1-dependencies-
-            -   run: ls
-            -   run: ./gradlew dependencies
-
-            -   save_cache:
-                    paths:
-                        - ~/.gradlew
-                    key: v1-dependencies-{{ checksum "build.gradle" }}
-
-            # run tests!
-            -   run: dir
-            -   run: ./gradlew test
+workflows:
+    # the always-run workflow is always triggered, regardless of the pipeline parameters.
+    always-run:
+        jobs:
+            # the path-filtering/filter job determines which pipeline
+            # parameters to update.
+            -   path-filtering/filter:
+                    name: check-updated-files
+                    # 3-column, whitespace-delimited mapping. One mapping per
+                    # line:
+                    # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
+                    mapping: |
+                        services/access-control-service/.* access-control-service-changed true
+                        services/measurement-service/.* measurement-service-changed true
+                        services/management-service/.* management-service-changed true
+                        services/analysis-service/.* analysis-service-changed true
+                        services/analysis-api-service/.* analysis-api-service-changed true
+                        services/channel-service/.* channel-service-changed true
+                    base-revision: opening-by-percentage
+                    # this is the path of the configuration we should trigger once
+                    # path filtering and pipeline parameter value updates are
+                    # complete. In this case, we are using the parent dynamic
+                    # configuration itself.
+                    config-path: .circleci/continue_config.ymlZ
