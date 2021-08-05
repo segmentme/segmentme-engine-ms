@@ -73,12 +73,10 @@ workflows:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
             -   test:
-                    name: test
                     matrix:
                         parameters:
                             service-name: [ access-control-service ]
             -   buildDocker:
-                    name: build
                     requires:
                         - test
                     matrix:
