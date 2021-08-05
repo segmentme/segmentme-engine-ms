@@ -11,19 +11,25 @@ executors:
             -   image: cimg/openjdk:14.0.2
 
 jobs:
+    checkout:
+        executor: java-executor
+        steps:
+            - checkout
+            -   persist_to_workspace:
+                    root: .
+                    paths:
+                        - .
     test:
         executor: java-executor
         parameters:
             service-name:
                 type: string
         steps:
-            - checkout
             -   run: ls
             -   run: pwd
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
     buildDocker:
         executor: java-executor
-        working_directory: ~/repo
         environment:
             SME_BE_HOST: http://192.168.1.14
         parameters:
@@ -65,16 +71,16 @@ workflows:
     access-control-service:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
+            - checkout
             -   test:
-                    matrix:
-                        parameters:
-                            service-name: [ access-control-service ]
+                    service-name: [ access-control-service ]
+                    requires:
+                        - checkout
             -   buildDocker:
+                    service-name: [ access-control-service ]
                     requires:
                         - test
-                    matrix:
-                        parameters:
-                            service-name: [ access-control-service ]
+
 #    measurement-service:
 #        when: << pipeline.parameters.measurement-service-changed >>
 #        jobs:
