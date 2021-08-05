@@ -1,9 +1,38 @@
 version: 2.1
 
-# the path-filtering orb is required to continue a pipeline based on
-# the path of an updated fileset
-orbs:
-    gradle: circleci/gradle@2.2.0
+
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+
+jobs:
+    setup:
+        docker:
+            # specify the version you desire here
+            -   image: cimg/openjdk:14.0.2
+
+            # Specify service dependencies here if necessary
+            # CircleCI maintains a library of pre-built images
+            # documented at https://circleci.com/docs/2.0/circleci-images/
+            # - image: circleci/postgres:9.4
+
+        working_directory: ~/repo
+
+        environment:
+            # Customize the JVM maximum heap limit
+            JVM_OPTS: -Xmx3200m
+            TERM: dumb
+    #            # run tests!
+    #            -   run: dir
+    #            -   run: ./gradlew test
+
+    test:
+        parameters:
+            service-name:
+                type: string
+        steps:
+            -   run: ./gradlew  :services:<<parameters.service-name>>:test
 
 # the default pipeline parameters, which will be updated according to
 # the results of the path-filtering orb
@@ -36,28 +65,31 @@ workflows:
     access-control-service:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
-            - ./gradlew  :services:access-control-service:test
-    measurement-service:
-        when: << pipeline.parameters.measurement-service-changed >>
-        jobs:
-            - ./gradlew  :services:measurement-service:test
-    management-service:
-        when: << pipeline.parameters.management-service-changed >>
-        jobs:
-            - ./gradlew  :services:management-service:test
-    # when pipeline parameter, measurement-service-changed is true, the
-    analysis-service:
-        when: << pipeline.parameters.analysis-service-changed >>
-        jobs:
-            - ./gradlew  :services:analysis-service:test
-    analysis-api-service:
-        when: << pipeline.parameters.analysis-api-service-changed >>
-        jobs:
-            - ./gradlew  :services:analysis-api-service:test
-    channel-service:
-        when: << pipeline.parameters.channel-service-changed >>
-        jobs:
-            - ./gradlew  :services:channel-service:test
+            -   test:
+                    matrix:
+                        parameters:
+                            service-name: [ access-control-service ]
+#    measurement-service:
+#        when: << pipeline.parameters.measurement-service-changed >>
+#        jobs:
+#            - ./gradlew  :services:measurement-service:test
+#    management-service:
+#        when: << pipeline.parameters.management-service-changed >>
+#        jobs:
+#            - ./gradlew  :services:management-service:test
+#    # when pipeline parameter, measurement-service-changed is true, the
+#    analysis-service:
+#        when: << pipeline.parameters.analysis-service-changed >>
+#        jobs:
+#            - ./gradlew  :services:analysis-service:test
+#    analysis-api-service:
+#        when: << pipeline.parameters.analysis-api-service-changed >>
+#        jobs:
+#            - ./gradlew  :services:analysis-api-service:test
+#    channel-service:
+#        when: << pipeline.parameters.channel-service-changed >>
+#        jobs:
+#            - ./gradlew  :services:channel-service:test
 
 #    # when pipeline parameter, access-control-service-changed OR
 #    # measurement-service-changed is true, run-integration-tests job is
