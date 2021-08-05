@@ -36,28 +36,28 @@ workflows:
     access-control-service:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
-            -   run: ./gradlew  :services:access-control-service:test
+            - ./gradlew  :services:access-control-service:test
     measurement-service:
         when: << pipeline.parameters.measurement-service-changed >>
         jobs:
-            -   run: ./gradlew  :services:measurement-service:test
+            - ./gradlew  :services:measurement-service:test
     management-service:
         when: << pipeline.parameters.management-service-changed >>
         jobs:
-            -   run: ./gradlew  :services:management-service:test
+            - ./gradlew  :services:management-service:test
     # when pipeline parameter, measurement-service-changed is true, the
     analysis-service:
         when: << pipeline.parameters.analysis-service-changed >>
         jobs:
-            -   run: ./gradlew  :services:analysis-service:test
+            - ./gradlew  :services:analysis-service:test
     analysis-api-service:
         when: << pipeline.parameters.analysis-api-service-changed >>
         jobs:
-            -   run: ./gradlew  :services:analysis-api-service:test
+            - ./gradlew  :services:analysis-api-service:test
     channel-service:
         when: << pipeline.parameters.channel-service-changed >>
         jobs:
-            -   run: ./gradlew  :services:channel-service:test
+            - ./gradlew  :services:channel-service:test
 
 #    # when pipeline parameter, access-control-service-changed OR
 #    # measurement-service-changed is true, run-integration-tests job is
