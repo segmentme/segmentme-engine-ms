@@ -59,7 +59,7 @@ jobs:
                     docker_layer_caching: false
             -   run:
                     name: Build docker image
-                    command: ./gradlew  -DSME_BE_HOST=${SME_BE_HOS} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
+                    command: ./gradlew  -DSME_BE_HOST=${SME_BE_HOST} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
             -   run: docker images
             -   run:
                     name: Save image to an archive
@@ -154,13 +154,17 @@ workflows:
                     service-name: access-control-service
                     requires:
                         - test
+            -   publish_gate:
+                    type: approval
+                    required:
+                        - buildDocker
             -   publish:
                     context:
                         - sme
                     service-name: access-control-service
                     requires:
-                        - buildDocker
-    measurement-service-service:
+                        - publish_gate
+    measurement-service:
         when: << pipeline.parameters.measurement-service-changed >>
         jobs:
             - checkout
@@ -176,45 +180,117 @@ workflows:
                     service-name: measurement-service
                     requires:
                         - test
+            -   publish_gate:
+                    type: approval
+                    required:
+                        - buildDocker
             -   publish:
                     context:
                         - sme
                     service-name: measurement-service
                     requires:
+                        - publish_gate
+    management-service:
+        when: << pipeline.parameters.management-service-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: management-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: management-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    required:
                         - buildDocker
-
-#    measurement-service:
-#        when: << pipeline.parameters.measurement-service-changed >>
-#        jobs:
-#            - ./gradlew  :services:measurement-service:test
-#    management-service:
-#        when: << pipeline.parameters.management-service-changed >>
-#        jobs:
-#            - ./gradlew  :services:management-service:test
-#    # when pipeline parameter, measurement-service-changed is true, the
-#    analysis-service:
-#        when: << pipeline.parameters.analysis-service-changed >>
-#        jobs:
-#            - ./gradlew  :services:analysis-service:test
-#    analysis-api-service:
-#        when: << pipeline.parameters.analysis-api-service-changed >>
-#        jobs:
-#            - ./gradlew  :services:analysis-api-service:test
-#    channel-service:
-#        when: << pipeline.parameters.channel-service-changed >>
-#        jobs:
-#            - ./gradlew  :services:channel-service:test
-
-#    # when pipeline parameter, access-control-service-changed OR
-#    # measurement-service-changed is true, run-integration-tests job is
-#    # triggered. see:
-#    # https://circleci.com/docs/2.0/configuration-reference/#logic-statements
-#    # for more information.
-#    run-integration-tests:
-#        when:
-#            or: [<< pipeline.parameters.access-control-service-changed >>, << pipeline.parameters.measurement-service-changed >>]
-#        jobs:
-#            - maven/test:
-#                  name: run-integration-tests
-#                  command: '-X verify'
-#                  app_src_directory: 'tests'
+            -   publish:
+                    context:
+                        - sme
+                    service-name: management-service
+                    requires:
+                        - publish_gate
+    analysis-service:
+        when: << pipeline.parameters.analysis-service-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    required:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    requires:
+                        - publish_gate
+    analysis-api-service:
+        when: << pipeline.parameters.analysis-api-service-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    required:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    requires:
+                        - publish_gate
+    channel-service:
+        when: << pipeline.parameters.channel-service-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: channel-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: channel-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    required:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: channel-service
+                    requires:
+                        - publish_gate
