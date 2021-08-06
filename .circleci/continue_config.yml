@@ -156,7 +156,7 @@ workflows:
                         - test
             -   publish_gate:
                     type: approval
-                    required:
+                    requires:
                         - buildDocker
             -   publish:
                     context:
@@ -182,7 +182,7 @@ workflows:
                         - test
             -   publish_gate:
                     type: approval
-                    required:
+                    requires:
                         - buildDocker
             -   publish:
                     context:
@@ -208,7 +208,7 @@ workflows:
                         - test
             -   publish_gate:
                     type: approval
-                    required:
+                    requires:
                         - buildDocker
             -   publish:
                     context:
@@ -234,7 +234,7 @@ workflows:
                         - test
             -   publish_gate:
                     type: approval
-                    required:
+                    requires:
                         - buildDocker
             -   publish:
                     context:
@@ -260,7 +260,7 @@ workflows:
                         - test
             -   publish_gate:
                     type: approval
-                    required:
+                    requires:
                         - buildDocker
             -   publish:
                     context:
@@ -286,7 +286,7 @@ workflows:
                         - test
             -   publish_gate:
                     type: approval
-                    required:
+                    requires:
                         - buildDocker
             -   publish:
                     context:

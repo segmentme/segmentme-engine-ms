@@ -6,6 +6,7 @@ dependencies {
 
     api group: 'redis.clients', name: 'jedis', version: '3.4.1'
     api project(':dependencies:redis-auto-configuration')
+
 }
 
 
