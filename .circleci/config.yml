@@ -35,7 +35,7 @@ workflows:
                         services/analysis-service/.* analysis-service-changed true
                         services/analysis-api-service/.* analysis-api-service-changed true
                         services/channel-service/.* channel-service-changed true
-                    base-revision: opening-by-percentage
+                    base-revision: master
                     # this is the path of the configuration we should trigger once
                     # path filtering and pipeline parameter value updates are
                     # complete. In this case, we are using the parent dynamic
