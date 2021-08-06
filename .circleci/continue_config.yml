@@ -138,8 +138,6 @@ parameters:
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
-    # when pipeline parameter, access-control-service-changed is true, the
-    # build-service-1 job is triggered.
     access-control-service:
         when: << pipeline.parameters.access-control-service-changed >>
         jobs:
@@ -160,6 +158,28 @@ workflows:
                     context:
                         - sme
                     service-name: access-control-service
+                    requires:
+                        - buildDocker
+    measurement-service-service:
+        when: << pipeline.parameters.measurement-service-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: measurement-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: measurement-service
+                    requires:
+                        - test
+            -   publish:
+                    context:
+                        - sme
+                    service-name: measurement-service
                     requires:
                         - buildDocker
 

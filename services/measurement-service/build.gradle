@@ -7,7 +7,6 @@ dependencies {
     testImplementation(project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests'))
     testImplementation project(path: ':dependencies:web-configuration', configuration: 'tests')
     testImplementation project(path: ':dependencies:redis-auto-configuration', configuration: 'tests')
-
 }
 
 task jarTests(type: Jar, dependsOn: testClasses) {
