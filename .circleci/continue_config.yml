@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
     aws-cli: circleci/aws-cli@2.0.3
-    aws-ecs: circleci/aws-ecs@02.2.1
+    aws-ecr: circleci/aws-ecr@7.0.0
 
 # Java Gradle CircleCI 2.0 configuration file
 #
@@ -71,7 +71,6 @@ jobs:
                     paths:
                         - docker-image
     publish:
-        machine: true
         executor: java-executor
         parameters:
             service-name:
@@ -87,12 +86,15 @@ jobs:
                     name: Load image
                     command: |
                         docker load --input workspace/docker-image/image.tar
-            -   run:
-                    name: Push image
-                    command: |
-                        aws ecr get-login-password --region us-east-1
-                        docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
-                        docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
+            - aws-ecr/ecr-login
+            -   aws-ecr/push-image:
+                    repo: <<parameters.service-name>>
+#            -   run:
+#                    name: Push image
+#                    command: |
+#                        aws ecr get-login-password --region us-east-1
+#                        docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
+#                        docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
 #            -   aws-ecs/update-service:
 #                    family: "${ECS_SERVICE_NAME}"
 #                    cluster-name: "${ECS_CLUSTER_NAME}"
