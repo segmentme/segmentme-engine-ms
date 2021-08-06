@@ -70,7 +70,8 @@ jobs:
                     root: .
                     paths:
                         - docker-image
-    deploy:
+    publish:
+        machine: true
         executor: java-executor
         parameters:
             service-name:
@@ -89,7 +90,8 @@ jobs:
             -   run:
                     name: Push image
                     command: |
-                        eval $(aws ecr  get-login-password --region us-east-1 )
+                        aws ecr get-login-password --region us-east-1
+                        docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
                         docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
 #            -   aws-ecs/update-service:
 #                    family: "${ECS_SERVICE_NAME}"
@@ -152,7 +154,7 @@ workflows:
                     service-name: access-control-service
                     requires:
                         - test
-            -   deploy:
+            -   publish:
                     context:
                         - sme
                     service-name: access-control-service
