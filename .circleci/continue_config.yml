@@ -81,12 +81,12 @@ jobs:
             - setup_remote_docker
             -   attach_workspace:
                     at: workspace
-            - aws-cli/install
             -   run:
                     name: Load image
                     command: |
                         docker load --input workspace/docker-image/image.tar
             - aws-ecr/ecr-login
+            -   run: docker images
             -   aws-ecr/push-image:
                     repo: <<parameters.service-name>>
 #            -   run:
