@@ -2,3 +2,4 @@ dependencies {
     api project(':dependencies:web-configuration')
     api project(':dependencies:mongo-auto-configuration')
 }
+

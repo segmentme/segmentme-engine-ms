@@ -5,5 +5,4 @@ dependencies {
 
     testImplementation project(path: ':services:management-service', configuration: 'tests')
     testImplementation 'org.springframework.security:spring-security-test'
-
 }

@@ -6,5 +6,4 @@ dependencies {
     api project(':dependencies:models:dto:analysis-dto')
     testImplementation project(path: ':dependencies:mongo-auto-configuration', configuration: 'tests')
     testImplementation project(path: ':dependencies:helpers:context-processor', configuration: 'tests')
-
 }
