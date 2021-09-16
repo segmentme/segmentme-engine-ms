@@ -23,4 +23,3 @@ configurations {
 artifacts {
     tests jarTests
 }
-
