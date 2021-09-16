@@ -11,11 +11,12 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose'
     implementation 'org.springframework.security:spring-security-config'
+    api 'org.springframework.security:spring-security-oauth2-client'
+
     api group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 
     api group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.5.0.RELEASE'
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-    api group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.4.2'
 
 }
 
