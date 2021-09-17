@@ -33,9 +33,6 @@ SEGMENTME_DB_CONNECTOR_URI="$(jq -n "$SECRETS" | jq .SEGMENTME_DB_CONNECTOR_URI)
   || error 'Unable to select SEGMENTME_DB_CONNECTOR_URI from vault response'
 export SEGMENTME_DB_CONNECTOR_URI
 
-
-printenv
-
 echo "Setting up environment variables"
 export DOCKER_REGISTRY=925575267836.dkr.ecr.us-east-1.amazonaws.com
 export ACCESS_SERVICE_HOST="http://access-control-service"
