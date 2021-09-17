@@ -36,7 +36,6 @@ jobs:
                     paths:
                         - ./*
     test:
-        name: test <<parameters.service-name>>
         executor: java-executor
         parameters:
             service-name:
