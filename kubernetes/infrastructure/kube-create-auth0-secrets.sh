@@ -5,4 +5,3 @@ export AUTH0_CLIENT_SECRET_ENC=`echo $AUTH0_CLIENT_SECRET|base64`
 
 envsubst < ./auth-secret.yml | kubectl apply -f -
 echo "Auth0 secret created"
-
