@@ -115,12 +115,10 @@ jobs:
                     command: |
                         aws eks update-kubeconfig --name <<parameters.cluster-name>>
             -   run:
-                    name: Configure kubectl
-                    command: kubectl --kubeconfig /home/circleci/.kube/config
-
-            -   run:
                     name: Set environment
                     command: |
+                        ls $HOME/.kube
+                        grep "" $HOME/.kube/config
                         cd ./kubernetes/infrastructure
                         . ./environment.sh
             -   run:
