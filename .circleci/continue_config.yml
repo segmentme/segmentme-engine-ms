@@ -166,6 +166,8 @@ workflows:
                     context:
                         - sme
                     cluster-name: segmentme-demo-eks
+                    requires:
+                        - checkout
 
     access-control-service:
         when:
