@@ -161,6 +161,7 @@ workflows:
     kube-infrastructure:
         when: << pipeline.parameters.kube-infra-changed >>
         jobs:
+            - checkout
             -   apply-kube-infrastructure:
                     context:
                         - sme
