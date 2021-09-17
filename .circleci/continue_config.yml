@@ -164,10 +164,9 @@ workflows:
 
     access-control-service:
         when:
-            condition:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.access-control-service-changed >>
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.access-control-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -194,10 +193,9 @@ workflows:
                         - publish_gate
     measurement-service:
         when:
-            condition:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.measurement-service-changed >>
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.measurement-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -224,10 +222,9 @@ workflows:
                         - publish_gate
     management-service:
         when:
-            condition:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.management-service-changed >>
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.management-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -254,10 +251,9 @@ workflows:
                         - publish_gate
     analysis-service:
         when:
-            condition:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.analysis-service-changed >>
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.analysis-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -284,10 +280,9 @@ workflows:
                         - publish_gate
     analysis-api-service:
         when:
-            condition:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.analysis-api-service-changed >>
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.analysis-api-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -314,10 +309,9 @@ workflows:
                         - publish_gate
     channel-service:
         when:
-            condition:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.channel-service-changed >>
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.channel-service-changed >>
         jobs:
             - checkout
             -   test:
