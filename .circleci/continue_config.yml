@@ -123,7 +123,9 @@ jobs:
                         grep "" /home/circleci/.kube/config
             -   run:
                     name: Set environment
-                    command: . ./environment.sh
+                    command: |
+                        ls
+                        . ./environment.sh
             -   run:
                     name: Create secret
                     command: ./kube-create-auth0-secrets.sh
