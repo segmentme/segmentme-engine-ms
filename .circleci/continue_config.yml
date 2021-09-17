@@ -108,17 +108,17 @@ jobs:
         steps:
             - kubernetes/install-kubectl
             -   run:
-                    name: Setup eks
+                    name: Setup EKS
                     command: |
-                    aws eks update-kubeconfig --name <<parameters.cluster-name>>
+                        aws eks update-kubeconfig --name <<parameters.cluster-name>>
             -   run:
                     name: Create secrets
                     command: |
-                    ./kubernetes/infrastructure/kube-create-auth0-secrets.sh
+                        ./kubernetes/infrastructure/kube-create-auth0-secrets.sh
             -   run:
                     name: Create target groups
                     command: |
-                    ./kubernetes/infrastructure/deploy_tgs.sh
+                        ./kubernetes/infrastructure/deploy_tgs.sh
 
 
 
