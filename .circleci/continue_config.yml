@@ -105,6 +105,8 @@ jobs:
             cluster-name:
                 type: string
         steps:
+            -   attach_workspace:
+                    at: .
             - aws-cli/install
             - kubernetes/install-kubectl
             -   run:
