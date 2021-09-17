@@ -119,6 +119,7 @@ jobs:
                     command: |
                         ls $HOME/.kube
                         grep "" $HOME/.kube/config
+                        kubectl config current-context
                         cd ./kubernetes/infrastructure
                         . ./environment.sh
             -   run:
