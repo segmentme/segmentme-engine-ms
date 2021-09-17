@@ -105,6 +105,7 @@ jobs:
             cluster-name:
                 type: string
         steps:
+            - aws-cli/install
             - kubernetes/install-kubectl
             -   run:
                     name: Setup EKS
