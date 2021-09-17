@@ -109,11 +109,16 @@ jobs:
                     at: .
             - kubernetes/install-kubectl
             - aws-cli/install
+            -   run:
+                    name: Setup EKS
+                    command: |
+                        aws configure set aws_access_key_id $AWS_TF_AK --profile sme-tf
+                        aws configure set aws_secret_access_key $AWS_TF_SK --profile sme-tf
             - envsubst/install
             -   run:
                     name: Setup EKS
                     command: |
-                        aws eks update-kubeconfig --name <<parameters.cluster-name>>
+                        aws eks update-kubeconfig --name <<parameters.cluster-name>> --profile sme-tf
             -   run:
                     name: Set environment
                     command: |
