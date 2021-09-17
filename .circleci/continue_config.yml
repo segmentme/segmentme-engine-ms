@@ -107,8 +107,8 @@ jobs:
         steps:
             -   attach_workspace:
                     at: .
-            - aws-cli/install
             - kubernetes/install-kubectl
+            - aws-cli/install
             - envsubst/install
             -   run:
                     name: Setup EKS
@@ -120,6 +120,7 @@ jobs:
                         ls $HOME/.kube
                         grep "" $HOME/.kube/config
                         kubectl config current-context
+                        aws sts get-caller-identity
                         cd ./kubernetes/infrastructure
                         . ./environment.sh
             -   run:
