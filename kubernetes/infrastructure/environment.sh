@@ -46,6 +46,3 @@ export CHANNEL_SERVICE_PORT=7777
 export CHANNEL_SERVICE_HOST=channel-service
 
 echo "Environment variable set"
-
-
-kubectl --kubeconfig /home/circleci/.kube/config
