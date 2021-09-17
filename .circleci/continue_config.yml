@@ -4,6 +4,7 @@ orbs:
     aws-cli: circleci/aws-cli@2.0.3
     aws-ecr: circleci/aws-ecr@7.0.0
     kubernetes: circleci/kubernetes@0.12.0
+    envsubst: sawadashota/envsubst@1.1.0
 
 # Java Gradle CircleCI 2.0 configuration file
 #
@@ -44,7 +45,6 @@ jobs:
         steps:
             -   attach_workspace:
                     at: .
-            #            -   run: ls /home/circleci/project
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
     buildDocker:
         executor: java-executor
@@ -109,16 +109,20 @@ jobs:
                     at: .
             - aws-cli/install
             - kubernetes/install-kubectl
+            - envsubst/install
             -   run:
                     name: Setup EKS
                     command: |
                         aws eks update-kubeconfig --name <<parameters.cluster-name>>
             -   run:
                     name: check dir
-                    command: ls
+                    command: |
+                        ls
+                        ls /home/circleci/.kube/config
+                        grep "" /home/circleci/.kube/config
             -   run:
                     name: Set environment
-                    command: ./kubernetes/infrastructure/environment.sh
+                    command: . ./kubernetes/infrastructure/environment.sh
             -   run:
                     name: Create secret
                     command: ./kubernetes/infrastructure/kube-create-auth0-secrets.sh

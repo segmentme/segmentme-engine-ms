@@ -1,3 +1,4 @@
+#!/bin/sh
 SECRETS=$(aws secretsmanager get-secret-value --secret-id segmentme-demo_secrets --query SecretString --output text)
 
  REDIS_HOST="$(jq -n "$SECRETS" | jq .REDIS_HOST)" \
