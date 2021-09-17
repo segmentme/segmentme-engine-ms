@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: channel-service
+spec:
+    selector:
+        matchLabels:
+            app: channel-service
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: channel-service
+        spec:
+            containers:
+                -   name: channel-service
+                    image: $DOCKER_REGISTRY/segmentme-channel-service
+                    imagePullPolicy: Always
+                    resources:
+                        limits:
+                            memory: 512Mi
+                        requests:
+                            memory: 512Mi
+                    ports:
+                        -   containerPort: 80
+                    livenessProbe:
+                        httpGet:
+                            path: /actuator/health
+                            port: 80
+                        initialDelaySeconds: 60
+                        timeoutSeconds: 5
+                        periodSeconds: 20
+                    envFrom:
+                        -   secretRef:
+                                name: auth0-secret
+                    env:
+                        -   name: REDIS_HOST
+                            value: $REDIS_HOST
+                        -   name: REDIS_PORT
+                            value: '6379'
+                        -   name: REDIS_CONNECTION_TIMEOUT
+                            value: '25'
+                        -   name: REDIS_READ_TIMEOUT
+                            value: '15'
+                        -   name: SPRING_PROFILES_ACTIVE
+                            value: "cloud"
+                        -   name: JAVA_OPTS
+                            value: "-Xms512m -Xmx512m"
+                        -   name: ANALYSIS_SERVICE_URL
+                            value: $ANALYSIS_SERVICE_URL
+                        -   name: CHANNEL_SERVICE_PORT
+                            value: '7777'
+                        -   name: LOG_LEVEL
+                            value: ERROR
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: channel-service
+spec:
+    selector:
+        app: channel-service
+    ports:
+        -   name: http
+            protocol: TCP
+            port: 80
+            targetPort: 7777
+    type: ClusterIP
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+    name: channel-service
+spec:
+    selector:
+        matchLabels:
+            app: channel-service
+    maxUnavailable: 30%
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: channel-service
+spec:
+    scaleTargetRef:
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        name: channel-service
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+                        
+                        

@@ -3,6 +3,7 @@ version: 2.1
 orbs:
     aws-cli: circleci/aws-cli@2.0.3
     aws-ecr: circleci/aws-ecr@7.0.0
+    kubernetes: circleci/kubernetes@0.12.0
 
 # Java Gradle CircleCI 2.0 configuration file
 #
@@ -35,6 +36,7 @@ jobs:
                     paths:
                         - ./*
     test:
+        name: test <<parameters.service-name>>
         executor: java-executor
         parameters:
             service-name:
@@ -47,8 +49,6 @@ jobs:
             -   run: ./gradlew  :services:<<parameters.service-name>>:test
     buildDocker:
         executor: java-executor
-        environment:
-            SME_BE_HOST: http://192.168.1.14
         parameters:
             service-name:
                 type: string
@@ -59,7 +59,7 @@ jobs:
                     docker_layer_caching: false
             -   run:
                     name: Build docker image
-                    command: ./gradlew  -DSME_BE_HOST=${SME_BE_HOST} -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
+                    command: ./gradlew  -DDOCKER_REGISTRY=${AWS_ECR_ACCOUNT_URL}  :services:<<parameters.service-name>>:buildDocker -x test -Dservice-name=segmentme-<<parameters.service-name>>
             -   run: docker images
             -   run:
                     name: Save image to an archive
@@ -89,28 +89,38 @@ jobs:
             -   run: docker images
             -   aws-ecr/push-image:
                     repo: segmentme-<<parameters.service-name>>
-#            -   run:
-#                    name: Push image
-#                    command: |
-#                        aws ecr get-login-password --region us-east-1
-#                        docker login --username AWS --password-stdin ${AWS_ECR_ACCOUNT_URL}
-#                        docker push ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
-#            -   aws-ecs/update-service:
-#                    family: "${ECS_SERVICE_NAME}"
-#                    cluster-name: "${ECS_CLUSTER_NAME}"
-#                    container-image-name-updates: "container=${ECS_SERVICE_NAME},image-and-tag=${FULL_IMAGE_NAME}"
-#                    container-env-var-updates: "container=${ECS_SERVICE_NAME},name=VERSION_INFO,value=${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM},container=${ECS_SERVICE_NAME},name=BUILD_DATE,value=\"$(date)\""
-#                    verify-revision-is-deployed: true
-#            -   run:
-#                    name: Test deployment (Please manually tear down AWS resources after use, if desired)
-#                    command: |
-#                        TARGET_GROUP_ARN=$(aws ecs describe-services --cluster $ECS_CLUSTER_NAME --services $ECS_SERVICE_NAME | jq -r '.services[0].loadBalancers[0].targetGroupArn')
-#                        ELB_ARN=$(aws elbv2 describe-target-groups --target-group-arns $TARGET_GROUP_ARN | jq -r '.TargetGroups[0].LoadBalancerArns[0]')
-#                        ELB_DNS_NAME=$(aws elbv2 describe-load-balancers --load-balancer-arns $ELB_ARN | jq -r '.LoadBalancers[0].DNSName')
-#                        # Test multiple times to verify that the new revision has been deployed across the entire cluster
-#                        for attempt in {1..50}; do
-#                          curl -s --retry 10 http://$ELB_DNS_NAME | grep -E "Hello World!.*${CIRCLE_SHA1}_${CIRCLE_BUILD_NUM}"
-#                        done
+    deploy:
+        executor: java-executor
+        parameters:
+            service-name:
+                type: string
+        environment:
+            AWS_DEFAULT_OUTPUT: json
+        steps:
+            - kubernetes/install-kubectl
+    apply-kube-infrastructure:
+        executor: java-executor
+        environment:
+            AWS_DEFAULT_OUTPUT: json
+        parameters:
+            cluster-name:
+                type: string
+        steps:
+            - kubernetes/install-kubectl
+            -   run:
+                    name: Setup eks
+                    command: |
+                    aws eks update-kubeconfig --name <<parameters.cluster-name>>
+            -   run:
+                    name: Create secrets
+                    command: |
+                    ./kubernetes/infrastructure/kube-create-auth0-secrets.sh
+            -   run:
+                    name: Create target groups
+                    command: |
+                    ./kubernetes/infrastructure/deploy_tgs.sh
+
+
 
 # the default pipeline parameters, which will be updated according to
 # the results of the path-filtering orb
@@ -133,13 +143,31 @@ parameters:
     channel-service-changed:
         type: boolean
         default: false
+    core-changed:
+        type: boolean
+        default: false
+    kube-infra-changed:
+        type: boolean
+        default: false
 
 # here we specify our workflows, most of which are conditionally
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
+    kube-infrastructure:
+        when: << pipeline.parameters.kube-infra-changed >>
+        jobs:
+            -   apply-kube-infrastructure:
+                    context:
+                        - sme
+                    cluster-name: segmentme-demo-eks
+
     access-control-service:
-        when: << pipeline.parameters.access-control-service-changed >>
+        when:
+            condition:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.access-control-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -165,7 +193,11 @@ workflows:
                     requires:
                         - publish_gate
     measurement-service:
-        when: << pipeline.parameters.measurement-service-changed >>
+        when:
+            condition:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.measurement-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -191,7 +223,11 @@ workflows:
                     requires:
                         - publish_gate
     management-service:
-        when: << pipeline.parameters.management-service-changed >>
+        when:
+            condition:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.management-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -217,7 +253,11 @@ workflows:
                     requires:
                         - publish_gate
     analysis-service:
-        when: << pipeline.parameters.analysis-service-changed >>
+        when:
+            condition:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.analysis-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -243,7 +283,11 @@ workflows:
                     requires:
                         - publish_gate
     analysis-api-service:
-        when: << pipeline.parameters.analysis-api-service-changed >>
+        when:
+            condition:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.analysis-api-service-changed >>
         jobs:
             - checkout
             -   test:
@@ -269,7 +313,11 @@ workflows:
                     requires:
                         - publish_gate
     channel-service:
-        when: << pipeline.parameters.channel-service-changed >>
+        when:
+            condition:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.channel-service-changed >>
         jobs:
             - checkout
             -   test:

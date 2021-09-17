@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: web-app
+    labels:
+        app.kubernetes.io/name: web-app
+spec:
+    selector:
+        matchLabels:
+            app: web-app
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: web-app
+        spec:
+            containers:
+                -   name: web-app
+                    image: $DOCKER_REGISTRY/segmentme-web
+                    imagePullPolicy: Always
+                    resources:
+                        limits:
+                            memory: 512Mi
+                        requests:
+                            memory: 512Mi
+                    ports:
+                        -   containerPort: 80
+                    livenessProbe:
+                        httpGet:
+                            path: /
+                            port: 80
+                        initialDelaySeconds: 60
+                        timeoutSeconds: 5
+                        periodSeconds: 20
+#                  envFrom:
+#                      -   secretRef:
+#                              name: auth0-secret
+#                  env:
+#                      - name: SEGMENTME_DB_CONNECTOR_URI
+#                        value: $SEGMENTME_DB_CONNECTOR_URI
+#                      - name: REDIS_HOST
+#                        value: $REDIS_HOST
+#                      - name: REDIS_PORT
+#                        value: '6379'
+#                      -   name: REDIS_CONNECTION_TIMEOUT
+#                          value: '25'
+#                      -   name: REDIS_READ_TIMEOUT
+#                          value: '15'
+#                      -   name: SPRING_PROFILES_ACTIVE
+#                          value: "cloud"
+#                      -   name: JAVA_OPTS
+#                          value: "-Xms512m -Xmx512m"
+#                      -   name: ACCESS_SERVICE_HOST
+#                          value: $ACCESS_SERVICE_HOST
+#                      -   name: MEASUREMENT_SERVICE_HOST
+#                          value: $MEASUREMENT_SERVICE_HOST
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: web-app
+spec:
+    selector:
+        app: web-app
+    ports:
+        -   name: http
+            protocol: TCP
+            port: 80
+            targetPort: 80
+    type: NodePort
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+    name: web-app
+spec:
+    selector:
+        matchLabels:
+            app: web-app
+    maxUnavailable: 30%
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: web-app
+spec:
+    scaleTargetRef:
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        name: web-app
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+                        
+                        

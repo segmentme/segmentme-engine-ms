@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: analysis-service
+spec:
+    selector:
+        matchLabels:
+            app: analysis-service
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: analysis-service
+        spec:
+            containers:
+                -   name: analysis-service
+                    image: $DOCKER_REGISTRY/segmentme-analysis-service
+                    imagePullPolicy: Always
+                    resources:
+                        limits:
+                            memory: 512Mi
+                        requests:
+                            memory: 512Mi
+                    ports:
+                        -   containerPort: 80
+                    livenessProbe:
+                        httpGet:
+                            path: /actuator/health
+                            port: 80
+                        initialDelaySeconds: 60
+                        timeoutSeconds: 5
+                        periodSeconds: 20
+                    envFrom:
+                        -   secretRef:
+                                name: auth0-secret
+                    env:
+                        -   name: SEGMENTME_DB_CONNECTOR_URI
+                            value: $SEGMENTME_DB_CONNECTOR_URI
+                        -   name: REDIS_HOST
+                            value: $REDIS_HOST
+                        -   name: REDIS_PORT
+                            value: '6379'
+                        -   name: REDIS_CONNECTION_TIMEOUT
+                            value: '25'
+                        -   name: REDIS_READ_TIMEOUT
+                            value: '15'
+                        -   name: AUTH0_CLIENT_ID
+                            value: $AUTH0_CLIENT_ID
+                        -   name: AUTH0_CLIENT_SECRET
+                            value: $AUTH0_CLIENT_SECRET
+                        -   name: SPRING_PROFILES_ACTIVE
+                            value: "cloud"
+                        -   name: JAVA_OPTS
+                            value: "-Xms512m -Xmx512m"
+                        -   name: ACCESS_SERVICE_HOST
+                            value: $ACCESS_SERVICE_HOST
+                        -   name: MEASUREMENT_SERVICE_HOST
+                            value: $MEASUREMENT_SERVICE_HOST
+                        -   name: ANALYSIS_CORE_POOL_SIZE
+                            value: '10'
+                        -   name: ANALYSIS_MAX_POOL_SIZE
+                            value: '10'
+                        -   name: ANALYSIS_QUEUE_POOL_SIZE
+                            value: '50'
+                        -   name: ANALYSIS_THREAD_NAME_PREFIX
+                            value: "analysis-executor-"
+                        -   name: ASYNC_CORE_POOL_SIZE
+                            value: '10'
+                        -   name: ASYNC_MAX_POOL_SIZE
+                            value: '10'
+                        -   name: ASYNC_QUEUE_POOL_SIZE
+                            value: '50'
+                        -   name: ASYNC_THREAD_NAME_PREFIX
+                            value: "async-executor-"
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: analysis-service
+spec:
+    selector:
+        app: analysis-service
+    ports:
+        -   name: http
+            protocol: TCP
+            port: 80
+            targetPort: 80
+    type: ClusterIP
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+    name: analysis-service
+spec:
+    selector:
+        matchLabels:
+            app: analysis-service
+    maxUnavailable: 30%
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: analysis-service
+spec:
+    scaleTargetRef:
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        name: analysis-service
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
+                        
+                        

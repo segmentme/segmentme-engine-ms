@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: access-control-service
+spec:
+    selector:
+        matchLabels:
+            app: access-control-service
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: access-control-service
+        spec:
+            containers:
+                -   name: access-control-service
+                    image: $DOCKER_REGISTRY/segmentme-access-control-service
+                    imagePullPolicy: Always
+                    resources:
+                        limits:
+                            memory: 512Mi
+                        requests:
+                            memory: 512Mi
+                    ports:
+                        -   containerPort: 80
+                    livenessProbe:
+                        httpGet:
+                            path: /actuator/health
+                            port: 80
+                        initialDelaySeconds: 60
+                        timeoutSeconds: 5
+                        periodSeconds: 20
+                    envFrom:
+                        -   secretRef:
+                                name: auth0-secret
+                    env:
+                        -   name: SEGMENTME_DB_CONNECTOR_URI
+                            value: $SEGMENTME_DB_CONNECTOR_URI
+                        -   name: JAVA_OPTS
+                            value: "-Xms512m -Xmx512m"
+                        -   name: SPRING_PROFILES_ACTIVE
+                            value: "cloud"
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: access-control-service
+spec:
+    selector:
+        app: access-control-service
+    ports:
+        -   name: http
+            protocol: TCP
+            port: 80
+            targetPort: 80
+    type: ClusterIP
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+    name: access-control-service
+spec:
+    selector:
+        matchLabels:
+            app: access-control-service
+    maxUnavailable: 30%
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: access-control-service
+spec:
+    scaleTargetRef:
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        name: access-control-service
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+                        
+                        

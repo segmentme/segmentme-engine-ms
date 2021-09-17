@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: analysis-api-service
+spec:
+    selector:
+        matchLabels:
+            app: analysis-api-service
+    replicas: 1
+    template:
+        metadata:
+            labels:
+                app: analysis-api-service
+        spec:
+            containers:
+                -   name: analysis-api-service
+                    image: $DOCKER_REGISTRY/segmentme-analysis-api-service
+                    imagePullPolicy: Always
+                    resources:
+                        limits:
+                            memory: 512Mi
+                        requests:
+                            memory: 512Mi
+                    ports:
+                        -   containerPort: 80
+                    livenessProbe:
+                        httpGet:
+                            path: /actuator/health
+                            port: 80
+                        initialDelaySeconds: 60
+                        timeoutSeconds: 5
+                        periodSeconds: 20
+                    envFrom:
+                        -   secretRef:
+                                name: auth0-secret
+                    env:
+                        -   name: SEGMENTME_DB_CONNECTOR_URI
+                            value: $SEGMENTME_DB_CONNECTOR_URI
+                        -   name: REDIS_HOST
+                            value: $REDIS_HOST
+                        -   name: REDIS_PORT
+                            value: '6379'
+                        -   name: REDIS_CONNECTION_TIMEOUT
+                            value: '25'
+                        -   name: REDIS_READ_TIMEOUT
+                            value: '15'
+                        -   name: SPRING_PROFILES_ACTIVE
+                            value: "cloud"
+                        -   name: JAVA_OPTS
+                            value: "-Xms512m -Xmx512m"
+                        -   name: ACCESS_SERVICE_HOST
+                            value: $ACCESS_SERVICE_HOST
+                        -   name: ANALYSIS_SERVICE_HOST
+                            value: $ANALYSIS_SERVICE_HOST
+                        -   name: MANAGEMENT_SERVICE_HOST
+                            value: $MANAGEMENT_SERVICE_HOST
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: analysis-api-service
+spec:
+    selector:
+        app: analysis-api-service
+    ports:
+        -   name: http
+            protocol: TCP
+            port: 80
+            targetPort: 80
+    type: NodePort
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+    name: analysis-api-service
+spec:
+    selector:
+        matchLabels:
+            app: analysis-api-service
+    maxUnavailable: 30%
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: analysis-api-service
+spec:
+    scaleTargetRef:
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        name: analysis-api-service
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+
+                        

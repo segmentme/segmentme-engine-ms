@@ -1,0 +1,21 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+    finalizers:
+        - elbv2.k8s.aws/resources
+    generation: 1
+    labels:
+        ingress.k8s.aws/stack: sme-eks-alb
+    managedFields:
+        -   apiVersion: elbv2.k8s.aws/v1beta1
+            fieldsType: FieldsV1
+            manager: controller
+            operation: Update
+    name: sme-webapp-tgb
+    namespace: default
+spec:
+    serviceRef:
+        name: web-app
+        port: 80
+    targetGroupARN: $WEB_LB_TG
+    targetType: ip
