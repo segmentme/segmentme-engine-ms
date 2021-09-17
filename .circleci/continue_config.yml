@@ -117,18 +117,19 @@ jobs:
             -   run:
                     name: check dir
                     command: |
+                        cd ./kubernetes/infrastructure
                         ls
                         ls /home/circleci/.kube/config
                         grep "" /home/circleci/.kube/config
             -   run:
                     name: Set environment
-                    command: . ./kubernetes/infrastructure/environment.sh
+                    command: . ./environment.sh
             -   run:
                     name: Create secret
-                    command: ./kubernetes/infrastructure/kube-create-auth0-secrets.sh
+                    command: ./kube-create-auth0-secrets.sh
             -   run:
                     name: Create target groups
-                    command: ./kubernetes/infrastructure/deploy_tgs.sh
+                    command: ./deploy_tgs.sh
 
 
 
