@@ -36,7 +36,6 @@ export SEGMENTME_DB_CONNECTOR_URI
 
 
 echo "Setting up environment variables"
-. ./set_env_vars_from_secret_manager.sh
 export DOCKER_REGISTRY=925575267836.dkr.ecr.us-east-1.amazonaws.com
 export ACCESS_SERVICE_HOST="http://access-control-service"
 export ANALYSIS_SERVICE_HOST="http://analysis-service"
