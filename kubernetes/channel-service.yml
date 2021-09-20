@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
                 -   name: channel-service
-                    image: $DOCKER_REGISTRY/segmentme-channel-service
+                    image: $IMAGE_NAME
                     imagePullPolicy: Always
                     resources:
                         limits:

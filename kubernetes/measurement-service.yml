@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
                 -   name: measurement-service
-                    image: $DOCKER_REGISTRY/segmentme-measurement-service
+                    image: $IMAGE_NAME
                     imagePullPolicy: Always
                     resources:
                         limits:

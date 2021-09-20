@@ -119,14 +119,12 @@ jobs:
                     command: |
                         cd ./kubernetes/infrastructure
                         . ./environment.sh
-                        printenv
                         ./kube-create-auth0-secrets.sh
             -   run:
                     name: Create target groups
                     command: |
                         cd ./kubernetes/infrastructure
                         . ./environment.sh
-                        printenv
                         ./deploy_tgs.sh
 
 
