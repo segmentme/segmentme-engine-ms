@@ -30,6 +30,13 @@ workflows:
                     # <regex path-to-test> <parameter-to-set> <value-of-pipeline-parameter>
                     mapping: |
                         kubernetes/infrastructure/.* kube-infra-changed true
+                        helm/common/.*  common-chart-changed true
+                        helm/access-control-service/.*  access-control-service-chart-changed true
+                        helm/measurement-service/.*  measurement-service-chart-changed true
+                        helm/management-service/.*  management-service-chart-changed true
+                        helm/analysis-service/.*  analysis-service-chart-changed true
+                        helm/analysis-api-service/.*  analysis-api-service-chart-changed true
+                        helm/channel-service/.*  channel-service-chart-changed true
                         dependencies/.* core-changed true
                         services/access-control-service/.* access-control-service-changed true
                         services/measurement-service/.* measurement-service-changed true

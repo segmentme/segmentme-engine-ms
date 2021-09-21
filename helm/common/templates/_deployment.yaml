@@ -1,0 +1,49 @@
+{{- define "common.deployment" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  {{ template "common.metadata" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "common.name" . }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "common.name" . }}
+    spec:
+      containers:
+        - name: analysis-service
+          image: $DOCKER_REGISTRY/segmentme-{{ template "common.name" . }}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: {{ .Values.limit.memory }}
+            requests:
+              memory: {{ .Values.limit.request }}
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            periodSeconds: 20
+          envFrom:
+            -   secretRef:
+                  name: auth0-secret
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "cloud"
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+            {{ template "common.evironment" . }}
+{{- end -}}
+{{- end -}}

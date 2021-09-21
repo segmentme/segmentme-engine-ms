@@ -1,0 +1,3 @@
+{{- define "common.metadata" -}}
+  name: {{ include "common.name" . }}
+{{- end -}}

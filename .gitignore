@@ -68,3 +68,6 @@ HELP.md
 ### JREBEL ###
 rebel.xml
 /**/rebel.xml
+
+### helm ###
+helm/**/charts/**

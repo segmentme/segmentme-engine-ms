@@ -1,0 +1,14 @@
+{{ define "common.evironment" -}}
+            - name: SEGMENTME_DB_CONNECTOR_URI
+              value: {{ .Values.env.SEGMENTME_DB_CONNECTOR_URI }}
+            - name: REDIS_HOST
+              value: {{ .Values.env.REDIS_HOST }}
+            - name: REDIS_PORT
+              value: {{ .Values.env.REDIS_PORT }}
+            - name: REDIS_CONNECTION_TIMEOUT
+              value: '25'
+            - name: REDIS_READ_TIMEOUT
+              value: '15'
+            - name: ACCESS_SERVICE_HOST
+              value: {{ .Values.env.ACCESS_SERVICE_HOST }}
+{{- end -}}

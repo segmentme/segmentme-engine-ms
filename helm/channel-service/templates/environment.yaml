@@ -1,0 +1,14 @@
+{{ define "common.evironment" -}}
+            - name: REDIS_HOST
+              value: {{ .Values.env.REDIS_HOST }}
+            - name: REDIS_PORT
+              value: {{ .Values.env.REDIS_PORT }}
+            - name: REDIS_CONNECTION_TIMEOUT
+              value: '25'
+            - name: ANALYSIS_SERVICE_URL
+              value: {{ .Values.env.ANALYSIS_SERVICE_HOST }}
+            - name: CHANNEL_SERVICE_PORT
+              value: {{ .Values.env.CHANNEL_SERVICE_PORT }}
+            - name: LOG_LEVEL
+              value: ERROR
+{{- end -}}

@@ -1,0 +1,17 @@
+{{- define "common.poddisruptionbudget" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "common.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "common.name" . }}
+  maxUnavailable: {{ .Values.maxUnavailable }}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,20 @@
+{{- define "common.horizontalpodautoscaler" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "common.name" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: {{ include "common.name" . }}
+  minReplicas: {{ .Values.horizontalPodAutoScaler.minReplicas }}
+  maxReplicas: {{ .Values.horizontalPodAutoScaler.maxReplicas }}
+  targetCPUUtilizationPercentage: {{ .Values.horizontalPodAutoScaler.targetCPUUtilizationPercentage }}
+{{- end -}}
+{{- end -}}

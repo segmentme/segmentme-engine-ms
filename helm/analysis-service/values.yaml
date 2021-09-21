@@ -1,0 +1,4 @@
+replicaCount: 1
+limit:
+  memory: 512Mi
+  request: 512Mi
