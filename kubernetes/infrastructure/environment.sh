@@ -41,6 +41,6 @@ echo 'export MANAGEMENT_SERVICE_HOST="http://management-service"' >> $BASH_ENV
 echo 'export MEASUREMENT_SERVICE_HOST="http://measurement-service"' >> $BASH_ENV
 echo 'export CHANNEL_SERVICE_PORT=7777' >> $BASH_ENV
 echo 'export CHANNEL_SERVICE_HOST=channel-service' >> $BASH_ENV
-
+printenv
 echo "Environment variable set"
 
