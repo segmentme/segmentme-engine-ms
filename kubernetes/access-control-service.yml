@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
                 -   name: access-control-service
-                    image: $DOCKER_REGISTRY/segmentme-access-control-service
+                    image: $IMAGE_NAME
                     imagePullPolicy: Always
                     resources:
                         limits:

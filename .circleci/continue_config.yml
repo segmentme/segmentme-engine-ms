@@ -128,9 +128,15 @@ jobs:
                     command: |
                         aws eks update-kubeconfig --name <<parameters.cluster-name>>
             -   run:
+                    name: Prepare custom environment variables
+                    command: |
+                        cd ./kubernetes/infrastructure
+                        . ./environment.sh
+            -   run:
                     name: Create secret
                     command: |
                         cd ./kubernetes/infrastructure
+                        printenv
                         . ./environment.sh
                         printenv
                         ./kube-create-auth0-secrets.sh
@@ -138,8 +144,8 @@ jobs:
                     name: Create target groups
                     command: |
                         cd ./kubernetes/infrastructure
-                        . ./environment.sh
                         printenv
+                        . ./environment.sh
                         ./deploy_tgs.sh
 
 
