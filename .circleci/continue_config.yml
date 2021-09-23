@@ -94,25 +94,31 @@ jobs:
         parameters:
             service-name:
                 type: string
+            cluster-name:
+                type: string
         environment:
             AWS_DEFAULT_OUTPUT: json
         steps:
-            - attach_workspace:
-                at: .
+            -   attach_workspace:
+                    at: .
             - kubernetes/install-kubectl
             - helm/install-helm-client
             - aws-cli/install
             - envsubst/install
-            - run:
-                name: Deploy
-                command: |
-                      cd ./kubernetes/infrastructure
-                      . ./environment.sh
-                      printenv
-                      cd ../../helm
-                      envsubst < ./common/values.yaml > ./values.yaml
-                      helm dependency build ./<<parameters.service-name>>
-                      helm upgrade --install <<parameters.service-name>> -f values.yaml ./<<parameters.service-name>>
+            -   run:
+                    name: Setup EKS
+                    command: |
+                        aws eks update-kubeconfig --name <<parameters.cluster-name>>
+            -   run:
+                    name: Deploy
+                    command: |
+                        cd ./kubernetes/infrastructure
+                        . ./environment.sh
+                        printenv
+                        cd ../../helm
+                        envsubst < ./common/values.yaml > ./values.yaml
+                        helm dependency build ./<<parameters.service-name>>
+                        helm upgrade --install <<parameters.service-name>> -f values.yaml ./<<parameters.service-name>>
     apply-kube-infrastructure:
         executor: java-executor
         environment:
@@ -248,9 +254,10 @@ workflows:
                     requires:
                         - publish_gate
             -   deploy:
-                  context:
+                    context:
                         - sme
                   service-name: access-control-service
+                    cluster-name: segmentme-demo-eks
                   requires:
                         - publish
     measurement-service:
@@ -288,6 +295,7 @@ workflows:
                     context:
                         - sme
                     service-name: measurement-service
+                    cluster-name: segmentme-demo-eks
                     requires:
                         - publish
     management-service:
@@ -322,9 +330,10 @@ workflows:
                     requires:
                         - publish_gate
             -   deploy:
-                  context:
+                    context:
                         - sme
                   service-name: management-service
+                    cluster-name: segmentme-demo-eks
                   requires:
                         - publish
     analysis-service:
@@ -359,9 +368,10 @@ workflows:
                     requires:
                         - publish_gate
             -   deploy:
-                  context:
+                    context:
                         - sme
                   service-name: analysis-service
+                    cluster-name: segmentme-demo-eks
                   requires:
                         - publish
     analysis-api-service:
@@ -396,9 +406,10 @@ workflows:
                     requires:
                         - publish_gate
             -   deploy:
-                  context:
+                    context:
                         - sme
                   service-name: analysis-api-service
+                    cluster-name: segmentme-demo-eks
                   requires:
                         - publish
     channel-service:
@@ -433,8 +444,9 @@ workflows:
                     requires:
                         - publish_gate
             -   deploy:
-                  context:
+                    context:
                         - sme
                   service-name: channel-service
+                    cluster-name: segmentme-demo-eks
                   requires:
                         - publish
