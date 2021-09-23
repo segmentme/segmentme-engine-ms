@@ -371,7 +371,7 @@ workflows:
                     context:
                         - sme
                     service-name: analysis-service
-                        cluster-name: segmentme-demo-eks
+                    cluster-name: segmentme-demo-eks
                     requires:
                         - publish
     analysis-api-service:
@@ -409,7 +409,7 @@ workflows:
                     context:
                         - sme
                     service-name: analysis-api-service
-                        cluster-name: segmentme-demo-eks
+                    cluster-name: segmentme-demo-eks
                     requires:
                         - publish
     channel-service:
@@ -447,6 +447,6 @@ workflows:
                     context:
                         - sme
                     service-name: channel-service
-                        cluster-name: segmentme-demo-eks
+                    cluster-name: segmentme-demo-eks
                     requires:
                         - publish
