@@ -117,6 +117,7 @@ jobs:
                         printenv
                         cd ../../helm
                         envsubst < ./common/values.yaml > ./values.yaml
+                        grep ""  ./values.yaml
                         helm dependency build ./<<parameters.service-name>>
                         helm upgrade --install <<parameters.service-name>> -f values.yaml ./<<parameters.service-name>>
     apply-kube-infrastructure:
