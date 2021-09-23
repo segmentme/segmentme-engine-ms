@@ -190,23 +190,23 @@ parameters:
         type: boolean
         default: false
     access-control-service-chart-changed:
-      type: boolean
-      default: false
+        type: boolean
+        default: false
     measurement-service-chart-changed:
-      type: boolean
-      default: false
+        type: boolean
+        default: false
     management-service-chart-changed:
-      type: boolean
-      default: false
+        type: boolean
+        default: false
     analysis-service-chart-changed:
-      type: boolean
-      default: false
+        type: boolean
+        default: false
     analysis-api-service-chart-changed:
-      type: boolean
-      default: false
+        type: boolean
+        default: false
     channel-service-chart-changed:
-      type: boolean
-      default: false
+        type: boolean
+        default: false
 # here we specify our workflows, most of which are conditionally
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
@@ -256,9 +256,9 @@ workflows:
             -   deploy:
                     context:
                         - sme
-                  service-name: access-control-service
-                  cluster-name: segmentme-demo-eks
-                  requires:
+                    service-name: access-control-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
                         - publish
     measurement-service:
         when:
@@ -332,9 +332,9 @@ workflows:
             -   deploy:
                     context:
                         - sme
-                  service-name: management-service
-                  cluster-name: segmentme-demo-eks
-                  requires:
+                    service-name: management-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
                         - publish
     analysis-service:
         when:
@@ -370,9 +370,9 @@ workflows:
             -   deploy:
                     context:
                         - sme
-                  service-name: analysis-service
-                    cluster-name: segmentme-demo-eks
-                  requires:
+                    service-name: analysis-service
+                        cluster-name: segmentme-demo-eks
+                    requires:
                         - publish
     analysis-api-service:
         when:
@@ -408,9 +408,9 @@ workflows:
             -   deploy:
                     context:
                         - sme
-                  service-name: analysis-api-service
-                    cluster-name: segmentme-demo-eks
-                  requires:
+                    service-name: analysis-api-service
+                        cluster-name: segmentme-demo-eks
+                    requires:
                         - publish
     channel-service:
         when:
@@ -446,7 +446,7 @@ workflows:
             -   deploy:
                     context:
                         - sme
-                  service-name: channel-service
-                    cluster-name: segmentme-demo-eks
-                  requires:
+                    service-name: channel-service
+                        cluster-name: segmentme-demo-eks
+                    requires:
                         - publish
