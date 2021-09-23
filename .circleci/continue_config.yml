@@ -110,8 +110,9 @@ jobs:
                       . ./environment.sh
                       printenv
                       cd ../../helm
+                      envsubst < ./common/values.yaml > ./values.yaml
                       helm dependency build ./<<parameters.service-name>>
-                      helm upgrade --install <<parameters.service-name>> --post-renderer ./helm-post-renderer.sh ./<<parameters.service-name>>
+                      helm upgrade --install <<parameters.service-name>> -f values.yaml ./<<parameters.service-name>>
     apply-kube-infrastructure:
         executor: java-executor
         environment:
