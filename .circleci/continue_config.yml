@@ -257,7 +257,7 @@ workflows:
                     context:
                         - sme
                   service-name: access-control-service
-                    cluster-name: segmentme-demo-eks
+                  cluster-name: segmentme-demo-eks
                   requires:
                         - publish
     measurement-service:
