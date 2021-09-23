@@ -333,7 +333,7 @@ workflows:
                     context:
                         - sme
                   service-name: management-service
-                    cluster-name: segmentme-demo-eks
+                  cluster-name: segmentme-demo-eks
                   requires:
                         - publish
     analysis-service:
