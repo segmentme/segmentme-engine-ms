@@ -101,6 +101,8 @@ jobs:
                 at: .
             - kubernetes/install-kubectl
             - helm/install-helm-client
+            - aws-cli/install
+            - envsubst/install
             - run:
                 name: Deploy
                 command: |
