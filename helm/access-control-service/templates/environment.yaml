@@ -1,4 +1,4 @@
 {{ define "common.evironment" -}}
             - name: SEGMENTME_DB_CONNECTOR_URI
-              value: {{ .Values.env.SEGMENTME_DB_CONNECTOR_URI }}
+              value: {{ .Values.env.SEGMENTME_DB_CONNECTOR_URI | quote }}
 {{- end -}}

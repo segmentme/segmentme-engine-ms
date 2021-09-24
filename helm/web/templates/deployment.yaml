@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         -   name: web
-            image: $DOCKER_REGISTRY/segmentme-web
+            image: {{ .Values.env.DOCKER_REGISTRY }}/segmentme-web
             imagePullPolicy: Always
             resources:
               limits:
