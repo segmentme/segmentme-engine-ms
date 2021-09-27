@@ -142,7 +142,6 @@ jobs:
                     command: |
                         cd ./kubernetes/infrastructure
                         ./environment.sh
-                        source $BASH_ENV
                         printenv
                         echo "----"
                         grep "" $BASH_ENV
@@ -152,7 +151,6 @@ jobs:
                         cd ./kubernetes/infrastructure
                         printenv
                         echo "----"
-                        source $BASH_ENV
                         printenv
                         ./kube-create-auth0-secrets.sh
             -   run:
