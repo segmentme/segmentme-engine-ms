@@ -141,11 +141,19 @@ jobs:
                     name: Prepare custom environment variables
                     command: |
                         cd ./kubernetes/infrastructure
-                        . ./environment.sh
+                        ./environment.sh
+                        source $BASH_ENV
+                        printenv
+                        echo "----"
+                        grep "" $BASH_ENV
             -   run:
                     name: Create secret
                     command: |
                         cd ./kubernetes/infrastructure
+                        printenv
+                        echo "----"
+                        source $BASH_ENV
+                        printenv
                         ./kube-create-auth0-secrets.sh
             -   run:
                     name: Create target groups
@@ -217,44 +225,44 @@ workflows:
                         cluster-name: segmentme-demo-eks
                         requires:
                             - checkout
-    access-control-service:
-            when:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.access-control-service-changed >>
-                    - << pipeline.parameters.common-chart-changed >>
-                    - << pipeline.parameters.access-control-service-chart-changed >>
-            jobs:
-                - checkout
-                -   test:
-                        context:
-                            - sme
-                        service-name: access-control-service
-                        requires:
-                            - checkout
-                -   buildDocker:
-                        context:
-                            - sme
-                        service-name: access-control-service
-                        requires:
-                            - test
-                -   publish_gate:
-                        type: approval
-                        requires:
-                            - buildDocker
-                -   publish:
-                        context:
-                            - sme
-                        service-name: access-control-service
-                        requires:
-                            - publish_gate
-                -   deploy:
-                        context:
-                            - sme
-                        service-name: access-control-service
-                        cluster-name: segmentme-demo-eks
-                        requires:
-                            - publish
+#    access-control-service:
+#            when:
+#                or:
+#                    - << pipeline.parameters.core-changed >>
+#                    - << pipeline.parameters.access-control-service-changed >>
+#                    - << pipeline.parameters.common-chart-changed >>
+#                    - << pipeline.parameters.access-control-service-chart-changed >>
+#            jobs:
+#                - checkout
+#                -   test:
+#                        context:
+#                            - sme
+#                        service-name: access-control-service
+#                        requires:
+#                            - checkout
+#                -   buildDocker:
+#                        context:
+#                            - sme
+#                        service-name: access-control-service
+#                        requires:
+#                            - test
+#                -   publish_gate:
+#                        type: approval
+#                        requires:
+#                            - buildDocker
+#                -   publish:
+#                        context:
+#                            - sme
+#                        service-name: access-control-service
+#                        requires:
+#                            - publish_gate
+#                -   deploy:
+#                        context:
+#                            - sme
+#                        service-name: access-control-service
+#                        cluster-name: segmentme-demo-eks
+#                        requires:
+#                            - publish
 #    measurement-service:
 #            when:
 #                or:
