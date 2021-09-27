@@ -43,6 +43,7 @@ echo 'export CHANNEL_SERVICE_PORT=7777' >> $BASH_ENV
 echo 'export CHANNEL_SERVICE_HOST=channel-service' >> $BASH_ENV
 printenv
 
+
 echo "Environment variable set"
 
 
