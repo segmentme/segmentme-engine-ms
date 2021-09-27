@@ -20,7 +20,6 @@ echo 'export API_LB_TG='$API_LB_TG >> $BASH_ENV
   || error 'Unable to select WEB_LB_TG from vault response'
 echo 'export WEB_LB_TG='$WEB_LB_TG >> $BASH_ENV
 
-
 AUTH0_CLIENT_ID="$(jq -n "$SECRETS" | jq .AUTH0_CLIENT_ID)" \
   || error 'Unable to select AUTH0_CLIENT_ID from vault response'
 echo 'export AUTH0_CLIENT_ID='$AUTH0_CLIENT_ID >> $BASH_ENV

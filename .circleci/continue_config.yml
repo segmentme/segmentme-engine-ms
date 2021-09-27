@@ -110,10 +110,14 @@ jobs:
                     command: |
                         aws eks update-kubeconfig --name <<parameters.cluster-name>>
             -   run:
+                    name: Prepare custom environment variables
+                    command: |
+                        cd ./kubernetes/infrastructure
+                        ./environment.sh
+            -   run:
                     name: Deploy
                     command: |
                         cd ./kubernetes/infrastructure
-                        . ./environment.sh
                         printenv
                         cd ../../helm
                         envsubst < ./common/values.yaml > ./values.yaml
@@ -142,16 +146,10 @@ jobs:
                     command: |
                         cd ./kubernetes/infrastructure
                         ./environment.sh
-                        printenv
-                        echo "----"
-                        grep "" $BASH_ENV
             -   run:
                     name: Create secret
                     command: |
                         cd ./kubernetes/infrastructure
-                        printenv
-                        echo "----"
-                        printenv
                         ./kube-create-auth0-secrets.sh
             -   run:
                     name: Create target groups
@@ -375,44 +373,44 @@ workflows:
 #                    cluster-name: segmentme-demo-eks
 #                    requires:
 #                        - publish
-#    analysis-api-service:
-#        when:
-#            or:
-#                - << pipeline.parameters.core-changed >>
-#                - << pipeline.parameters.analysis-api-service-changed >>
-#                - << pipeline.parameters.common-chart-changed >>
-#                - << pipeline.parameters.analysis-api-service-chart-changed>>
-#        jobs:
-#            - checkout
-#            -   test:
-#                    context:
-#                        - sme
-#                    service-name: analysis-api-service
-#                    requires:
-#                        - checkout
-#            -   buildDocker:
-#                    context:
-#                        - sme
-#                    service-name: analysis-api-service
-#                    requires:
-#                        - test
-#            -   publish_gate:
-#                    type: approval
-#                    requires:
-#                        - buildDocker
-#            -   publish:
-#                    context:
-#                        - sme
-#                    service-name: analysis-api-service
-#                    requires:
-#                        - publish_gate
-#            -   deploy:
-#                    context:
-#                        - sme
-#                    service-name: analysis-api-service
-#                    cluster-name: segmentme-demo-eks
-#                    requires:
-#                        - publish
+    analysis-api-service:
+        when:
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.analysis-api-service-changed >>
+                - << pipeline.parameters.common-chart-changed >>
+                - << pipeline.parameters.analysis-api-service-chart-changed>>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    requires:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    requires:
+                        - publish_gate
+            -   deploy:
+                    context:
+                        - sme
+                    service-name: analysis-api-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
+                        - publish
 #    channel-service:
 #        when:
 #            or:
