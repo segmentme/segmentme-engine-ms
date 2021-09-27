@@ -207,55 +207,55 @@ parameters:
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
-#    kube-infrastructure:
-    #        when: << pipeline.parameters.kube-infra-changed >>
-    #        jobs:
-    #            - checkout
-    #            -   apply-kube-infrastructure:
-    #                    context:
-    #                        - sme
-    #                    cluster-name: segmentme-demo-eks
-    #                    requires:
-    #                        - checkout
-    #
-    #    access-control-service:
-    #        when:
-    #            or:
-    #                - << pipeline.parameters.core-changed >>
-    #                - << pipeline.parameters.access-control-service-changed >>
-    #                - << pipeline.parameters.common-chart-changed >>
-    #                - << pipeline.parameters.access-control-service-chart-changed >>
-    #        jobs:
-    #            - checkout
-    #            -   test:
-    #                    context:
-    #                        - sme
-    #                    service-name: access-control-service
-    #                    requires:
-    #                        - checkout
-    #            -   buildDocker:
-    #                    context:
-    #                        - sme
-    #                    service-name: access-control-service
-    #                    requires:
-    #                        - test
-    #            -   publish_gate:
-    #                    type: approval
-    #                    requires:
-    #                        - buildDocker
-    #            -   publish:
-    #                    context:
-    #                        - sme
-    #                    service-name: access-control-service
-    #                    requires:
-    #                        - publish_gate
-    #            -   deploy:
-    #                    context:
-    #                        - sme
-    #                    service-name: access-control-service
-    #                    cluster-name: segmentme-demo-eks
-    #                    requires:
-    #                        - publish
+    kube-infrastructure:
+            when: << pipeline.parameters.kube-infra-changed >>
+            jobs:
+                - checkout
+                -   apply-kube-infrastructure:
+                        context:
+                            - sme
+                        cluster-name: segmentme-demo-eks
+                        requires:
+                            - checkout
+
+        access-control-service:
+            when:
+                or:
+                    - << pipeline.parameters.core-changed >>
+                    - << pipeline.parameters.access-control-service-changed >>
+                    - << pipeline.parameters.common-chart-changed >>
+                    - << pipeline.parameters.access-control-service-chart-changed >>
+            jobs:
+                - checkout
+                -   test:
+                        context:
+                            - sme
+                        service-name: access-control-service
+                        requires:
+                            - checkout
+                -   buildDocker:
+                        context:
+                            - sme
+                        service-name: access-control-service
+                        requires:
+                            - test
+                -   publish_gate:
+                        type: approval
+                        requires:
+                            - buildDocker
+                -   publish:
+                        context:
+                            - sme
+                        service-name: access-control-service
+                        requires:
+                            - publish_gate
+                -   deploy:
+                        context:
+                            - sme
+                        service-name: access-control-service
+                        cluster-name: segmentme-demo-eks
+                        requires:
+                            - publish
     #    measurement-service:
     #        when:
     #            or:
