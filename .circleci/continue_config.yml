@@ -3,6 +3,7 @@ version: 2.1
 orbs:
     aws-cli: circleci/aws-cli@2.0.3
     aws-ecr: circleci/aws-ecr@7.0.0
+    aws-eks: circleci/aws-eks@1.1.0
     kubernetes: circleci/kubernetes@0.12.0
     envsubst: sawadashota/envsubst@1.1.0
     helm: circleci/helm@1.2.0
@@ -90,7 +91,7 @@ jobs:
             -   aws-ecr/push-image:
                     repo: segmentme-<<parameters.service-name>>
     deploy:
-        executor: java-executor
+        executor: aws-eks/python
         parameters:
             service-name:
                 type: string
@@ -101,14 +102,10 @@ jobs:
         steps:
             -   attach_workspace:
                     at: .
-            - kubernetes/install-kubectl
             - helm/install-helm-client
-            - aws-cli/install
             - envsubst/install
-            -   run:
-                    name: Setup EKS
-                    command: |
-                        aws eks update-kubeconfig --name <<parameters.cluster-name>>
+            - aws-eks/update-kubeconfig-with-authenticator:
+                cluster-name: << parameters.cluster-name >>
             -   run:
                     name: Prepare custom environment variables
                     command: |
@@ -117,9 +114,7 @@ jobs:
             -   run:
                     name: Deploy
                     command: |
-                        cd ./kubernetes/infrastructure
-                        printenv
-                        cd ../../helm
+                        cd ./helm
                         envsubst < ./common/values.yaml > ./values.yaml
                         grep ""  ./values.yaml
                         helm dependency build ./<<parameters.service-name>>
@@ -211,16 +206,16 @@ parameters:
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
-    kube-infrastructure:
-            when: << pipeline.parameters.kube-infra-changed >>
-            jobs:
-                - checkout
-                -   apply-kube-infrastructure:
-                        context:
-                            - sme
-                        cluster-name: segmentme-demo-eks
-                        requires:
-                            - checkout
+#    kube-infrastructure:
+#            when: << pipeline.parameters.kube-infra-changed >>
+#            jobs:
+#                - checkout
+#                -   apply-kube-infrastructure:
+#                        context:
+#                            - sme
+#                        cluster-name: segmentme-demo-eks
+#                        requires:
+#                            - checkout
 #    access-control-service:
 #            when:
 #                or:
