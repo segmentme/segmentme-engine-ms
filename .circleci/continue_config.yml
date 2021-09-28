@@ -120,7 +120,6 @@ jobs:
                     name: Deploy
                     command: |
                         cd ./helm
-                        helm init
                         envsubst < ./common/values.yaml > ./values.yaml
                         grep ""  ./values.yaml
                         helm dependency build ./<<parameters.service-name>>
