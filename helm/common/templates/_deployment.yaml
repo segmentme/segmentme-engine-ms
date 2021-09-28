@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: analysis-service
-          image: {{ .Values.env.DOCKER_REGISTRY }}/segmentme-{{ template "common.name" . }}
+          image: {{ .Values.env.IMAGE_NAME }}
           imagePullPolicy: Always
           resources:
             limits:

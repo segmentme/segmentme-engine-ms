@@ -1,4 +1,5 @@
 #!/bin/sh
+appname=$1
 
 SECRETS=$(aws secretsmanager get-secret-value --secret-id segmentme-demo_secrets --query SecretString --output text)
 
@@ -39,7 +40,8 @@ echo 'export ANALYSIS_SERVICE_HOST="http://analysis-service"' >> $BASH_ENV
 echo 'export MANAGEMENT_SERVICE_HOST="http://management-service"' >> $BASH_ENV
 echo 'export MEASUREMENT_SERVICE_HOST="http://measurement-service"' >> $BASH_ENV
 echo 'export CHANNEL_SERVICE_PORT=7777' >> $BASH_ENV
-echo 'export CHANNEL_SERVICE_HOST=channel-service' >> $BASH_ENV
+echo 'export CHANNEL_SERVICE_PORT=7777' >> $BASH_ENV
+echo 'export IMAGE_NAME='$DOCKER_REGISTRY'/segmentme-'$appname':'$CIRCLE_SHA1 >> $BASH_ENV
 
 echo "Environment variable set"
 
