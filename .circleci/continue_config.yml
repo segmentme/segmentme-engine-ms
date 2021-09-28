@@ -114,7 +114,7 @@ jobs:
                     command: |
                         cd ./kubernetes/infrastructure
                         ./environment.sh
-            - helm/install-helm-client
+            - helm/install-helm-client:
                     version: v3.7.0
             -   run:
                     name: Deploy
