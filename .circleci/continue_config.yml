@@ -66,7 +66,7 @@ jobs:
                     name: Save image to an archive
                     command: |
                         mkdir docker-image
-                        docker save -o docker-image/image.tar ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:$CIRCLE_SHA1
+                        docker save -o docker-image/image.tar ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest
             -   persist_to_workspace:
                     root: .
                     paths:
@@ -115,7 +115,7 @@ jobs:
                     command: |
                         cd ./kubernetes/infrastructure
                         ./environment.sh <<parameters.service-name>>
-            - helm/install-helm-client:
+            -   helm/install-helm-client:
                     version: v3.7.0
             -   run:
                     name: Deploy
@@ -212,184 +212,184 @@ parameters:
 # executed based upon pipeline parameter values. Each workflow calls a
 # specific job defined above, in the jobs section.
 workflows:
-        kube-infrastructure:
-                when: << pipeline.parameters.kube-infra-changed >>
-                jobs:
-                    - checkout
-                    -   apply-kube-infrastructure:
-                            context:
-                                - sme
-                            cluster-name: segmentme-demo-eks
-                            requires:
-                                - checkout
-        access-control-service:
-                when:
-                    or:
-                        - << pipeline.parameters.core-changed >>
-                        - << pipeline.parameters.access-control-service-changed >>
-                        - << pipeline.parameters.common-chart-changed >>
-                        - << pipeline.parameters.access-control-service-chart-changed >>
-                jobs:
-                    - checkout
-                    -   test:
-                            context:
-                                - sme
-                            service-name: access-control-service
-                            requires:
-                                - checkout
-                    -   buildDocker:
-                            context:
-                                - sme
-                            service-name: access-control-service
-                            requires:
-                                - test
-                    -   publish_gate:
-                            type: approval
-                            requires:
-                                - buildDocker
-                    -   publish:
-                            context:
-                                - sme
-                            service-name: access-control-service
-                            requires:
-                                - publish_gate
-                    -   deploy_gate:
-                            type: approval
-                            requires:
-                                - publish
-                    -   deploy:
-                            context:
-                                - sme
-                            service-name: access-control-service
-                            cluster-name: segmentme-demo-eks
-                            requires:
-                                - deploy_gate
-        measurement-service:
-                when:
-                    or:
-                        - << pipeline.parameters.core-changed >>
-                        - << pipeline.parameters.measurement-service-changed >>
-                        - << pipeline.parameters.common-chart-changed >>
-                        - << pipeline.parameters.measurement-service-chart-changed >>
-                jobs:
-                    - checkout
-                    -   test:
-                            context:
-                                - sme
-                            service-name: measurement-service
-                            requires:
-                                - checkout
-                    -   buildDocker:
-                            context:
-                                - sme
-                            service-name: measurement-service
-                            requires:
-                                - test
-                    -   publish_gate:
-                            type: approval
-                            requires:
-                                - buildDocker
-                    -   publish:
-                            context:
-                                - sme
-                            service-name: measurement-service
-                            requires:
-                                - publish_gate
-                    -   deploy_gate:
-                            type: approval
-                            requires:
-                                - publish
-                    -   deploy:
-                            context:
-                                - sme
-                            service-name: measurement-service
-                            cluster-name: segmentme-demo-eks
-                            requires:
-                                - deploy_gate
-        management-service:
-                when:
-                    or:
-                        - << pipeline.parameters.core-changed >>
-                        - << pipeline.parameters.management-service-changed >>
-                        - << pipeline.parameters.common-chart-changed >>
-                        - << pipeline.parameters.management-service-chart-changed >>
-                jobs:
-                    - checkout
-                    -   test:
-                            context:
-                                - sme
-                            service-name: management-service
-                            requires:
-                                - checkout
-                    -   buildDocker:
-                            context:
-                                - sme
-                            service-name: management-service
-                            requires:
-                                - test
-                    -   publish_gate:
-                            type: approval
-                            requires:
-                                - buildDocker
-                    -   publish:
-                            context:
-                                - sme
-                            service-name: management-service
-                            requires:
-                                - publish_gate
-                    -   deploy_gate:
-                            type: approval
-                            requires:
-                                - publish
-                    -   deploy:
-                            context:
-                                - sme
-                            service-name: management-service
-                            cluster-name: segmentme-demo-eks
-                            requires:
-                                - deploy_gate
-        analysis-service:
-            when:
-                or:
-                    - << pipeline.parameters.core-changed >>
-                    - << pipeline.parameters.analysis-service-changed >>
-                    - << pipeline.parameters.common-chart-changed >>
-                    - << pipeline.parameters.analysis-service-chart-changed >>
-            jobs:
-                - checkout
-                -   test:
-                        context:
-                            - sme
-                        service-name: analysis-service
-                        requires:
-                            - checkout
-                -   buildDocker:
-                        context:
-                            - sme
-                        service-name: analysis-service
-                        requires:
-                            - test
-                -   publish_gate:
-                        type: approval
-                        requires:
-                            - buildDocker
-                -   publish:
-                        context:
-                            - sme
-                        service-name: analysis-service
-                        requires:
-                            - publish_gate
-                -   deploy_gate:
-                        type: approval
-                        requires:
-                            - publish
-                -   deploy:
-                        context:
-                            - sme
-                        service-name: analysis-service
-                        cluster-name: segmentme-demo-eks
-                        requires:
-                            - deploy_gate
+    kube-infrastructure:
+        when: << pipeline.parameters.kube-infra-changed >>
+        jobs:
+            - checkout
+            -   apply-kube-infrastructure:
+                    context:
+                        - sme
+                    cluster-name: segmentme-demo-eks
+                    requires:
+                        - checkout
+    access-control-service:
+        when:
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.access-control-service-changed >>
+                - << pipeline.parameters.common-chart-changed >>
+                - << pipeline.parameters.access-control-service-chart-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: access-control-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: access-control-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    requires:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: access-control-service
+                    requires:
+                        - publish_gate
+            -   deploy_gate:
+                    type: approval
+                    requires:
+                        - publish
+            -   deploy:
+                    context:
+                        - sme
+                    service-name: access-control-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
+                        - deploy_gate
+    measurement-service:
+        when:
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.measurement-service-changed >>
+                - << pipeline.parameters.common-chart-changed >>
+                - << pipeline.parameters.measurement-service-chart-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: measurement-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: measurement-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    requires:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: measurement-service
+                    requires:
+                        - publish_gate
+            -   deploy_gate:
+                    type: approval
+                    requires:
+                        - publish
+            -   deploy:
+                    context:
+                        - sme
+                    service-name: measurement-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
+                        - deploy_gate
+    management-service:
+        when:
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.management-service-changed >>
+                - << pipeline.parameters.common-chart-changed >>
+                - << pipeline.parameters.management-service-chart-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: management-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: management-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    requires:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: management-service
+                    requires:
+                        - publish_gate
+            -   deploy_gate:
+                    type: approval
+                    requires:
+                        - publish
+            -   deploy:
+                    context:
+                        - sme
+                    service-name: management-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
+                        - deploy_gate
+    analysis-service:
+        when:
+            or:
+                - << pipeline.parameters.core-changed >>
+                - << pipeline.parameters.analysis-service-changed >>
+                - << pipeline.parameters.common-chart-changed >>
+                - << pipeline.parameters.analysis-service-chart-changed >>
+        jobs:
+            - checkout
+            -   test:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    requires:
+                        - checkout
+            -   buildDocker:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    requires:
+                        - test
+            -   publish_gate:
+                    type: approval
+                    requires:
+                        - buildDocker
+            -   publish:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    requires:
+                        - publish_gate
+            -   deploy_gate:
+                    type: approval
+                    requires:
+                        - publish
+            -   deploy:
+                    context:
+                        - sme
+                    service-name: analysis-service
+                    cluster-name: segmentme-demo-eks
+                    requires:
+                        - deploy_gate
     analysis-api-service:
         when:
             or:
