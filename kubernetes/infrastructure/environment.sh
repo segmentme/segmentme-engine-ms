@@ -34,14 +34,14 @@ SEGMENTME_DB_CONNECTOR_URI="$(jq -n "$SECRETS" | jq .SEGMENTME_DB_CONNECTOR_URI)
 echo 'export SEGMENTME_DB_CONNECTOR_URI='$SEGMENTME_DB_CONNECTOR_URI >> $BASH_ENV
 
 echo "Setting up environment variables"
-echo 'export DOCKER_REGISTRY=925575267836.dkr.ecr.us-east-1.amazonaws.com' >> $BASH_ENV
+echo 'export DOCKER_REGISTRY='$AWS_ECR_ACCOUNT_URL >> $BASH_ENV
 echo 'export ACCESS_SERVICE_HOST="http://access-control-service"' >> $BASH_ENV
 echo 'export ANALYSIS_SERVICE_HOST="http://analysis-service"' >> $BASH_ENV
 echo 'export MANAGEMENT_SERVICE_HOST="http://management-service"' >> $BASH_ENV
 echo 'export MEASUREMENT_SERVICE_HOST="http://measurement-service"' >> $BASH_ENV
 echo 'export CHANNEL_SERVICE_PORT=7777' >> $BASH_ENV
 echo 'export CHANNEL_SERVICE_PORT=7777' >> $BASH_ENV
-echo 'export IMAGE_NAME='$DOCKER_REGISTRY'/segmentme-'$appname':'$CIRCLE_SHA1 >> $BASH_ENV
+echo 'export IMAGE_NAME='$AWS_ECR_ACCOUNT_URL'/segmentme-'$appname':'$CIRCLE_SHA1 >> $BASH_ENV
 
 echo "Environment variable set"
 
