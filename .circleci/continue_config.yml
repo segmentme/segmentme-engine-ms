@@ -86,6 +86,7 @@ jobs:
                     name: Load image
                     command: |
                         docker load --input workspace/docker-image/image.tar
+                        docker tag ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:latest ${AWS_ECR_ACCOUNT_URL}/segmentme-<<parameters.service-name>>:$CIRCLE_SHA1
             - aws-ecr/ecr-login
             -   run: docker images
             -   aws-ecr/push-image:
