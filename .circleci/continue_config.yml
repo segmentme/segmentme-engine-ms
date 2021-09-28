@@ -112,8 +112,8 @@ jobs:
             -   run:
                     name: Prepare custom environment variables
                     command: |
-                     cd ./kubernetes/infrastructure
-                    ./environment.sh
+                        cd ./kubernetes/infrastructure
+                        ./environment.sh
             - helm/install-helm-client
             -   run:
                     name: Deploy
