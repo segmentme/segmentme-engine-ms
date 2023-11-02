@@ -2,8 +2,8 @@ logging:
   level:
       root: INFO
 auth0:
-  audience: https://segmentme.us.auth0.com/api/v2/
-  managementApi: https://segmentme.us.auth0.com/api/v2/
+  audience: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/api/v2/
+  managementApi: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/api/v2/
 spring:
   data:
     mongodb:
@@ -19,10 +19,10 @@ spring:
             clientAuthenticationMethod: post
         provider:
           auth0:
-            token-uri: https://segmentme.us.auth0.com/oauth/token
+            token-uri: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/oauth/token
       resourceserver:
         jwt:
-          issuer-uri: https://segmentme.us.auth0.com/
+          issuer-uri: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/
 
 segmentme:
   application:

@@ -92,8 +92,8 @@ def javaProjectConfiguration(Project project) {
 
         group = 'io.segmentme'
         version = '0.0.1-SNAPSHOT'
-        sourceCompatibility = JavaVersion.VERSION_14
-        targetCompatibility = JavaVersion.VERSION_14
+        sourceCompatibility = JavaVersion.VERSION_15
+        targetCompatibility = JavaVersion.VERSION_15
 
         configureDependencyManagement(project)
     }
@@ -136,7 +136,7 @@ def configureDependencyManagement(Project project) {
             }
 
             dependencies {
-                dependency 'org.projectlombok:lombok:1.18.12'
+                dependency 'org.projectlombok:lombok:1.18.30'
                 dependency 'org.spockframework:spock-core:2.0-M3-groovy-3.0'
                 dependency 'org.spockframework:spock-spring:2.0-M3-groovy-3.0'
                 dependency 'cglib:cglib-nodep:3.3.0'

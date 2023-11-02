@@ -20,7 +20,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.count;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.limit;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.skip;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +59,9 @@ public class MeasurementService extends AbstractDatabaseService<StatisticLog, St
 
     public void refreshParticipants(String contextId, String uniquenessIdentifier) {
         ContextStatistic contextStatistic = contextStatisticsRepository.findByContextId(contextId);
+        if(contextStatistic==null){
+            return;
+        }
         contextStatistic.setTotalParticipants(0);
         contextStatisticsRepository.save(contextStatistic);
 

@@ -19,7 +19,7 @@ spec:
         app: {{ template "common.name" . }}
     spec:
       containers:
-        - name: analysis-service
+        - name: {{ template "common.name" . }}
           image: {{ .Values.env.IMAGE_NAME }}
           imagePullPolicy: Always
           resources:
@@ -44,6 +44,5 @@ spec:
               value: "cloud"
             - name: JAVA_OPTS
               value: "-Xms512m -Xmx512m"
-            {{ template "common.evironment" . }}
 {{- end -}}
 {{- end -}}

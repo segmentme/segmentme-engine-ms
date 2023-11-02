@@ -8,16 +8,16 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthUser {
 
-    @JsonAlias("https://segmentme.io:userId")
+    @JsonAlias("https://dev-j1y3rcr7oreu5sq8:userId")
     private String id;
 
-    @JsonAlias("https://segmentme.io:fullName")
+    @JsonAlias("https://dev-j1y3rcr7oreu5sq8:fullName")
     private String fullName;
 
-    @JsonAlias("https://segmentme.io:email")
+    @JsonAlias("https://dev-j1y3rcr7oreu5sq8:email")
     private String email;
 
-    @JsonAlias("https://segmentme.io:acknowledged")
+    @JsonAlias("https://dev-j1y3rcr7oreu5sq8:acknowledged")
     private boolean acknowledged;
 
     @JsonAlias("sub")

@@ -2,8 +2,8 @@ logging:
   level:
     root: INFO
 auth0:
-  audience: https://segmentme.us.auth0.com/api/v2/
-  managementApi: https://segmentme.us.auth0.com/api/v2/
+  audience: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/api/v2/
+  managementApi: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/api/v2/
 spring:
   data:
     mongodb:
@@ -13,16 +13,16 @@ spring:
       client:
         registration:
           auth0:
-            client-id: ${AUTH0_CLIENT_ID:FRFEhM5zwQCva2tSfBxDuM3og5TdjUpC}
-            client-secret: ${AUTH0_CLIENT_SECRET:Rsic0pW4Wr_q91Ppin-UNRuq5EdH5X7EmhA4ZUTcN-6MBu_Wy8Ce1J89WPCpkD_4}
+            client-id: ${AUTH0_CLIENT_ID:zNUSPZ4zKcyZVMFybWmZt72iaE4RWZfO}
+            client-secret: ${AUTH0_CLIENT_SECRET:BDLzgc39FTIAWNdydtcIOE0qSEZK54F6wXfkRmCmMSsOd5y90LNok6-HcD5L6DYL}
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: post
         provider:
           auth0:
-            token-uri: https://segmentme.us.auth0.com/oauth/token
+            token-uri: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/oauth/token
       resourceserver:
         jwt:
-          issuer-uri: https://segmentme.us.auth0.com/
+          issuer-uri: https://dev-j1y3rcr7oreu5sq8.us.auth0.com/
 server:
   port: 8085
 

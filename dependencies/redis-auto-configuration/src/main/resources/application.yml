@@ -2,5 +2,6 @@ spring:
   redis:
     host: ${REDIS_HOST:localhost}
     port: ${REDIS_PORT:6379}
+    password: foobar
 server:
   port: 9090

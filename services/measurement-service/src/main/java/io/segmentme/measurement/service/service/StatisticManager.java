@@ -11,11 +11,14 @@ import io.segmentme.models.shared.analysis.ConditionType;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -60,9 +63,9 @@ public class StatisticManager {
 
         updateParticipantStatistics(analyzedData, statisticLog, contextDataHolder, collectedStats.getTimestamp());
 
-        if (RandomUtils.nextInt(0, 50) == 0) {
+//        if (RandomUtils.nextInt(0, 50) == 0) {
             flush();
-        }
+//        }
     }
 
     private void updateParticipantStatistics(AnalyzedData analyzedData, StatisticLog statisticLog, CollectedAnalysysStatisticDto.ContextDataHolder contextDataHolder, Long timestamp) {
