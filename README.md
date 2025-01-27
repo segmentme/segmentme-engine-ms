@@ -1,4 +1,8 @@
 # segmentme
+SegmentMe is a platform designed to analyze user-provided input in JSON format and generate a user-defined output.
+
+A common example of its use is feature toggling. In this case, a SegmentMe operator defines specific criteria based on an expected JSON schema. When a producer sends a JSON payload that aligns with the defined schema, the SegmentMe platform applies analysis rules to evaluate the payload. The platform then determines whether the payload meets the specified conditions and responds accordingly.
+
  ### Glosarry
  
  1. **User**:
